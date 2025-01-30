@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import { Toolbar } from './components/indedx';
 import { Link } from 'react-router-dom';
+import { RoutePathKeyList, useCurrentRoute } from '../../hooks';
 
-const pageList = [
+const pageList: { key: RoutePathKeyList; title: string; path: string }[] = [
 	{ key: 'main', title: 'Главная', path: '/' },
 	{ key: 'projects', title: 'Проекты', path: '/projects' },
 	{ key: 'analytics', title: 'Аналитика', path: '/analytics' },
@@ -10,11 +11,18 @@ const pageList = [
 ];
 
 const HeaderContainer = ({ className }: { className?: string }) => {
+	const keyObj: Record<RoutePathKeyList, string> = Object.fromEntries(
+		pageList.map(({ key, path }) => [key, path]),
+	) as Record<RoutePathKeyList, string>;
+
+	const currentRoute = useCurrentRoute(keyObj);
+	const isActive = (key: RoutePathKeyList) => (currentRoute.isActive(key) ? ' active' : '');
+
 	return (
 		<div className={className}>
 			<div className="link-list">
 				{pageList.map(({ key, title, path }) => (
-					<Link key={key} className="link" to={path}>
+					<Link key={key} className={`link${isActive(key)}`} to={path}>
 						{title}
 					</Link>
 				))}
@@ -42,6 +50,13 @@ export const Header = styled(HeaderContainer)`
 		font-size: 19px;
 		padding-right: 9px;
 		color: #213547;
+		border-bottom : 1px solid transparent;
+		transition: border-bottom 250ms;
+	}
+
+	& .active {
+		border-bottom : 1px solid #EEBF7C;
+		transition: border-bottom 250ms;
 	}
 
 	& .toolbar {
