@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IconButton } from '../../../iconButton/iconButton';
+import { IconButton } from '../../../icon-button/icon-button';
 
 const ToolbarContainer = ({ className }: { className?: string }) => {
 	return (

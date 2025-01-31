@@ -51,12 +51,12 @@ export const Header = styled(HeaderContainer)`
 		padding-right: 9px;
 		color: #213547;
 		border-bottom : 1px solid transparent;
-		transition: border-bottom 250ms;
+		transition: border-bottom 150ms;
 	}
 
 	& .active {
 		border-bottom : 1px solid #EEBF7C;
-		transition: border-bottom 250ms;
+		transition: border-bottom 150ms;
 	}
 
 	& .toolbar {

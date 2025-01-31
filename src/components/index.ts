@@ -1,2 +1,3 @@
-export * from './Header/header'
-export * from './iconButton/iconButton'
+export * from './header/header'
+export * from './icon-button/icon-button'
+export * from './page-title/page-title'
