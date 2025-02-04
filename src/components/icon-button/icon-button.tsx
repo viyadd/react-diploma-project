@@ -7,7 +7,7 @@ interface IconButton {
 }
 const IconButtonContainer = ({ className, id, onClick }: IconButton) => {
 	return (
-		<div className={className}  onClick={onClick}>
+		<div className={className}>
 			<i className={`fa ${id}`} aria-hidden="true" onClick={onClick}></i>
 		</div>
 	);
