@@ -1,1 +1,6 @@
-export * from './Header/header'
+export * from './header/header'
+export * from './icon-button/icon-button'
+export * from './page-title/page-title'
+export * from './button/button'
+export * from './input/input'
+export * from './auth-form-error/auth-form-error'

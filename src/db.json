@@ -1,0 +1,107 @@
+{
+  "roles": [
+    {
+      "id": "001",
+      "name": "admin"
+    },
+    {
+      "id": "002",
+      "name": "user"
+    },
+    {
+      "id": "003",
+      "name": "guest"
+    }
+  ],
+  "users": [
+    {
+      "id": "001",
+      "login": "van",
+      "password": "123qwe",
+      "registred_at": "2053-02-06 20:23",
+      "role_id": "001",
+      "is_active": true,
+      "name": "Иван",
+      "surname": "Иванов",
+      "patronymic": "Иванович"
+    },
+    {
+      "id": "002",
+      "login": "john",
+      "password": "123qwe",
+      "registred_at": "2053-02-06 20:23",
+      "role_id": "002",
+      "is_active": true,
+      "name": "John",
+      "surname": "Smith",
+      "patronymic": null
+    }
+  ],
+  "state": [
+    {
+      "id": "001",
+      "text": "backlog"
+    },
+    {
+      "id": "002",
+      "text": "doing"
+    },
+    {
+      "id": "003",
+      "text": "review"
+    },
+    {
+      "id": "004",
+      "text": "done"
+    }
+  ],
+  "projects": [],
+  "tasks": [],
+  "changelog": [],
+  "sessions": [
+    {
+      "id": "98e4",
+      "hash": "0.44363944955067280417893016419839113950729370117188",
+      "user": {
+        "id": "1308",
+        "login": "edc",
+        "password": "123qwe",
+        "registredAt": "2025-02-04 08:35",
+        "roleId": 2
+      }
+    },
+    {
+      "id": "42b1",
+      "hash": "0.79228521194631862378798814461333677172660827636719",
+      "user": {
+        "id": "1105",
+        "login": "vanaaa",
+        "password": "123qwe",
+        "registredAt": "2025-02-04 08:52",
+        "roleId": 2
+      }
+    },
+    {
+      "id": "3b4e",
+      "hash": "0.45167760804621437387140758801251649856567382812500",
+      "user": {
+        "id": "80fa",
+        "login": "van1",
+        "password": "123qwe",
+        "registredAt": "2025-02-04 08:58",
+        "roleId": 2
+      }
+    },
+    {
+      "id": "3fcc",
+      "hash": "0.21958635634892931243200564495055004954338073730469",
+      "user": {
+        "id": "001",
+        "login": "van",
+        "password": "123qwe",
+        "registredAt": "2053-02-06 20:23",
+        "roleId": 0
+      }
+    }
+  ]
+}
