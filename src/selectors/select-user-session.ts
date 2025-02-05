@@ -1,3 +1,3 @@
 import { UserStateData } from "../reducers";
 
-export const SelectUserSession = ({ user }: { user: UserStateData}) => user.session;
+export const selectUserSession = ({ user }: { user: UserStateData}) => user.session;

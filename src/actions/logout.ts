@@ -5,5 +5,6 @@ export const logout = (session: string | null) => {
 	server.logout(session);
 	return {
 		type: ActionType.Logout,
+		payload: {}
 	};
 };

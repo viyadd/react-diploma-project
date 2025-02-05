@@ -1,14 +1,20 @@
 import styled from 'styled-components';
+import { AppComponentsPropsBase } from '../../shared/interfaces';
 
-interface IconButton {
-	className?: string;
+interface IconButton extends AppComponentsPropsBase {
 	id: string;
+	margin?: string;
+	disabled?: boolean;
 	onClick?: React.MouseEventHandler<HTMLElement> | undefined;
 }
-const IconButtonContainer = ({ className, id, onClick }: IconButton) => {
+const IconButtonContainer = ({ className, id, onClick, disabled }: IconButton) => {
 	return (
 		<div className={className}>
-			<i className={`fa ${id}`} aria-hidden="true" onClick={onClick}></i>
+			<i
+				className={`fa ${id}`}
+				aria-hidden="true"
+				onClick={disabled ? undefined : onClick}
+			></i>
 		</div>
 	);
 };
@@ -17,12 +23,13 @@ export const IconButton = styled(IconButtonContainer)`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: #3b6a94;
+	margin: ${({ margin = '0' }) => margin};
+	color: ${({ disabled }) => (disabled ? '#969696' : '#3b6a94')};
 	font-size: 20px;
 	width: 26px;
 	height: 26px;
 
 	:hover {
-		cursor: pointer;
+		cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
 	}
 `;

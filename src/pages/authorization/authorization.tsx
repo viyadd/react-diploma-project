@@ -2,15 +2,15 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AuthFormError, Button, Input, PageTitle } from '../../components';
-import { ComponentsProps } from '../../shared/interfaces';
+import { AppComponentsPropsBase } from '../../shared/interfaces';
 import styled from 'styled-components';
 import { Link, Navigate } from 'react-router-dom';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { server } from '../../bff';
-import { selectUserRole } from '../../selectors';
-import { ROLE } from '../../constants';
-import { setUser } from '../../actions';
+import { selectUserAccessRole } from '../../selectors';
+import { setAccessRole, setUser } from '../../actions';
+import { AppRole } from '../../bff/constants';
+import { useAppDispatch, useAppSelector } from '../../hooks/use-app-store';
 
 const authFormSchema = yup.object().shape({
 	login: yup
@@ -34,7 +34,7 @@ const StyledLink = styled(Link)`
 	font-size: 18px;
 `;
 
-const AuthorizationContainer = ({ className }: ComponentsProps) => {
+const AuthorizationContainer = ({ className }: AppComponentsPropsBase) => {
 	const {
 		register,
 		// reset,
@@ -50,21 +50,22 @@ const AuthorizationContainer = ({ className }: ComponentsProps) => {
 
 	const [serverError, setServerError] = useState<string | null>(null);
 
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
-	const roleId = useSelector(selectUserRole);
+	const userAccessRole = useAppSelector(selectUserAccessRole);
 
 	// useResetForm(reset);
 
 	const onSubmit = ({ login, password }: { login: string; password: string }) => {
-		server.authorize(login, password).then(({ error, res }) => {
+		server.authorize(login, password).then(({ error, data }) => {
 			if (error) {
 				setServerError(`Ошибка запроса: ${error}`);
 				return;
 			}
-			if (res !== null) {
-				dispatch(setUser(res));
-				sessionStorage.setItem('userData', JSON.stringify(res));
+			if (data !== null) {
+				dispatch(setUser(data));
+				dispatch(setAccessRole(data));
+				sessionStorage.setItem('userData', JSON.stringify(data));
 			}
 		});
 	};
@@ -72,7 +73,7 @@ const AuthorizationContainer = ({ className }: ComponentsProps) => {
 	const formError = errors?.login?.message || errors?.password?.message;
 	const errorMessage = formError || serverError;
 
-	if (roleId !== ROLE.GUEST) {
+	if (userAccessRole !== AppRole.Guest) {
 		return <Navigate to="/" />;
 	}
 

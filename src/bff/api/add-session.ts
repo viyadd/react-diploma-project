@@ -1,7 +1,8 @@
-import { AppUserData, BASE_URL } from "../constants";
+import { AppUserData } from "../constants";
+import { getUrl } from "../utils";
 
 export const addSession = (hash: string, user: AppUserData) =>
-	fetch(BASE_URL + '/sessions', {
+	fetch(getUrl('/sessions'), {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',

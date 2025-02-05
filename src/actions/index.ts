@@ -1,3 +1,5 @@
-export * from './action-type';
+export * from './action-type'
 export * from './set-user'
+export * from './set-authorized-user'
 export * from './logout'
+export * from './set-access-role'

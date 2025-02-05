@@ -1,9 +1,9 @@
-import { AppRole, BASE_URL } from '../constants';
+import { AppRole } from '../constants';
 import { transformAppRoleIdToDBField, transformUser } from '../transformers';
-import { generateDate } from '../utils';
+import { generateDate, getUrl } from '../utils';
 
 export const addUser = (login: string, password: string) =>
-	fetch(BASE_URL + '/users', {
+	fetch(getUrl('/users'), {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',

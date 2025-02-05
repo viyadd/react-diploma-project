@@ -1,8 +1,8 @@
 import { forwardRef } from 'react';
 import styled from 'styled-components';
-import { ComponentsProps } from '../../shared/interfaces';
+import { AppComponentsPropsBase } from '../../shared/interfaces';
 
-interface InputProps extends ComponentsProps {
+interface InputProps extends AppComponentsPropsBase {
 	width?: string;
 	type?: string;
 	placeholder?: string;
@@ -20,5 +20,5 @@ export const Input = styled(InputContainer)`
 	margin: 0 0 10px;
 	padding: 10px;
 	font-size: 18px;
-	border: 1px solid #000;
+	border: 1px solid #EEBF7C;
 `;

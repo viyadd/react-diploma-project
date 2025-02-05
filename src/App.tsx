@@ -3,13 +3,13 @@ import { Header } from './components';
 import { Route, Routes } from 'react-router';
 import { Authorization, Registration, Users } from './pages';
 import { useLayoutEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setUser } from './actions';
+import { setAccessRole, setUser } from './actions';
+import { useAppDispatch } from './hooks/use-app-store';
 
 const Page = styled.div``;
 
 function App() {
-	const dispatch = useDispatch()
+	const dispatch = useAppDispatch()
 
 	useLayoutEffect(() => {
     const currentUserDataJSON = sessionStorage.getItem('userData');
@@ -20,12 +20,8 @@ function App() {
 
     const currentUserData = JSON.parse(currentUserDataJSON);
 
-    dispatch(
-      setUser({
-        ...currentUserData,
-        roleId: Number(currentUserData.roleId),
-      }),
-    );
+		dispatch(setUser(currentUserData));
+		dispatch(setAccessRole(currentUserData));
   }, [dispatch]);
 	return (
 		<div>
