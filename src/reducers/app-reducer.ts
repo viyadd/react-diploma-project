@@ -1,20 +1,33 @@
 import { ActionType } from '../actions';
+import { AppRole } from '../bff/constants';
 
-export interface InitialAppStateData {
-	wasLogout: boolean
+export interface AppStateData {
+	wasLogout?: boolean,
+	userAccessRole?: AppRole
+
 }
-const initialAppState: InitialAppStateData = {
-  wasLogout: false,
+const initialAppState: AppStateData = {
+	wasLogout: false,
+	userAccessRole: AppRole.Guest,
 };
 
-export const appReducer = (state = initialAppState, action: { type: ActionType; payload: InitialAppStateData; }) => {
-  switch (action.type) {
-    case ActionType.Logout:
-      return {
-        ...state,
-        wasLogout: !state.wasLogout,
-      };
-    default:
-      return state;
-  }
+export const appReducer = (state = initialAppState, action: { type: ActionType; payload: AppStateData; }) => {
+	switch (action.type) {
+		case ActionType.Logout:
+			return {
+				...state,
+				wasLogout: !state.wasLogout,
+			};
+		case ActionType.SetAccessRole:
+			{
+				const { userAccessRole } = action.payload
+				const isUserAccessRoleDefined = userAccessRole !== undefined && !!AppRole[userAccessRole]
+				return {
+					...state,
+					userAccessRole: isUserAccessRoleDefined ? userAccessRole : AppRole.Guest,
+				};
+			}
+		default:
+			return state;
+	}
 };

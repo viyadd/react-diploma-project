@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { ComponentsProps } from "../../shared/interfaces";
+import { AppComponentsProps } from "../../shared/interfaces";
 
-interface ButtonProps extends ComponentsProps{
+interface ButtonProps extends AppComponentsProps{
 	width?: string
 	disabled?: boolean
 	type?: "button" | "submit" | "reset" | undefined

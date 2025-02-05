@@ -1,7 +1,7 @@
-import { BASE_URL } from "../constants";
+import { getUrl } from "../utils";
 
 export const deleteSessions = async (sessionId: string) => {
-  fetch(`${BASE_URL}/sessions/${sessionId}`, {
-    method: 'DELETE',
-  });
+	fetch(getUrl('/sessions', { id: sessionId }), {
+		method: 'DELETE',
+	});
 };

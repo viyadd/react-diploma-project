@@ -1,7 +1,8 @@
-import { AppUserData } from '../bff/constants';
-import { ActionType } from './action-type';
+import { AppUserData } from "../bff/constants";
+import { ActionType } from "./action-type";
 
-export const setUser = (user: AppUserData) => ({
-  type: ActionType.SetUser,
-  payload: user,
-});
+export const setUser = ({id, login, roleId, session}: AppUserData) => {
+	return ({
+	type: ActionType.SetUser,
+	payload: {id, login, roleId, session},
+})};

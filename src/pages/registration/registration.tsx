@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { server } from '../../bff';
 import { AuthFormError, Input, Button, PageTitle } from '../../components';
 import { useResetForm } from '../../hooks';
-import { setUser } from '../../actions';
+import { setAccessRole, setUser } from '../../actions';
 import styled from 'styled-components';
-import { selectUserRole } from '../../selectors';
-import { ROLE } from '../../constants';
-import { ComponentsProps } from '../../shared/interfaces';
+import { selectUserAccessRole } from '../../selectors';
+import { AppComponentsPropsBase } from '../../shared/interfaces';
+import { AppRole } from '../../bff/constants';
+import { useAppDispatch, useAppSelector } from '../../hooks/use-app-store';
 
 const regFormSchema = yup.object().shape({
 	login: yup
@@ -32,7 +32,7 @@ const regFormSchema = yup.object().shape({
 		.oneOf([yup.ref('password'), null], 'Повтор пароля не совпадает'),
 });
 
-const RegistrationContainer = ({ className }: ComponentsProps) => {
+const RegistrationContainer = ({ className }: AppComponentsPropsBase) => {
 	const {
 		register,
 		reset,
@@ -49,21 +49,22 @@ const RegistrationContainer = ({ className }: ComponentsProps) => {
 
 	const [serverError, setServerError] = useState<string | null>(null);
 
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	useResetForm(reset);
 
-	const roleId = useSelector(selectUserRole);
+	const userAccessRole = useAppSelector(selectUserAccessRole)
 
 	const onSubmit = ({ login, password }: { login: string; password: string }) => {
-		server.register(login, password).then(({ error, res }) => {
+		server.register(login, password).then(({ error, data }) => {
 			if (error) {
 				setServerError(`Ошибка запроса: ${error}`);
 				return;
 			}
-			if (res !== null) {
-				dispatch(setUser(res));
-				sessionStorage.setItem('userData', JSON.stringify(res));
+			if (data !== null) {
+				dispatch(setUser(data));
+				dispatch(setAccessRole(data))
+				sessionStorage.setItem('userData', JSON.stringify(data));
 			}
 		});
 	};
@@ -72,7 +73,7 @@ const RegistrationContainer = ({ className }: ComponentsProps) => {
 		errors?.login?.message || errors?.password?.message || errors?.passcheck?.message;
 	const errorMessage = formError || serverError;
 
-	if (roleId !== ROLE.GUEST) {
+	if (userAccessRole !== AppRole.Guest) {
 		return <Navigate to="/" />;
 
 	}

@@ -1,23 +1,26 @@
 import { IconButton } from '../../../icon-button/icon-button';
 import { Button } from '../../../button/button';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectUserRole, SelectUserSession } from '../../../../selectors';
-import { ROLE } from '../../../../constants';
+import { selectUserAccessRole, selectUserSession } from '../../../../selectors';
 import { logout } from '../../../../actions';
 import styled from 'styled-components';
 import { selectUserLogin } from '../../../../selectors/select-user-login';
+import { AppRole } from '../../../../bff/constants';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/use-app-store';
+import { resetAccessRole } from '../../../../actions/reset-access-role';
 
 const ToolbarContainer = ({ className }: { className?: string }) => {
-	const roleId = useSelector(selectUserRole);
-	const session = useSelector(SelectUserSession);
-	const login = useSelector(selectUserLogin);
+	const userAccessRole = useAppSelector(selectUserAccessRole)
+	const session = useAppSelector(selectUserSession);
+	const login = useAppSelector(selectUserLogin);
 
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const onLogout = () => {
 		dispatch(logout(session));
 		sessionStorage.removeItem('userData');
+		dispatch(resetAccessRole());
+
 	};
 
 	return (
@@ -26,7 +29,7 @@ const ToolbarContainer = ({ className }: { className?: string }) => {
 				<IconButton id="fa-plus" />
 			</div>
 			<div className="options">
-				{roleId === ROLE.GUEST ? (
+				{userAccessRole === AppRole.Guest ? (
 					<Button>
 						<Link to="/login">Войти</Link>
 					</Button>
