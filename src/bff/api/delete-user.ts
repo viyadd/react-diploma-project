@@ -1,4 +1,4 @@
-import { getUrl } from "../utils";
+import { getUrl } from "../shared/lib";
 
 export const deleteUser = (userId: string) =>
 	fetch(getUrl('/users', { id: userId }), {

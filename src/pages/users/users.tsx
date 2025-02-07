@@ -3,13 +3,13 @@ import { PageTitle } from '../../components';
 import { useEffect, useState } from 'react';
 import { server } from '../../bff';
 import { TableRow } from './components';
-import { useSelector } from 'react-redux';
 import { selectUserRole } from '../../selectors';
 import { useServerAuthorization } from '../../hooks';
 import { checkAccess } from '../../utils';
 import { AppRole } from '../../bff/constants';
 import { UserRow } from './components/user-row/user-row';
 import { transformDBFieldToAppRoleId } from '../../bff/transformers';
+import { useAppSelector } from '../../hooks/use-app-store';
 
 const UsersContainer = ({ className }: { className?: string }) => {
 	const [users, setUsers] = useState([]);
@@ -18,7 +18,7 @@ const UsersContainer = ({ className }: { className?: string }) => {
 	const [shouldUpdateUserList, setShouldUpdateUserList] = useState(false);
 
 
-	const userRole = useSelector(selectUserRole);
+	const userRole = useAppSelector(selectUserRole);
 	const serverAuth = useServerAuthorization();
 
 	useEffect(() => {

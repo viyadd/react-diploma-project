@@ -1,5 +1,5 @@
-import { AppUserData } from "../constants";
-import { getUrl } from "../utils";
+import { getUrl } from "../shared/lib";
+import { AppUserData } from "../shared/model";
 
 export const addSession = (hash: string, user: AppUserData) =>
 	fetch(getUrl('/sessions'), {

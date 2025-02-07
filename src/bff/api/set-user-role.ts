@@ -1,6 +1,6 @@
 import { AppRole } from "../constants";
+import { getUrl } from "../shared/lib";
 import { transformAppRoleIdToDBField } from "../transformers";
-import { getUrl } from "../utils";
 
 // TODO проверить параметры роли
 export const setUserRole = (userId: string, roleId: AppRole) =>

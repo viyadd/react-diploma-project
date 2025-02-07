@@ -1,4 +1,4 @@
-import { AppUserData } from "../bff/constants";
+import { AppUserData } from "../bff/shared/model";
 import { ActionType } from "./action-type";
 
 export const setUser = ({id, login, roleId, session}: AppUserData) => {

@@ -1,6 +1,7 @@
 import { transformDBFieldToAppRoleId } from './transformers/transform-db-field-to-app-role';
 import { getSession, addSession, deleteSessions } from './api';
-import { AppRole, AppUserData } from './constants';
+import { AppRole } from './constants';
+import { AppUserData } from './shared/model';
 
 export const sessions = {
 	create(user: AppUserData) {

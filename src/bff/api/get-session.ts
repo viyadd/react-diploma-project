@@ -1,6 +1,6 @@
 import { BaseUserSessionData } from '../constants';
+import { getUrl } from '../shared/lib';
 import { transformSession } from '../transformers';
-import { getUrl } from '../utils';
 
 export const getSession = async (hash: string): Promise<BaseUserSessionData> =>
 	fetch(getUrl('/sessions', { params: { hash } })).then((loadedSession) =>
