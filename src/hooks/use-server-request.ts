@@ -4,6 +4,9 @@ import { server } from '../bff';
 import { useCallback } from 'react';
 import { AppOperationAPI } from '../bff/constants';
 
+/**
+ * @deprecated use useServerAuthorization to get hash
+ * */
 export const useServerRequest = () => {
 	const session = useSelector(selectUserSession);
 

@@ -1,6 +1,6 @@
 import { AppRole } from '../constants';
+import { generateDate, getUrl } from '../shared/lib';
 import { transformAppRoleIdToDBField, transformUser } from '../transformers';
-import { generateDate, getUrl } from '../utils';
 
 export const addUser = (login: string, password: string) =>
 	fetch(getUrl('/users'), {

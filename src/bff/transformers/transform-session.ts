@@ -1,5 +1,5 @@
 import { BaseUserSessionData } from "../constants";
-import { unknownToString } from "../utils";
+import { unknownToString } from "../shared/lib";
 
 export const transformSession = (dbSession: Record<string, unknown>): BaseUserSessionData => {
 	const { id, hash, user } = dbSession

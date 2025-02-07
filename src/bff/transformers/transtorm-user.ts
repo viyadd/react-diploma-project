@@ -1,5 +1,5 @@
-import { AppUserData, DataBaseUserDataKeys } from "../constants";
-import { unknownToString } from "../utils";
+import { unknownToString } from "../shared/lib";
+import { AppUserData, DataBaseUserDataKeys } from "../shared/model";
 
 export const transformUser = (dbUser: Record<DataBaseUserDataKeys, unknown>): AppUserData => ({
 	id: unknownToString(dbUser.id),

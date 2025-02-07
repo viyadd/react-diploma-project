@@ -1,4 +1,4 @@
-import { BASE_URL } from "../constants"
+import { BASE_URL } from "../../constants";
 
 interface GetUrlFunc {
 	(endpoint: string,
@@ -13,7 +13,7 @@ const valueListToString = (key: string, valueList: string[]) => valueList
 	.map(value => `${key}=${value}`).join('&');
 
 export const getUrl: GetUrlFunc = (endpoint, { params, id } = {}) => {
-	if (id!== undefined) {
+	if (id !== undefined) {
 		return `${BASE_URL}${endpoint}/${id}`
 	}
 
