@@ -34,6 +34,7 @@ function App() {
 					<Route path="/analytics" element={<div>Аналитика</div>} />
 					<Route path="/users" element={<Users /> } />
 					<Route path="/projects" element={<Projects />} />
+					<Route path="/project" element={<div>Создать новый Проект</div>} />
 					<Route path="/project/:id" element={<div>Проект</div>} />
 					<Route path="/project/:id/edit" element={<div>Редактирование Проекта</div>} />
 					<Route path="*" element={<div>Ошибка</div>} />

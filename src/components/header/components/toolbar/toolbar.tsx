@@ -1,7 +1,11 @@
 import { IconButton } from '../../../icon-button/icon-button';
 import { Button } from '../../../button/button';
 import { Link } from 'react-router-dom';
-import { selectUserAccessRole, selectUserSession } from '../../../../selectors';
+import {
+	selectToolbarOptions,
+	selectUserAccessRole,
+	selectUserSession,
+} from '../../../../selectors';
 import { logout } from '../../../../actions';
 import styled from 'styled-components';
 import { selectUserLogin } from '../../../../selectors/select-user-login';
@@ -10,9 +14,10 @@ import { useAppDispatch, useAppSelector } from '../../../../hooks/use-app-store'
 import { resetAccessRole } from '../../../../actions/reset-access-role';
 
 const ToolbarContainer = ({ className }: { className?: string }) => {
-	const userAccessRole = useAppSelector(selectUserAccessRole)
+	const userAccessRole = useAppSelector(selectUserAccessRole);
 	const session = useAppSelector(selectUserSession);
 	const login = useAppSelector(selectUserLogin);
+	const toolbarOptions = useAppSelector(selectToolbarOptions);
 
 	const dispatch = useAppDispatch();
 
@@ -20,13 +25,18 @@ const ToolbarContainer = ({ className }: { className?: string }) => {
 		dispatch(logout(session));
 		sessionStorage.removeItem('userData');
 		dispatch(resetAccessRole());
-
 	};
 
 	return (
 		<div className={className}>
 			<div className="buttons">
-				<IconButton id="fa-plus" />
+				{toolbarOptions &&
+					userAccessRole !== undefined &&
+					toolbarOptions
+						.filter((w) => w.accessRoleList.includes(userAccessRole))
+						.map(({ key, iconId, onClick}) => {
+							return <IconButton key={key} id={iconId} onClick={onClick} />;
+						})}
 			</div>
 			<div className="options">
 				{userAccessRole === AppRole.Guest ? (

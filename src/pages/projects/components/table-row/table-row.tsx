@@ -27,6 +27,9 @@ export const TableRow = styled(TableRowContainer)`
     width: 213px;
   }
   & .state-column {
-    width: auto;
-  }
+		width: 100px;
+	}
+	& .description-column {
+		width: 250px;
+	}
 `;

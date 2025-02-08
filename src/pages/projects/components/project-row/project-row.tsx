@@ -3,7 +3,6 @@ import { AppComponentsPropsBase } from '../../../../shared/interfaces';
 import { TableRow } from '../table-row/table-row';
 import { AppStateData } from '../../../../bff/shared/model';
 import { IconButton } from '../../../../components';
-import { useNavigate } from 'react-router-dom';
 
 export interface ProgectRowProps extends AppComponentsPropsBase {
 	id: string;
@@ -11,24 +10,22 @@ export interface ProgectRowProps extends AppComponentsPropsBase {
 	createdAt: string;
 	state?: AppStateData | null;
 	description: string;
+	onProjectEdit: () => void;
 }
 
 const ProgectRowContainer = ({
 	className,
-	id,
+	// id,
 	title,
 	createdAt,
 	description,
 	state,
+	onProjectEdit,
 }: ProgectRowProps) => {
-	const navigate = useNavigate()
+	// const navigate = useNavigate();
 	// const params = useParams();
-  // const isCreating = !!useMatch('/projects');
-  // const isEditing = !!useMatch('/projects/:id/edit');
-
-	const onProjectEdit = (id: string) => {
-		navigate(`/project/${id}/edit`)
-	};
+	// const isCreating = !!useMatch('/projects');
+	// const isEditing = !!useMatch('/projects/:id/edit');
 
 	return (
 		<div className={className}>
@@ -37,11 +34,7 @@ const ProgectRowContainer = ({
 				<div className="created-at-column">{createdAt}</div>
 				<div className="state-column">{state ? state.text : '-'}</div>
 				<div className="description-column">{description}</div>
-				<IconButton
-					id="fa-pencil"
-					margin="0 0 0 10px"
-					onClick={() => onProjectEdit(id)}
-				/>
+				<IconButton id="fa-pencil" margin="0 0 0 10px" onClick={() => onProjectEdit()} />
 			</TableRow>
 		</div>
 	);
