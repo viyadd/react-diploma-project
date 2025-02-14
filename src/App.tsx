@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Header } from './components';
 import { Route, Routes } from 'react-router';
-import { Authorization, Projects, Registration, Users } from './pages';
+import { Authorization, Project, Projects, Registration, Users } from './pages';
 import { useLayoutEffect } from 'react';
 import { setAccessRole, setUser } from './actions';
 import { useAppDispatch } from './hooks/use-app-store';
@@ -9,34 +9,34 @@ import { useAppDispatch } from './hooks/use-app-store';
 const Page = styled.div``;
 
 function App() {
-	const dispatch = useAppDispatch()
+	const dispatch = useAppDispatch();
 
 	useLayoutEffect(() => {
-    const currentUserDataJSON = sessionStorage.getItem('userData');
+		const currentUserDataJSON = sessionStorage.getItem('userData');
 
-    if (!currentUserDataJSON) {
-      return;
-    }
+		if (!currentUserDataJSON) {
+			return;
+		}
 
-    const currentUserData = JSON.parse(currentUserDataJSON);
+		const currentUserData = JSON.parse(currentUserDataJSON);
 
 		dispatch(setUser(currentUserData));
 		dispatch(setAccessRole(currentUserData));
-  }, [dispatch]);
+	}, [dispatch]);
 	return (
 		<div>
 			<Header />
 			<Page>
 				<Routes>
-					<Route path="/" element={<div>Главная</div> } />
-					<Route path="/login" element={<Authorization /> } />
+					<Route path="/" element={<div>Главная</div>} />
+					<Route path="/login" element={<Authorization />} />
 					<Route path="/register" element={<Registration />} />
 					<Route path="/analytics" element={<div>Аналитика</div>} />
-					<Route path="/users" element={<Users /> } />
+					<Route path="/users" element={<Users />} />
 					<Route path="/projects" element={<Projects />} />
-					<Route path="/project" element={<div>Создать новый Проект</div>} />
-					<Route path="/project/:id" element={<div>Проект</div>} />
-					<Route path="/project/:id/edit" element={<div>Редактирование Проекта</div>} />
+					<Route path="/project" element={<Project />} />
+					<Route path="/project/:id" element={<Project />} />
+					<Route path="/project/:id/edit" element={<Project />} />
 					<Route path="*" element={<div>Ошибка</div>} />
 				</Routes>
 			</Page>

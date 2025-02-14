@@ -6,11 +6,18 @@ interface InputProps extends AppComponentsPropsBase {
 	width?: string;
 	type?: string;
 	placeholder?: string;
+	onChange: React.ChangeEventHandler<HTMLInputElement>;
+	defaultValue?: string | number | readonly string[];
 }
 
 const InputContainer = forwardRef(
-	({ className, ...props }: InputProps, ref: React.Ref<HTMLInputElement>) => {
-		return <input className={className} {...props} ref={ref} />;
+	(
+		{ className, defaultValue, ...props }: InputProps,
+		ref: React.Ref<HTMLInputElement>,
+	) => {
+		return (
+			<input className={className} defaultValue={defaultValue} {...props} ref={ref} />
+		);
 	},
 );
 
@@ -20,5 +27,5 @@ export const Input = styled(InputContainer)`
 	margin: 0 0 10px;
 	padding: 10px;
 	font-size: 18px;
-	border: 1px solid #EEBF7C;
+	border: 1px solid #eebf7c;
 `;

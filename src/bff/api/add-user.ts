@@ -13,6 +13,10 @@ export const addUser = (login: string, password: string) =>
 			password,
 			registred_at: generateDate(),
 			role_id: transformAppRoleIdToDBField(AppRole.User),
+			is_active: true,
+			name: null,
+			surname: null,
+			patronymic: null
 		}),
 	})
 		.then((createdUser) => createdUser.json()

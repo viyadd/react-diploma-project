@@ -2,7 +2,7 @@ import { getStates } from "../api";
 import { getProjects } from "../api/get-projects";
 import { AppRole } from "../constants";
 import { sessions } from "../sessions";
-import { ProjectsProjections } from "../shared/model";
+import { ProjectProjections } from "../shared/model";
 
 const accessRoles = [AppRole.Admin];
 
@@ -23,7 +23,7 @@ const projectsWithStates = async () => {
 	}
 }
 
-export const fetchProjects = async (hash: string, projection?: ProjectsProjections) => {
+export const fetchProjects = async (hash: string, projection?: ProjectProjections) => {
 	const { access, res } = await sessions.accessCheck(hash, accessRoles);
 
 	if (!access) {
@@ -31,7 +31,7 @@ export const fetchProjects = async (hash: string, projection?: ProjectsProjectio
 	}
 
 	switch (projection) {
-		case ProjectsProjections.ProjectsWithStates:
+		case ProjectProjections.ProjectWithStates:
 			return projectsWithStates()
 		default:
 			{

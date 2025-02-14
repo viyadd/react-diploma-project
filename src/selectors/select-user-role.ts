@@ -1,2 +1,2 @@
-import { UserStateData } from '../reducers'
-export const selectUserRole = ({ user }: { user: UserStateData}) => user.roleId;
+import { UserStoreData } from '../reducers'
+export const selectUserRole = ({ user }: { user: UserStoreData}) => user.roleId;

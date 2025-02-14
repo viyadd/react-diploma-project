@@ -2,18 +2,18 @@ import { ActionType } from '../actions';
 import { AppRole } from '../bff/constants';
 import { ToolbarOptions } from '../shared/interfaces';
 
-export interface AppStateData {
+export interface AppStoreData {
 	wasLogout?: boolean,
 	userAccessRole?: AppRole
 	toolbarOptions?: ToolbarOptions[]
 }
-const initialAppState: AppStateData = {
+const initialAppState: AppStoreData = {
 	wasLogout: false,
 	userAccessRole: AppRole.Guest,
 	toolbarOptions: []
 };
 
-export const appReducer = (state = initialAppState, action: { type: ActionType; payload: AppStateData; }) => {
+export const appReducer = (state = initialAppState, action: { type: ActionType; payload: AppStoreData; }) => {
 	switch (action.type) {
 		case ActionType.Logout:
 			return {

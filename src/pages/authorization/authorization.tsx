@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { AuthFormError, Button, Input, PageTitle } from '../../components';
+import { FormError, Button, Input, PageTitle } from '../../components';
 import { AppComponentsPropsBase } from '../../shared/interfaces';
 import styled from 'styled-components';
 import { Link, Navigate } from 'react-router-dom';
@@ -98,7 +98,7 @@ const AuthorizationContainer = ({ className }: AppComponentsPropsBase) => {
 				<Button type="submit" disabled={!!formError}>
 					Авторизоваться
 				</Button>
-				{errorMessage && <AuthFormError>{errorMessage}</AuthFormError>}
+				{errorMessage && <FormError>{errorMessage}</FormError>}
 				<StyledLink to="/register">Регистрация</StyledLink>
 			</form>
 		</div>

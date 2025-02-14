@@ -1,20 +1,20 @@
 import { ActionType } from '../actions';
 
-export interface UserStateData {
+export interface UserStoreData {
 	id: string | null
 	login: string | null
 	roleId: string | null
 	session: string | null
 }
 
-const initialUserState: UserStateData = {
+const initialUserState: UserStoreData = {
 	id: null,
 	login: null,
 	roleId: null,
 	session: null,
 };
 
-export const userReducer = (state = initialUserState, action: { type: ActionType; payload: UserStateData; }) => {
+export const userReducer = (state = initialUserState, action: { type: ActionType; payload: UserStoreData; }) => {
 	switch (action.type) {
 		case ActionType.SetUser: {
 			return {

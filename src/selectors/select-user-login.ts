@@ -1,3 +1,3 @@
-import { UserStateData } from "../reducers";
+import { UserStoreData } from "../reducers";
 
-export const selectUserLogin = ({ user }: { user: UserStateData}) => user.login;
+export const selectUserLogin = ({ user }: { user: UserStoreData}) => user.login;

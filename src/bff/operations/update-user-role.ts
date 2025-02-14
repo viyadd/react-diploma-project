@@ -10,13 +10,13 @@ export const updateUserRole = async (hash: string, userId: string, newUserRoleId
   if (!access) {
     return {
       error: 'Доступ запрещен',
-      res: null,
+      data: null,
     };
   }
   await setUserRole(userId, newUserRoleId);
 
   return {
     error: null,
-    res: true,
+    data: true,
   };
 };

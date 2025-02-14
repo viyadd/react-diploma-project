@@ -7,5 +7,4 @@ export const transformUser = (dbUser: Record<DataBaseUserDataKeys, unknown>): Ap
 	password: unknownToString(dbUser.password),
 	registredAt: unknownToString(dbUser.registred_at),
 	roleId: unknownToString(dbUser.role_id),
-	// session:
 });

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { server } from '../../bff';
-import { AuthFormError, Input, Button, PageTitle } from '../../components';
+import { FormError, Input, Button, PageTitle } from '../../components';
 import { useResetForm } from '../../hooks';
 import { setAccessRole, setUser } from '../../actions';
 import styled from 'styled-components';
@@ -105,7 +105,7 @@ const RegistrationContainer = ({ className }: AppComponentsPropsBase) => {
 				<Button type="submit" disabled={!!formError}>
 					Зарегистрироваться
 				</Button>
-				{errorMessage && <AuthFormError>{errorMessage}</AuthFormError>}
+				{errorMessage && <FormError>{errorMessage}</FormError>}
 			</form>
 		</div>
 	);

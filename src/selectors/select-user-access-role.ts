@@ -1,3 +1,3 @@
 
-import { AppStateData } from '../reducers'
-export const selectUserAccessRole = ({ app }: { app: AppStateData }) => app.userAccessRole;
+import { AppStoreData } from '../reducers'
+export const selectUserAccessRole = ({ app }: { app: AppStoreData }) => app.userAccessRole;

@@ -34,10 +34,12 @@ export const sessions = {
 				access,
 				res: {
 					error: 'Доступ запрещен',
-					data: null,
+					data: null
 				}
 			};
 		}
-		return {access}
+		return {
+			access, res: null,
+		}
 	}
 };
