@@ -3,10 +3,10 @@ import { PrivateContent } from '../../components';
 import { useMatch, useParams } from 'react-router-dom';
 import { AppComponentsPropsBase } from '../../shared/interfaces';
 import { EditProject, ViewProject } from './componens';
-import { AppRole } from '../../bff/constants';
 import styled from 'styled-components';
+import { AppUserRole } from '../../constants';
 
-const accessRoles = [AppRole.Admin, AppRole.User];
+const accessRoles = [AppUserRole.Admin, AppUserRole.User];
 
 const ProjectContainer = ({ className }: AppComponentsPropsBase) => {
 	const [errorMessage /* , setErrorMessage */] = useState<string | null>(null);

@@ -5,12 +5,11 @@ import { FormError, Button, Input, PageTitle } from '../../components';
 import { AppComponentsPropsBase } from '../../shared/interfaces';
 import styled from 'styled-components';
 import { Link, Navigate } from 'react-router-dom';
-import { useState } from 'react';
-import { server } from '../../bff';
-import { selectUserAccessRole } from '../../selectors';
-import { setAccessRole, setUser } from '../../actions';
-import { AppRole } from '../../bff/constants';
-import { useAppDispatch, useAppSelector } from '../../hooks/use-app-store';
+import { useEffect, useState } from 'react';
+import { request } from '../../utils';
+import { DataBaseUserData } from '../../types';
+import { AppUserRole } from '../../constants';
+import { useUserRights } from '../../hooks/use-user-rights';
 
 const authFormSchema = yup.object().shape({
 	login: yup
@@ -33,6 +32,7 @@ const StyledLink = styled(Link)`
 	margin: 20px 0;
 	font-size: 18px;
 `;
+const accessRoles = [AppUserRole.Admin, AppUserRole.User, AppUserRole.Guest];
 
 const AuthorizationContainer = ({ className }: AppComponentsPropsBase) => {
 	const {
@@ -50,22 +50,25 @@ const AuthorizationContainer = ({ className }: AppComponentsPropsBase) => {
 
 	const [serverError, setServerError] = useState<string | null>(null);
 
-	const dispatch = useAppDispatch();
+	const usersRights = useUserRights();
 
-	const userAccessRole = useAppSelector(selectUserAccessRole);
+	// const dispatch = useAppDispatch();
 
-	// useResetForm(reset);
+	useEffect(() => {
+		usersRights.asyncUpdateAccessRight(accessRoles);
+	}, [usersRights]);
 
 	const onSubmit = ({ login, password }: { login: string; password: string }) => {
-		server.authorize(login, password).then(({ error, data }) => {
+		request('/login', 'POST', { login, password }).then(({ error, data }) => {
+			// console.log('/login', { error, data });
 			if (error) {
+				// console.log('setError');
 				setServerError(`Ошибка запроса: ${error}`);
 				return;
 			}
-			if (data !== null) {
-				dispatch(setUser(data));
-				dispatch(setAccessRole(data));
-				sessionStorage.setItem('userData', JSON.stringify(data));
+			if (data) {
+				// console.log('setUser');
+				usersRights.updateAccessRight(data as DataBaseUserData, [AppUserRole.Guest]);
 			}
 		});
 	};
@@ -73,7 +76,7 @@ const AuthorizationContainer = ({ className }: AppComponentsPropsBase) => {
 	const formError = errors?.login?.message || errors?.password?.message;
 	const errorMessage = formError || serverError;
 
-	if (userAccessRole !== AppRole.Guest) {
+	if (!usersRights.isUserGuest()) {
 		return <Navigate to="/" />;
 	}
 

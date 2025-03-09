@@ -1,5 +1,5 @@
 // import { ThunkDispatch } from 'redux-thunk';
-import { AppUserData } from '../bff/shared/model';
+import { AppUserData } from '../types';
 import { AppStoreData } from '../reducers';
 import { AppDispatch } from '../store';
 import { convertDBRoleIdToAppRole } from '../utils';

@@ -1,7 +1,7 @@
 export const unknownToString = (value: unknown) => (`${value}`)
 
 export const unknownToInt = (value: unknown) => {
-	switch(typeof value) {
+	switch (typeof value) {
 		case 'number':
 			return value
 		case 'string':

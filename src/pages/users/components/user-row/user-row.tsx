@@ -3,8 +3,9 @@ import { IconButton } from '../../../../components';
 import { TableRow } from '../table-row/table-row';
 import styled from 'styled-components';
 import { AppComponentsPropsBase } from '../../../../shared/interfaces';
-import { useServerAuthorization } from '../../../../hooks/use-server-authorization';
-import { server } from '../../../../bff';
+// import { useServerAuthorization } from '../../../../hooks/use-server-authorization';
+// import { server } from '../../../../bff';
+import { request } from '../../../../utils';
 
 interface UsersTableRow extends AppComponentsPropsBase {
 	id: string;
@@ -25,7 +26,7 @@ const UserRowContainer = ({
 }: UsersTableRow) => {
 	const [initialRoleId, setInitialRoleId] = useState<string | undefined>(userRoleId);
 	const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
-	const serverAuth = useServerAuthorization();
+	// const serverAuth = useServerAuthorization();
 
 	useEffect(() => {
 		setSelectedRoleId(userRoleId);
@@ -39,7 +40,8 @@ const UserRowContainer = ({
 
 	const onRoleSave = (userId: string, newUserRoleId: string | null) => {
 		if (newUserRoleId) {
-			server.updateUserRole(serverAuth(), userId, newUserRoleId).then(() => {
+			request(`/users/${userId}`, 'PATCH', { roleId: newUserRoleId })
+			.then(() => {
 				setInitialRoleId(newUserRoleId);
 			});
 		}

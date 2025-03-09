@@ -2,44 +2,38 @@ import { IconButton } from '../../../icon-button/icon-button';
 import { Button } from '../../../button/button';
 import { Link } from 'react-router-dom';
 import {
+	selectAppUserIdentified,
 	selectToolbarOptions,
-	selectUserAccessRole,
-	selectUserSession,
 } from '../../../../selectors';
-import { logout } from '../../../../actions';
 import styled from 'styled-components';
 import { selectUserLogin } from '../../../../selectors/select-user-login';
-import { AppRole } from '../../../../bff/constants';
-import { useAppDispatch, useAppSelector } from '../../../../hooks/use-app-store';
-import { resetAccessRole } from '../../../../actions/reset-access-role';
+import { useAppSelector } from '../../../../hooks/use-app-store';
+import { useUserRights } from '../../../../hooks/use-user-rights';
 
 const ToolbarContainer = ({ className }: { className?: string }) => {
-	const userAccessRole = useAppSelector(selectUserAccessRole);
-	const session = useAppSelector(selectUserSession);
 	const login = useAppSelector(selectUserLogin);
 	const toolbarOptions = useAppSelector(selectToolbarOptions);
+	const isIdentifiedUser = useAppSelector(selectAppUserIdentified)
 
-	const dispatch = useAppDispatch();
+	const usersRights = useUserRights()
 
 	const onLogout = () => {
-		dispatch(logout(session));
-		sessionStorage.removeItem('userData');
-		dispatch(resetAccessRole());
+		usersRights.logout()
 	};
 
 	return (
 		<div className={className}>
 			<div className="buttons">
 				{toolbarOptions &&
-					userAccessRole !== undefined &&
+					isIdentifiedUser &&
 					toolbarOptions
-						.filter((w) => w.accessRoleList.includes(userAccessRole))
+						// .filter((w) => w.accessRoleList.includes(userAccessRole))
 						.map(({ key, iconId, onClick}) => {
 							return <IconButton key={key} id={iconId} onClick={onClick} />;
 						})}
 			</div>
 			<div className="options">
-				{userAccessRole === AppRole.Guest ? (
+				{!isIdentifiedUser ? (
 					<Button>
 						<Link to="/login">Войти</Link>
 					</Button>

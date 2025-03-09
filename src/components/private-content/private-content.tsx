@@ -1,13 +1,12 @@
 import { Error } from '../error/error';
-import { selectUserRole } from '../../selectors';
-import { checkAccess } from '../../utils/check-access';
-import { useAppSelector } from '../../hooks/use-app-store';
-import { ERROR } from '../../shared/model';
-import { AppComponentsProps } from '../../shared/interfaces';
-import { AppRole } from '../../bff/constants';
+import { useEffect, useState } from 'react';
+import {  useUserRights } from '../../hooks/use-user-rights';
+import { AppUserRole } from '../../constants';
+import { AppComponentsProps } from '../../types';
+import { ERROR } from '../../constants/error';
 
 interface PrivateContentProps extends AppComponentsProps {
-	access: AppRole[];
+	access: AppUserRole[];
 	serverError: string | null;
 }
 
@@ -16,11 +15,18 @@ export const PrivateContent = ({
 	access,
 	serverError = null,
 }: PrivateContentProps) => {
-	const userRole = useAppSelector(selectUserRole);
+	const [error, setError] = useState<string | null>(null);
+	const userRights = useUserRights()
 
-	const accessError = checkAccess(access, userRole) ? null : ERROR.ACCESS_DENIED;
+	useEffect(() => {
+		userRights.asyncUpdateAccessRight(access)
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [access]);
 
-	const error = serverError || accessError;
+	useEffect(() => {
+		const accessError = userRights.isAccessDenied ? null : ERROR.ACCESS_DENIED;
+		setError(serverError || accessError);
+	}, [userRights.isAccessDenied, serverError]);
 
-	return error ? <Error error={error} /> : children;
+	return userRights.isAccessDenied ? <Error error={error} /> : children;
 };

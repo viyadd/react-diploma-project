@@ -1,12 +1,12 @@
-import { AppRole } from "../bff/constants"
+import { AppUserRole } from "../constants"
 
-export const convertDBRoleIdToAppRole = (value: unknown) => {
-	switch(value) {
-		case '001':
-			return AppRole.Admin
-		case '002':
-			return AppRole.User
+export const convertDBRoleIdToAppRole = (value: unknown): AppUserRole => {
+	switch (value) {
+		case 0:
+			return AppUserRole.Admin
+		case 1:
+			return AppUserRole.User
 		default:
-			return AppRole.Guest
+			return AppUserRole.Guest
 	}
 }

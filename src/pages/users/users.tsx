@@ -1,15 +1,13 @@
 import styled from 'styled-components';
 import { PageTitle } from '../../components';
 import { useEffect, useState } from 'react';
-import { server } from '../../bff';
 import { TableRow } from './components';
-import { selectUserRole } from '../../selectors';
-import { useServerAuthorization } from '../../hooks';
-import { checkAccess } from '../../utils';
-import { AppRole } from '../../bff/constants';
+import { request } from '../../utils';
 import { UserRow } from './components/user-row/user-row';
-import { transformDBFieldToAppRoleId } from '../../bff/transformers';
-import { useAppSelector } from '../../hooks/use-app-store';
+import { AppUserRole } from '../../constants';
+import { useUserRights } from '../../hooks/use-user-rights';
+
+const accessRoles = [AppUserRole.Admin, AppUserRole.User];
 
 const UsersContainer = ({ className }: { className?: string }) => {
 	const [users, setUsers] = useState([]);
@@ -18,35 +16,43 @@ const UsersContainer = ({ className }: { className?: string }) => {
 	const [shouldUpdateUserList, setShouldUpdateUserList] = useState(false);
 
 
-	const userRole = useAppSelector(selectUserRole);
-	const serverAuth = useServerAuthorization();
+	// const userRole = useAppSelector(selectUserRole);
+	// const serverAuth = useServerAuthorization();
+const usersRights = useUserRights();
 
 	useEffect(() => {
-    if (!checkAccess([AppRole.Admin], userRole)) {
+    if (!usersRights.isAccessGranted(accessRoles)) {
       return;
     }
 
-    Promise.all([server.fetchUsers(serverAuth()), server.fetchRoles(serverAuth())]).then(
-      ([usersRes, rolesRes]) => {
-        if (usersRes.error || rolesRes.error) {
-          setErrorMessage(usersRes.error || rolesRes.error);
+    Promise.all([
+			request('/users'),
+			request('/users/roles'),
+			// server.fetchUsers(serverAuth()),
+			// server.fetchRoles(serverAuth())
+		]).then(
+      ([loadedUsers, loadedRoles]) => {
+        if (loadedUsers.error || loadedRoles.error) {
+          setErrorMessage(loadedUsers.error || loadedRoles.error);
           return;
         }
 
-        setUsers(usersRes.data);
-        setRoles(rolesRes.data);
+        setUsers(loadedUsers.data);
+        setRoles(loadedRoles.data);
       },
     );
-  }, [serverAuth, userRole, shouldUpdateUserList]);
+  }, [shouldUpdateUserList, usersRights]);
 
 	const onUserRemove = (userId: string) => {
-		if (!checkAccess([AppRole.Admin], userRole)) {
+		if (!usersRights.isAccessGranted([AppUserRole.Admin])) {
 			return;
     }
+		// todoo удаление пользователя
+		console.log('todoo -> удаление пользователя', userId)
 
-    server.removeUser(serverAuth(),userId).then(() => {
-      setShouldUpdateUserList(!shouldUpdateUserList);
-    });
+    // server.removeUser(serverAuth(),userId).then(() => {
+    //   setShouldUpdateUserList(!shouldUpdateUserList);
+    // });
   };
 
 	return (
@@ -64,7 +70,7 @@ const UsersContainer = ({ className }: { className?: string }) => {
               login={login}
               registredAt={registredAt}
               roleId={roleId}
-              roles={roles.filter(({ id: roleId }) => transformDBFieldToAppRoleId(roleId) !== AppRole.Guest)}
+              roles={roles.filter(({ id: roleId }) => transformDBFieldToAppRoleId(roleId) !== AppUserRole.Guest)}
               onUserRemove={() => onUserRemove(id)}
             />
           ))}

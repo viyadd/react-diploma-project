@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { AppComponentsPropsBase } from '../../../../shared/interfaces';
 import { TableRow } from '../table-row/table-row';
-import { AppStateData } from '../../../../bff/shared/model';
+import { AppStateData } from '../../../../types';
 import { IconButton } from '../../../../components';
 import { Link } from 'react-router-dom';
 

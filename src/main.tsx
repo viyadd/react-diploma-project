@@ -8,7 +8,6 @@ import './index.css';
 createRoot(document.getElementById('root')!).render(
 	<BrowserRouter>
 	<Provider store={store}>
-
 		<App />
 	</Provider>
 	</BrowserRouter>,

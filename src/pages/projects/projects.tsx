@@ -1,30 +1,26 @@
-import { AppComponentsPropsBase, ToolbarOptions } from '../../shared/interfaces';
 import { PageTitle, PrivateContent } from '../../components';
 import { TableRow } from './components';
 import { useEffect, useState } from 'react';
-import { checkAccess } from '../../utils';
-import { AppRole } from '../../bff/constants';
-import { useAppDispatch, useAppSelector } from '../../hooks/use-app-store';
-import { selectUserRole } from '../../selectors';
-import { useServerAuthorization } from '../../hooks';
-import { server } from '../../bff';
+import { request, serverErrorToString } from '../../utils';
+import { useAppDispatch } from '../../hooks/use-app-store';
 import { ProjectRow } from './components/project-row/project-row';
-import { AppProjectData, ProjectProjections } from '../../bff/shared/model';
+import { AppComponentsPropsBase, DataBaseProjectData, ToolbarOptions } from '../../types';
 import { setToolbarOptionList } from '../../actions';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { AppUserRole } from '../../constants';
+import { useUserRights } from '../../hooks/use-user-rights';
 
-const accessRoles = [AppRole.Admin, AppRole.User];
+const accessRoles = [AppUserRole.Admin, AppUserRole.User];
 
 const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 	const [toolbarOptions, setToolbarOptions] = useState<ToolbarOptions[] | null>(null);
-	const [projectList, setProjectList] = useState<AppProjectData[] | []>([]);
+	const [projectList, setProjectList] = useState<DataBaseProjectData[] | []>([]);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-	const userRole = useAppSelector(selectUserRole);
 	const dispatch = useAppDispatch();
-	const serverAuth = useServerAuthorization();
 	const navigate = useNavigate();
+	const usersRights = useUserRights();
 
 	const tools: ToolbarOptions[] = [
 		{
@@ -48,24 +44,22 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 	}, [dispatch, toolbarOptions]);
 
 	useEffect(() => {
-		if (!checkAccess([AppRole.Admin], userRole)) {
+		if (!usersRights.isAccessGranted(accessRoles)) {
 			return;
 		}
-		const hash = serverAuth();
-		Promise.all([
-			server.fetchProjects(hash, ProjectProjections.ProjectWithStates),
-			server.fetchStates(hash),
-		]).then(([projectsData, statesData]) => {
-			if (projectsData.error || statesData.error) {
-				setErrorMessage(projectsData.error || statesData.error);
-				return;
-			}
+		// const hash = serverAuth();
+		request('/projects')
+			.then((projectsData) => {
+				if (projectsData.error) {
+					setErrorMessage(serverErrorToString(projectsData.error));
+					return;
+				}
 
-			if (projectsData.data !== null) {
-				setProjectList(projectsData.data);
-			}
-		});
-	}, [serverAuth, userRole]);
+				if (projectsData.data !== null) {
+					setProjectList(projectsData.data as DataBaseProjectData[]);
+				}
+			})
+	}, []);
 
 	const onProjectEdit = (id: string) => {
 		navigate(`/project/${id}/edit`);

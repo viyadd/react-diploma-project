@@ -1,8 +1,8 @@
-import { AppUserData } from "../bff/shared/model";
+import { AppUserData } from "../types";
 import { ActionType } from "./action-type";
 
-export const setUser = ({id, login, roleId, session}: AppUserData) => {
+export const setUser = ({id, login, roleId}: AppUserData) => {
 	return ({
 	type: ActionType.SetUser,
-	payload: {id, login, roleId, session},
+	payload: {id, login, roleId},
 })};

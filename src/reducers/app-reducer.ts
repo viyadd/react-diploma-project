@@ -1,40 +1,49 @@
 import { ActionType } from '../actions';
-import { AppRole } from '../bff/constants';
+import { AppUserRole } from '../constants';
 import { ToolbarOptions } from '../shared/interfaces';
 
 export interface AppStoreData {
 	wasLogout?: boolean,
-	userAccessRole?: AppRole
-	toolbarOptions?: ToolbarOptions[]
+	isUserIdentified?: boolean,
+	appUserRole?: AppUserRole,
+	toolbarOptions?: ToolbarOptions[],
 }
 const initialAppState: AppStoreData = {
 	wasLogout: false,
-	userAccessRole: AppRole.Guest,
+	isUserIdentified: false,
+	appUserRole: AppUserRole.Guest,
 	toolbarOptions: []
 };
 
 export const appReducer = (state = initialAppState, action: { type: ActionType; payload: AppStoreData; }) => {
 	switch (action.type) {
+
+		case ActionType.SetAppUserIdentified:
+			return {
+				...state,
+				isUserIdentified: action.payload.isUserIdentified,
+			};
 		case ActionType.Logout:
 			return {
 				...state,
 				wasLogout: !state.wasLogout,
 			};
-		case ActionType.SetAccessRole:
+		case ActionType.SetAppUserRole:
 			{
-				const { userAccessRole } = action.payload
-				const isUserAccessRoleDefined = userAccessRole !== undefined && !!AppRole[userAccessRole]
+				const { appUserRole } = action.payload
+				const isUserAppRoleDefined = appUserRole !== undefined && AppUserRole[appUserRole] !== undefined
 				return {
 					...state,
-					userAccessRole: isUserAccessRoleDefined ? userAccessRole : AppRole.Guest,
+					appUserRole: isUserAppRoleDefined ? appUserRole : AppUserRole.Guest,
 				};
 			}
-			case ActionType.SetToolbarOptions:{
-				const { toolbarOptions } = action.payload
-				return {
-					...state,
-					toolbarOptions: toolbarOptions
-				}}
+		case ActionType.SetToolbarOptions: {
+			const { toolbarOptions } = action.payload
+			return {
+				...state,
+				toolbarOptions: toolbarOptions
+			}
+		}
 		default:
 			return state;
 	}

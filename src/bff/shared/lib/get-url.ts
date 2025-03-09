@@ -1,4 +1,4 @@
-import { BASE_URL } from "../../constants";
+const BASE_URL =''
 
 interface GetUrlFunc {
 	(endpoint: string,
@@ -10,7 +10,9 @@ interface GetUrlFunc {
 }
 
 const valueListToString = (key: string, valueList: string[]) => valueList
-	.map(value => `${key}=${value}`).join('&');
+	.map(value => value !== undefined && `${key}=${value}`)
+	.filter(Boolean)
+	.join('&');
 
 export const getUrl: GetUrlFunc = (endpoint, { params, id } = {}) => {
 	if (id !== undefined) {
@@ -25,8 +27,8 @@ export const getUrl: GetUrlFunc = (endpoint, { params, id } = {}) => {
 		if (Array.isArray(value) && typeof value?.[0] === 'string') {
 			return valueListToString(key, value)
 		}
-		return `${key}=${value}`
-	}).join('&')
+		return value !== undefined && `${key}=${value}`
+	}).filter(Boolean).join('&')
 
 	return `${BASE_URL}${endpoint}?${paramsString}`
 }

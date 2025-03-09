@@ -2,27 +2,27 @@ import styled from 'styled-components';
 import { Header } from './components';
 import { Route, Routes } from 'react-router';
 import { Authorization, Project, Projects, Registration, Users } from './pages';
-import { useLayoutEffect } from 'react';
-import { setAccessRole, setUser } from './actions';
-import { useAppDispatch } from './hooks/use-app-store';
+// import { useLayoutEffect } from 'react';
+// import { setAccessRole, setUser } from './actions';
+// import { useAppDispatch } from './hooks/use-app-store';
 
 const Page = styled.div``;
 
 function App() {
-	const dispatch = useAppDispatch();
+	// const dispatch = useAppDispatch();
 
-	useLayoutEffect(() => {
-		const currentUserDataJSON = sessionStorage.getItem('userData');
+	// useLayoutEffect(() => {
+	// 	const currentUserDataJSON = sessionStorage.getItem('userData');
 
-		if (!currentUserDataJSON) {
-			return;
-		}
+	// 	if (!currentUserDataJSON) {
+	// 		return;
+	// 	}
 
-		const currentUserData = JSON.parse(currentUserDataJSON);
+	// 	const currentUserData = JSON.parse(currentUserDataJSON);
 
-		dispatch(setUser(currentUserData));
-		dispatch(setAccessRole(currentUserData));
-	}, [dispatch]);
+	// 	dispatch(setUser(currentUserData));
+	// 	dispatch(setAccessRole(currentUserData));
+	// }, [dispatch]);
 	return (
 		<div>
 			<Header />

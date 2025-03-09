@@ -1,21 +1,25 @@
 import { ActionType } from '../actions';
+// import { OperationsWithAuthorization } from '../bff/shared/model';
 
 export interface UserStoreData {
 	id: string | null
 	login: string | null
-	roleId: string | null
-	session: string | null
+	roleId: number | null
+	// session: OperationsWithAuthorization | null
 }
 
 const initialUserState: UserStoreData = {
 	id: null,
 	login: null,
 	roleId: null,
-	session: null,
+	// session: null,
 };
 
 export const userReducer = (state = initialUserState, action: { type: ActionType; payload: UserStoreData; }) => {
 	switch (action.type) {
+		case ActionType.ResetUser: {
+			return initialUserState;
+		}
 		case ActionType.SetUser: {
 			return {
 				...state,

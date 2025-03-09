@@ -3,15 +3,14 @@ import { Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { server } from '../../bff';
 import { FormError, Input, Button, PageTitle } from '../../components';
 import { useResetForm } from '../../hooks';
-import { setAccessRole, setUser } from '../../actions';
 import styled from 'styled-components';
-import { selectUserAccessRole } from '../../selectors';
 import { AppComponentsPropsBase } from '../../shared/interfaces';
-import { AppRole } from '../../bff/constants';
-import { useAppDispatch, useAppSelector } from '../../hooks/use-app-store';
+import { request } from '../../utils';
+import { useUserRights } from '../../hooks/use-user-rights';
+import { AppUserRole } from '../../constants';
+import { DataBaseUserData } from '../../types';
 
 const regFormSchema = yup.object().shape({
 	login: yup
@@ -32,6 +31,8 @@ const regFormSchema = yup.object().shape({
 		.oneOf([yup.ref('password'), null], 'Повтор пароля не совпадает'),
 });
 
+const accessRoles = [AppUserRole.Admin, AppUserRole.User, AppUserRole.Guest];
+
 const RegistrationContainer = ({ className }: AppComponentsPropsBase) => {
 	const {
 		register,
@@ -49,22 +50,24 @@ const RegistrationContainer = ({ className }: AppComponentsPropsBase) => {
 
 	const [serverError, setServerError] = useState<string | null>(null);
 
-	const dispatch = useAppDispatch();
+	// const dispatch = useAppDispatch();
+	const usersRights = useUserRights()
 
 	useResetForm(reset);
 
-	const userAccessRole = useAppSelector(selectUserAccessRole)
+	// const userAccessRole = useAppSelector(selectUserAccessRole)
 
 	const onSubmit = ({ login, password }: { login: string; password: string }) => {
-		server.register(login, password).then(({ error, data }) => {
+		request('/register', 'POST', {login, password}).then(({ error, data }) => {
 			if (error) {
 				setServerError(`Ошибка запроса: ${error}`);
 				return;
 			}
 			if (data !== null) {
-				dispatch(setUser(data));
-				dispatch(setAccessRole(data))
-				sessionStorage.setItem('userData', JSON.stringify(data));
+				usersRights.updateAccessRight(data as DataBaseUserData, accessRoles)
+				// dispatch(setUser(data));
+				// dispatch(setAccessRole(data))
+				// sessionStorage.setItem('userData', JSON.stringify(data));
 			}
 		});
 	};
@@ -73,7 +76,7 @@ const RegistrationContainer = ({ className }: AppComponentsPropsBase) => {
 		errors?.login?.message || errors?.password?.message || errors?.passcheck?.message;
 	const errorMessage = formError || serverError;
 
-	if (userAccessRole !== AppRole.Guest) {
+	if (!usersRights.isUserGuest()) {
 		return <Navigate to="/" />;
 
 	}

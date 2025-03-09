@@ -41,22 +41,27 @@
     {
       "id": "001",
       "code": "backlog",
-      "text": "Backlog"
+      "text": "Невыполнено"
     },
     {
       "id": "002",
       "code": "doing",
-      "text": "Doing"
+      "text": "Выполняется"
     },
     {
       "id": "003",
       "code": "review",
-      "text": "Review"
+      "text": "Проверка"
     },
     {
       "id": "004",
       "code": "done",
-      "text": "Done"
+      "text": "Выполнено"
+    },
+    {
+      "id": "005",
+      "code": "canceled",
+      "text": "Отменено"
     }
   ],
   "projects": [
@@ -66,6 +71,13 @@
       "description": "Описание проекта1",
       "created_at": "2053-02-06 20:23",
       "state_id": "002"
+    },
+    {
+      "title": "Проект 2",
+      "created_at": "2025-02-14 16:09",
+      "description": "Описание проекта 2",
+      "state_id": "001",
+      "id": "4e3DWhv"
     }
   ],
   "tasks": [
@@ -75,6 +87,7 @@
       "title": "Краткое описание задачи",
       "description": "Подробное описание задачи",
       "created_at": "2053-02-06 20:23",
+			"project_id": "001",
       "owner_id": "001",
       "executor_id": "002",
       "state_id": "002",
@@ -86,13 +99,14 @@
       "title": "Краткое описание задачи",
       "description": "Подробное описание задачи еще одной задачи",
       "created_at": "2053-02-06 20:23",
+			"project_id": "001",
       "owner_id": "001",
       "executor_id": null,
       "state_id": "001",
       "": ""
     }
   ],
-  "spent_times": [
+  "spent_times_list": [
     {
       "id": "001",
       "started_at": "",
@@ -113,18 +127,7 @@
   ],
   "sessions": [
     {
-      "id": "c31e",
-      "hash": "0.60179825510697471102616873395163565874099731445313",
-      "user": {
-        "id": "001",
-        "login": "van",
-        "password": "123qwe",
-        "registredAt": "2053-02-06 20:23",
-        "roleId": "001"
-      }
-    },
-    {
-      "hash": "0.03337074906492509818178859859472140669822692871094",
+      "hash": "0.58845649443274727907748911093221977353096008300781",
       "user": {
         "id": "001",
         "login": "van",
@@ -132,7 +135,7 @@
         "registredAt": "2053-02-06 20:23",
         "roleId": "001"
       },
-      "id": "mr4rVjG"
+      "id": 1
     }
   ]
 }
