@@ -1,20 +1,24 @@
 import styled from 'styled-components';
-import { AppComponentsPropsBase, DataBaseTaskData } from '../../../../../../types';
-import { TaskColumn } from './components';
-import { DateFormat } from '../../../../../../utils';
+import {
+	AppComponentsPropsBase,
+	DataBaseTaskData,
+	DataTableHeader,
+	DataTableTool,
+} from '../../../../../../types';
+import { DataTable } from '../../../../../../components';
+import { useNavigate } from 'react-router-dom';
 
 interface TaskListProps extends AppComponentsPropsBase {
 	taskList: DataBaseTaskData[] | null;
 }
-interface TaskHeaderList {
-	key: string,
-	text: string,
-	type?: DateFormat
-}
 
-const taskHeaderList: TaskHeaderList[] = [
+const taskHeaderList: DataTableHeader[] = [
 	// { key: 'id', text: '' },
-	{ key: 'codeName', text: 'Код' },
+	{
+		key: 'codeName',
+		text: 'Код',
+		link: (v: unknown) => `/task/${(v as DataBaseTaskData)?.id}`,
+	},
 	{ key: 'title', text: 'Заголовок' },
 	{ key: 'createdAt', text: 'Дата создания', type: 'datetime' },
 	{ key: 'owner.name', text: 'Владелец' },
@@ -23,44 +27,41 @@ const taskHeaderList: TaskHeaderList[] = [
 	// { key: 'description', },
 ];
 
+
 const TaskListContainer = ({ className, taskList }: TaskListProps) => {
+	const navigate = useNavigate()
+
+
+	const tools: DataTableTool[] = [
+		{
+			key: 'edit',
+			iconId: 'fa-pencil',
+			onClick: (v: unknown) => {
+				navigate(`/task/${(v as DataBaseTaskData).id}/edit`);
+			},
+		},
+		// {
+		// 	key: 'delete',
+		// 	iconId: 'fa-trash-o',
+		// 	onClick: (key: string, v: unknown) => {
+		// 		console.log('click', (v as DataBaseTaskData).id, key);
+		// 	},
+		// },
+	];
 	return (
 		<div className={className}>
 			<div className="title">Список задач</div>
-			{taskHeaderList.map(({ key, text }) => (
-				<div className="header" key={key}>
-					{text}
-				</div>
-			))}
-			{taskList?.map(
-				(task) =>
-					taskHeaderList.map(({ key, type }) => (
-						<TaskColumn key={key + task.id} item={task} valuePath={key} type={type} />
-					)),
-			)}
+			<DataTable headers={taskHeaderList} items={taskList} tools={tools} />
 		</div>
 	);
 };
 
 export const TaskList = styled(TaskListContainer)`
-	display: grid;
-	grid-template-columns: repeat(6, 1fr);
-	grid-template-rows: 30px 30px repeat(10, 1fr);
 	width: 1000px;
 	margin-top: 20px;
 
 	& .title {
-		grid-column: 1/-1;
-		/* background-color: #eee; */
-	}
-
-	& .title {
 		text-align: center;
 		font-size: 13px;
-	}
-	& .header {
-		border-bottom: 1px solid #eee;
-		font-weight: bold;
-		padding-left: 3px;
 	}
 `;

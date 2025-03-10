@@ -37,6 +37,8 @@ function App() {
 					<Route path="/project" element={<Project />} />
 					<Route path="/project/:id" element={<Project />} />
 					<Route path="/project/:id/edit" element={<Project />} />
+					<Route path="/task/:id" element={<div>Task view</div>} />
+					<Route path="/task/:id/edit" element={<div>Task Edit</div>} />
 					<Route path="*" element={<div>Ошибка</div>} />
 				</Routes>
 			</Page>
