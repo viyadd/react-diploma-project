@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { AppComponentsProps } from '../../shared/interfaces';
+import { AppComponentsProps } from '../../types';
 
 const PageTitleContainer = ({ children, className }: AppComponentsProps) => (
 	<h2 className={className}>{children}</h2>

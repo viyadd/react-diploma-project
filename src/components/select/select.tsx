@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { AppComponentsOptionsProps } from '../../shared/interfaces';
 import { forwardRef } from 'react';
+import { AppComponentsOptionsProps } from '../../types';
 
 interface OptionListData {
 	key: string;

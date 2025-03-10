@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { AppComponentsProps } from '../../../../shared/interfaces';
+import { AppComponentsProps } from '../../../../types';
 
 export interface UsersTableRow extends AppComponentsProps {
 	border?: boolean

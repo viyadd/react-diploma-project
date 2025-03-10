@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import styled from 'styled-components';
-import { AppComponentsPropsBase } from '../../shared/interfaces';
+import { AppComponentsPropsBase } from '../../types';
 
 interface InputProps extends AppComponentsPropsBase {
 	width?: string;

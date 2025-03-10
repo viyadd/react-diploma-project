@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { PrivateContent } from '../../components';
 import { useMatch, useParams } from 'react-router-dom';
-import { AppComponentsPropsBase } from '../../shared/interfaces';
+import { AppComponentsPropsBase } from '../../types';
 import { EditProject, ViewProject } from './componens';
 import styled from 'styled-components';
 import { AppUserRole } from '../../constants';

@@ -2,10 +2,8 @@ import { ChangeEventHandler, useEffect, useState } from 'react';
 import { IconButton } from '../../../../components';
 import { TableRow } from '../table-row/table-row';
 import styled from 'styled-components';
-import { AppComponentsPropsBase } from '../../../../shared/interfaces';
-// import { useServerAuthorization } from '../../../../hooks/use-server-authorization';
-// import { server } from '../../../../bff';
 import { request } from '../../../../utils';
+import { AppComponentsPropsBase } from '../../../../types';
 
 interface UsersTableRow extends AppComponentsPropsBase {
 	id: string;
@@ -26,7 +24,6 @@ const UserRowContainer = ({
 }: UsersTableRow) => {
 	const [initialRoleId, setInitialRoleId] = useState<string | undefined>(userRoleId);
 	const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
-	// const serverAuth = useServerAuthorization();
 
 	useEffect(() => {
 		setSelectedRoleId(userRoleId);

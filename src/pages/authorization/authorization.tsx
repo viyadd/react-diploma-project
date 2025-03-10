@@ -2,12 +2,11 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormError, Button, Input, PageTitle } from '../../components';
-import { AppComponentsPropsBase } from '../../shared/interfaces';
 import styled from 'styled-components';
 import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { request } from '../../utils';
-import { DataBaseUserData } from '../../types';
+import { AppComponentsPropsBase, DataBaseUserData } from '../../types';
 import { AppUserRole } from '../../constants';
 import { useUserRights } from '../../hooks/use-user-rights';
 

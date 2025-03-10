@@ -1,6 +1,6 @@
 import { ActionType } from '../actions';
 import { AppUserRole } from '../constants';
-import { ToolbarOptions } from '../shared/interfaces';
+import { ToolbarOptions } from '../types';
 
 export interface AppStoreData {
 	wasLogout?: boolean,

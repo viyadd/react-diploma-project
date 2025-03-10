@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { DataBaseProjectData } from '../../../../../../types';
-import { AppComponentsPropsBase } from '../../../../../../shared/interfaces';
+import { AppComponentsPropsBase, DataBaseProjectData } from '../../../../../../types';
 
 interface ProjectTitleProps extends AppComponentsPropsBase {
 	project: DataBaseProjectData;
