@@ -22,7 +22,7 @@ const pageTittleList = ['Новый проект', 'Редактировать �
 const projectFormSchema = yup.object().shape({
 	title: yup.string().required('Заполните заголовок'),
 	description: yup.string().required('Заполните описание'),
-	stateId: yup.string().required('Заполните статус'),
+	state: yup.string().required('Заполните статус'),
 });
 
 interface EditProjectProps extends AppComponentsPropsBase {
@@ -52,7 +52,7 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 			return {
 				title: typeof projectTitle === 'string' ? projectTitle : '',
 				description: typeof projectDescription === 'string' ? projectDescription : '',
-				stateId: typeof projectStateId === 'string' ? projectStateId : '',
+				state: typeof projectStateId === 'string' ? projectStateId : '',
 			};
 		}, [projectTitle, projectDescription, projectStateId]),
 		resolver: yupResolver(projectFormSchema),
@@ -68,7 +68,7 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 		reset({
 			title: projectTitle,
 			description: projectDescription,
-			stateId: projectStateId,
+			state: projectStateId,
 		});
 	}, [projectDescription, projectStateId, projectTitle, reset]);
 
@@ -110,11 +110,11 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 
 	useEffect(() => {
 		const subscription = watch((value) => {
-			const { title, description, stateId } = value;
+			const { title, description, state } = value;
 			setIsChanged(
 				projectTitle !== title ||
 					projectDescription !== description ||
-					projectStateId !== stateId,
+					projectStateId !== state,
 			);
 		});
 		return () => subscription.unsubscribe();
@@ -123,9 +123,9 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 	const onSubmit = ({
 		title,
 		description,
-		stateId,
-	}: Record<'title' | 'description' | 'stateId', string>) => {
-		// const
+		state,
+	}: Record<'title' | 'description' | 'state', string>) => {
+		setServerError(null)
 		const method = !isNew && project && project.id ? 'PATCH' : 'POST';
 
 		const urlId = !isNew && project && project.id ? `/${project.id}` : '';
@@ -133,7 +133,7 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 		request(`/projects${urlId}`, method, {
 			title,
 			description,
-			stateId,
+			state,
 		}).then((loadedProject) => {
 			if (loadedProject.error) {
 				setServerError(serverErrorToString(loadedProject.error));
@@ -152,7 +152,7 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 	};
 
 	const formError =
-		errors?.title?.message || errors?.description?.message || errors?.stateId?.message;
+		errors?.title?.message || errors?.description?.message || errors?.state?.message;
 	const errorMessage = serverError || formError;
 
 	return (
@@ -175,7 +175,7 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 				/>
 				<Select
 					optionsList={transformAppStateToOptionList(stateList || [])}
-					{...register('stateId', {
+					{...register('state', {
 						onChange: () => setServerError(null),
 					})}
 				/>

@@ -46,6 +46,10 @@ export const request: RequestProps = async (path, method, data) => {
 			return await res.json();
 		}
 
+		if (res.status === 400) {
+			return await res.json();
+		}
+
 		return new Promise<AppServerResponseData>((resolve) => {
 			resolve({
 				error: { code: `${res.status}`, message: res.statusText },
