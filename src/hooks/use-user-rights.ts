@@ -44,6 +44,7 @@ export const useUserRights = () => {
 		const currentIsAccessDenied = !accessList.includes(convertedAppUserRole);
 
 		setIsAccessDenied(currentIsAccessDenied);
+		// TODO AppUserData ???
 		dispatch(setUser(user as AppUserData));
 		dispatch(setAppUserRole(convertedAppUserRole));
 		console.log('updateAccessRight', { accessList, user, convertedAppUserRole, isAccessDenied: currentIsAccessDenied })

@@ -3,9 +3,11 @@ import { thunk } from 'redux-thunk';
 import {
 	appReducer,
 	userReducer,
+	appLoading,
 } from './reducers';
 
 const reducer = combineReducers({
+	loading: appLoading,
 	app: appReducer,
 	user: userReducer,
 });

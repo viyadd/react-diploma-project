@@ -4,9 +4,11 @@ import {
 	DataBaseTaskData,
 	DataTableHeader,
 	DataTableTool,
-} from '../../../../../../types';
-import { DataTable } from '../../../../../../components';
+} from '@/types';
+import { DataTable } from '@/components';
 import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '@/hooks/use-app-store';
+import { selectIsTaskListLoading } from '@/selectors';
 
 interface TaskListProps extends AppComponentsPropsBase {
 	taskList: DataBaseTaskData[] | null;
@@ -29,8 +31,9 @@ const taskHeaderList: DataTableHeader[] = [
 
 
 const TaskListContainer = ({ className, taskList }: TaskListProps) => {
-	const navigate = useNavigate()
+		const isTaskListLoading = useAppSelector(selectIsTaskListLoading)
 
+	const navigate = useNavigate()
 
 	const tools: DataTableTool[] = [
 		{
@@ -51,7 +54,7 @@ const TaskListContainer = ({ className, taskList }: TaskListProps) => {
 	return (
 		<div className={className}>
 			<div className="title">Список задач</div>
-			<DataTable headers={taskHeaderList} items={taskList} tools={tools} />
+			<DataTable headers={taskHeaderList} items={taskList} tools={tools} loading={isTaskListLoading} />
 		</div>
 	);
 };
