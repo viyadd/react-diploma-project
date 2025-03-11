@@ -1,5 +1,6 @@
-import { ActionType } from '../actions';
 // import { OperationsWithAuthorization } from '../bff/shared/model';
+
+import { ActionType } from "../types";
 
 export interface UserStoreData {
 	id: string | null

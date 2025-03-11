@@ -1,5 +1,5 @@
 import { AppUserRole } from "../constants";
-import { ActionType } from "./action-type";
+import { ActionType } from "../types";
 
 export const setAppUserRole = (appUserRole?: AppUserRole) => {
 	return ({

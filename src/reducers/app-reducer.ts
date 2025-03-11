@@ -1,4 +1,4 @@
-import { ActionType } from '../actions';
+import { ActionType } from '../types';
 import { AppUserRole } from '../constants';
 import { ToolbarOptions } from '../types';
 

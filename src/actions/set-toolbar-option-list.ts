@@ -1,5 +1,4 @@
-import { ToolbarOptions } from "../types";
-import { ActionType } from "./action-type";
+import { ActionType, ToolbarOptions } from "../types";
 
 export const setToolbarOptionList = (toolbarOptions?: ToolbarOptions[]) => ({
 	type: ActionType.SetToolbarOptions,

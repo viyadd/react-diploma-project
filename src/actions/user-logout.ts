@@ -1,4 +1,4 @@
-import { ActionType } from './action-type';
+import { ActionType } from "../types";
 
 export const userLogout = () => {
 	return {

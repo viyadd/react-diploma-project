@@ -1,7 +1,7 @@
 import { AppUserRole } from '../constants';
-import { ActionType } from './action-type';
+import { ActionType } from '../types';
 
 export const resetAccessRole = () => ({
-	type: ActionType.SetUserRole,
+	type: ActionType.SetAppUserRole,
 	payload: { appUserRole: AppUserRole.Guest },
 });

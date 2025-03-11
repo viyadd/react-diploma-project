@@ -1,9 +1,5 @@
 import { DateFormat } from "../utils";
 
-// interface LinkFn {
-// 	<T>(v: T): string
-// }
-
 export interface DataTableTool {
 	key: string,
 	iconId: string,
