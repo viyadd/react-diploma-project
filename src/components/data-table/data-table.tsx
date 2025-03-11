@@ -4,22 +4,29 @@ import {
 	DataTableHeader,
 	DataTableHeaderWithTools,
 	DataTableTool,
-} from '../../types';
+} from '@/types';
 import { DataTableCellElement } from './components';
+import { SkeletonLoader } from '../skeleton-loader/skeleton-loader';
 
 interface DataTableProps extends AppComponentsPropsBase {
 	items: { id: string }[] | null;
 	headers: DataTableHeader[];
-	tools?: DataTableTool[];
+	tools?: DataTableTool[] | null;
+	loading?: boolean;
 }
 
-const DataTableContainer = ({ className, headers, items, tools }: DataTableProps) => {
+const DataTableContainer = ({
+	className,
+	headers,
+	items,
+	tools,
+	loading,
+}: DataTableProps) => {
 	const getColumns = (
 		h: DataTableHeader[],
-		t?: DataTableTool[],
+		t?: DataTableTool[] | null,
 	): DataTableHeaderWithTools[] => {
-		// const columns =
-		if (tools !== undefined) {
+		if (t !== undefined && t !== null) {
 			return [...h, { key: '_tools', tools: t }];
 		}
 		return h;
@@ -30,19 +37,24 @@ const DataTableContainer = ({ className, headers, items, tools }: DataTableProps
 
 	return (
 		<div className={className}>
-			{headers.map(({ key, text }, i) => (
-				<div className={'header' + (isHeaderWithTools(i) ? ' tools' : '')} key={key}>
-					{text}
+			<SkeletonLoader type="table-tbody" loading={loading} />
+			{!loading && (
+				<div className="content">
+					{headers.map(({ key, text }, i) => (
+						<div className={'header' + (isHeaderWithTools(i) ? ' tools' : '')} key={key}>
+							{text}
+						</div>
+					))}
+					{items?.map((item) =>
+						getColumns(headers, tools).map((header) => (
+							<DataTableCellElement
+								key={header.key + item.id}
+								item={item}
+								header={header}
+							/>
+						)),
+					)}
 				</div>
-			))}
-			{items?.map((item) =>
-				getColumns(headers, tools).map((header) => (
-					<DataTableCellElement
-						key={header.key + item.id}
-						item={item}
-						header={header}
-					/>
-				)),
 			)}
 		</div>
 	);
@@ -52,17 +64,20 @@ const calccalculateGridRows = ({ items }: DataTableProps) =>
 	`repeat(${items === null ? 1 : items.length}, auto)`;
 
 const calccalculateGridColumns = ({ headers, tools }: DataTableProps) => {
-	const columnsOptions = `repeat(${headers.length}, auto)`
-	const toolOptions = tools !== undefined ? `${tools.length*26}px` : ''
-	return [columnsOptions, toolOptions].filter(Boolean).join(' ')
+	const columnsOptions = `repeat(${headers.length}, auto)`;
+	const toolOptions =
+		tools !== undefined && tools !== null ? `${tools.length * 26}px` : '';
+	return [columnsOptions, toolOptions].filter(Boolean).join(' ');
 };
 
 export const DataTable = styled(DataTableContainer)`
-	display: grid;
-	grid-template-columns: ${calccalculateGridColumns};
-	grid-template-rows: 30px ${calccalculateGridRows};
-	width: 1000px;
-	margin-top: 20px;
+	& .content {
+		display: grid;
+		grid-template-columns: ${calccalculateGridColumns};
+		grid-template-rows: 30px ${calccalculateGridRows};
+		width: 1000px;
+		margin-top: 20px;
+	}
 
 	& .header {
 		border-bottom: 1px solid #eee;
