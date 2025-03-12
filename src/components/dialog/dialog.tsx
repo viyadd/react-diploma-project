@@ -2,16 +2,19 @@ import { useEffect, useRef } from 'react';
 import { Button } from '../button/button';
 import styled from 'styled-components';
 import { AppComponentsProps } from '../../types';
+import { Title } from './components';
 
 interface DialogProps extends AppComponentsProps {
 	open: boolean;
-	type?: 'info';
+	title?: string
+	type?: 'info' | 'YesNo';
 	onConfirm: () => void;
 	onCancel: () => void;
 }
 
 const DialogContainer = ({
 	className,
+	title,
 	type,
 	open,
 	onConfirm,
@@ -30,7 +33,7 @@ const DialogContainer = ({
 
 	return (
 		<dialog className={className} ref={dialogRef}>
-			<div className="overlay"></div>
+			{title !== undefined && <Title>{title}</Title>}
 			<div className="box">
 				<div className="message">{children}</div>
 				<div className="buttons">
@@ -57,10 +60,20 @@ const DialogContainer = ({
 
 export const Dialog = styled(DialogContainer)`
 	width: 400px;
-	padding: 0 20px 20px;
-	text-align: center;
 	background-color: #fff;
-	border: 1px solid #666;
+	border: 1px solid #999;
+	padding: 0;
+
+	& .title {
+		padding: 3px 9px;
+		color: #fff;
+		background-color: #2682f2;
+	}
+
+	& .box {
+		padding: 0 20px 20px;
+		text-align: center;
+	}
 
 	& .message {
 		margin: 20px 0;

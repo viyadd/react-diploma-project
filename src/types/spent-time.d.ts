@@ -1,12 +1,13 @@
 // import { AppTaskBaseData } from "./task-data";
 
+import { DataBaseUserData } from "./user-data"
+
 interface DataBaseSpentTimeData {
 	id: string,
-	started_at: string,
-	ended_at: string,
+	startedAt: string,
+	duration: number,
 	comment: string,
-	task_id: string,
-	executor_id: string,
+	executor: DataBaseUserData,
 }
 
 // export type DataBaseSpentTimeDataKeys = keyof DataBaseSpentTimeData
@@ -15,16 +16,3 @@ export interface DataBaseSpentTimeWhithPaginationData {
 	lastPage: number
 	content: DataBaseSpentTimeData[]
 }
-
-// export interface AppSpentTimeListBaseData {
-// 	id: string,
-// 	startedAt: string,
-// 	endedAt: string,
-// 	coment: string,
-// 	taskId: string,
-// 	executorId: string,
-// }
-
-// export interface AppSpentTimeListData extends AppSpentTimeListBaseData {
-// 	task?: AppTaskBaseData | null
-// }

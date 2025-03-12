@@ -35,6 +35,9 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 			console.log('loadedTask-->', { loadedProject: loadedTask });
 			if (loadedTask.error) {
 				console.log('не удалось загрузить задачу', loadedTask.error);
+				// TODO вывести сообщение об ошибке
+				dispatch(SetTaskLoading(false));
+				dispatch(SetSpentTimeListLoading(false));
 				return;
 			}
 			const currentTask = loadedTask.data as DataBaseTaskData;
@@ -48,6 +51,7 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 					(spentTimes) => {
 						if (spentTimes.error) {
 							console.log('не удалось загрузить задачи', spentTimes.error);
+							// TODO вывести сообщение об ошибке
 							dispatch(SetSpentTimeListLoading(false));
 							return;
 						}

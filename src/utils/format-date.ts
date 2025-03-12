@@ -14,6 +14,9 @@ const formatDateToDMGTime = (date: string) => `${formatDateToDMG(date)} ${format
  * @return {*}  {string}
  */
 export function formatDate(date: string, type: DateFormat): string {
+	if(typeof date !== 'string' || date.length<21) {
+		return '?'
+	}
 	switch (type) {
 		case "date":
 			return formatDateToDMG(date)
