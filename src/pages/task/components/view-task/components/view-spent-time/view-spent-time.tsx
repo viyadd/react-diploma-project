@@ -1,7 +1,7 @@
+import { InfoBox } from '@/components';
 import { AppComponentsPropsBase, DataBaseSpentTimeData } from '@/types';
 import { formatDate } from '@/utils';
 import styled from 'styled-components';
-import { InfoBox } from './components';
 
 interface ViewSpentTimeInfoProps extends AppComponentsPropsBase {
 	item: DataBaseSpentTimeData | null;
