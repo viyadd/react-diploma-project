@@ -32,7 +32,7 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 			return;
 		}
 		request(`/tasks/${id}`).then((loadedTask) => {
-			console.log('loadedTask-->', { loadedProject: loadedTask });
+			console.log('loadedTask -->', { loadedProject: loadedTask });
 			if (loadedTask.error) {
 				console.log('не удалось загрузить задачу', loadedTask.error);
 				// TODO вывести сообщение об ошибке
@@ -45,6 +45,10 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 			dispatch(SetTaskLoading(false));
 
 			const spentTimeList = currentTask.spentTimes;
+			if (spentTimeList.length === 0) {
+				dispatch(SetSpentTimeListLoading(false));
+			}
+
 			console.log('tasks >>', { t: currentTask, st: spentTimeList });
 			if (spentTimeList.length > 0) {
 				request(`/spent-times?${spentTimeList.map((id) => 'id=' + id).join('&')}`).then(

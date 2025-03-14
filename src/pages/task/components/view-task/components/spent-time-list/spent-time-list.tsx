@@ -2,14 +2,12 @@ import styled from 'styled-components';
 import {
 	AppComponentsPropsBase,
 	DataBaseSpentTimeData,
-	DataBaseTaskData,
 	DataTableHeader,
 	DataTableTool,
 	DialogType,
 	ToolbarOptions,
 } from '@/types';
 import { DataTable, Dialog } from '@/components';
-import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAppSelector } from '@/hooks/use-app-store';
 import { AppUserRole } from '@/constants';
@@ -37,13 +35,15 @@ const accessRoles = [AppUserRole.Admin, AppUserRole.User];
 
 const SpentTimeListContainer = ({ className, spentTimeList }: SpentTimeListProps) => {
 	const [dataTableTools, setDataTableTools] = useState<DataTableTool[] | null>(null);
-	const [isOpen, setIsOpen] = useState(false);
-	const [currentSpentTime, setCurrentSpentTime] = useState<DataBaseSpentTimeData|null>(null);
+	const [isOpenDialog, setIsOpenDialog] = useState(false);
+	const [currentSpentTime, setCurrentSpentTime] = useState<DataBaseSpentTimeData | null>(
+		null,
+	);
 
 	const isSpentTimeListLoading = useAppSelector(selectIsSpentTimeListLoading);
 
 	const toolbar = useToolbarOptions();
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
 
 	useEffect(() => {
 		const tools: ToolbarOptions[] = [
@@ -52,7 +52,7 @@ const SpentTimeListContainer = ({ className, spentTimeList }: SpentTimeListProps
 				iconId: 'fa-plus',
 				accessRoleList: accessRoles,
 				onClick: () => {
-					setIsOpen(true);
+					setIsOpenDialog(true);
 					// navigate(`/spentTime`);
 					// toolbar.resetToolbarOptions();
 				},
@@ -64,20 +64,20 @@ const SpentTimeListContainer = ({ className, spentTimeList }: SpentTimeListProps
 			{
 				key: 'view',
 				iconId: 'fa-eye',
-				onClick: (v: unknown) => {
-					// navigate(`/task/${(v as DataBaseTaskData).id}/edit`);
-					const item = v as DataBaseSpentTimeData;
-					setCurrentSpentTime(item)
-					// console.log('>>', { item });
-					setIsOpen(true);
+				onClick: ({ value }) => {
+					const item = value as DataBaseSpentTimeData;
+					console.log('view', value);
+					setCurrentSpentTime(item);
+					setIsOpenDialog(true);
 				},
 			},
 			{
 				key: 'edit',
 				iconId: 'fa-pencil',
-				onClick: (v: unknown) => {
-					navigate(`/task/${(v as DataBaseTaskData).id}/edit`);
-					toolbar.resetToolbarOptions();
+				onClick: ({ value }) => {
+					const item = value as DataBaseSpentTimeData;
+					setCurrentSpentTime(item);
+					setIsOpenDialog(true);
 				},
 			},
 			// {
@@ -91,9 +91,9 @@ const SpentTimeListContainer = ({ className, spentTimeList }: SpentTimeListProps
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const onConfirm = () => {
-		setIsOpen(false);
-	};
+	// const onConfirm = () => {
+	// 	setIsOpenDialog(false);
+	// };
 
 	return (
 		<div className={className}>
@@ -107,11 +107,11 @@ const SpentTimeListContainer = ({ className, spentTimeList }: SpentTimeListProps
 				/>
 			</div>
 			<Dialog
-				open={isOpen}
-				title='Информация о выполненой работе'
+				open={isOpenDialog}
+				title="Информация о выполненой работе"
 				type={DialogType.Info}
-				onCancel={() => setIsOpen(false)}
-				onConfirm={onConfirm}
+				onClose={() => setIsOpenDialog(false)}
+				// onConfirm={onConfirm}
 			>
 				<ViewSpentTimeInfo item={currentSpentTime} />
 			</Dialog>
