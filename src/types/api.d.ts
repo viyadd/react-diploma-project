@@ -1,5 +1,8 @@
+import { ApiErrorData } from "./api-error-data"
+
+// TODO ??? ошибка определена в resuest
 export interface AppServerApiResult {
-	error: unknown | null
+	error: ApiErrorData | null
 }
 
 export interface AppServerPageDescriptor {

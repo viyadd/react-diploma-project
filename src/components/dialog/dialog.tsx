@@ -1,15 +1,17 @@
-import { useEffect, useRef } from 'react';
+import { KeyboardEventHandler, useEffect, useRef } from 'react';
 import { Button } from '../button/button';
 import styled from 'styled-components';
-import { AppComponentsProps } from '../../types';
+import { AppComponentsProps, DialogType } from '@/types';
 import { Title } from './components';
 
 interface DialogProps extends AppComponentsProps {
 	open: boolean;
-	title?: string
-	type?: 'info' | 'YesNo';
-	onConfirm: () => void;
-	onCancel: () => void;
+	title?: string;
+	type?: DialogType;
+	width?: string;
+	onConfirm?: () => void;
+	onCancel?: () => void;
+	onClose?: () => void;
 }
 
 const DialogContainer = ({
@@ -19,6 +21,7 @@ const DialogContainer = ({
 	open,
 	onConfirm,
 	onCancel,
+	onClose,
 	children,
 }: DialogProps) => {
 	const dialogRef = useRef<HTMLDialogElement>(null);
@@ -31,35 +34,65 @@ const DialogContainer = ({
 		}
 	}, [open]);
 
+	const closeDialog = () => {
+		if (onCancel !== undefined) {
+			onCancel();
+			return;
+		}
+		if (onClose !== undefined) {
+			onClose();
+		}
+	}
+
+	const handleKeyDown: KeyboardEventHandler<HTMLDialogElement> = (e) => {
+		if (e.key === 'Escape') {
+			closeDialog()
+		}
+	};
+
+	const handleConfirm = () => {
+		if (onConfirm === undefined) {
+			closeDialog();
+			return
+		}
+		onConfirm()
+	};
+
+	const handleCancel = () => {
+		closeDialog();
+	};
+
 	return (
-		<dialog className={className} ref={dialogRef}>
+		<dialog className={className} onKeyDown={handleKeyDown} ref={dialogRef}>
 			{title !== undefined && <Title>{title}</Title>}
 			<div className="box">
 				<div className="message">{children}</div>
-				<div className="buttons">
-					{type === 'info' && (
-						<Button width="240px" onClick={onConfirm}>
-							Ok
-						</Button>
-					)}
-					{type !== 'info' && (
-						<>
-							<Button width="120px" onClick={onConfirm}>
-								Да
+				{type !== undefined && (
+					<div className="buttons">
+						{type === 'info' && (
+							<Button width="240px" onClick={handleConfirm}>
+								Ok
 							</Button>
-							<Button width="120px" onClick={onCancel}>
-								Отмена
-							</Button>
-						</>
-					)}
-				</div>
+						)}
+						{['YesNo', 'SaveCancel'].includes(type) && (
+							<>
+								<Button width="120px" onClick={handleConfirm}>
+									{type === 'YesNo' ? 'Да' : 'Сохранить'}
+								</Button>
+								<Button width="120px" onClick={handleCancel}>
+									{type === 'YesNo' ? 'Нет' : 'Отмена'}
+								</Button>
+							</>
+						)}
+					</div>
+				)}
 			</div>
 		</dialog>
 	);
 };
 
 export const Dialog = styled(DialogContainer)`
-	width: 400px;
+	width: ${({ width = '400px' }) => width};
 	background-color: #fff;
 	border: 1px solid #999;
 	padding: 0;

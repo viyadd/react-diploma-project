@@ -1,9 +1,14 @@
 import { DateFormat } from "../utils";
 
+export interface DataTableToolOnClickFunc {
+	({key, value}:{key: string, value: unknown}): void
+}
 export interface DataTableTool {
 	key: string,
 	iconId: string,
-	onClick: (value: unknown, key: string) => void
+	tooltip?: string,
+	onClick: DataTableToolOnClickFunc
+	// onClick: ({key, value}:{key: string, value: unknown}) => void
 }
 
 export interface DataTableHeader {

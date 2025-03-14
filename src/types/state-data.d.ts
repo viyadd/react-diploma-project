@@ -1,3 +1,4 @@
+// TODO rename state to status
 export type DataBaseStateDataKeys = 'id' | 'code' | 'text'
 
 export interface AppStateData {

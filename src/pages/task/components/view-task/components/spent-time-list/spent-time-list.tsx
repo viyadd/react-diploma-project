@@ -5,6 +5,7 @@ import {
 	DataBaseTaskData,
 	DataTableHeader,
 	DataTableTool,
+	DialogType,
 	ToolbarOptions,
 } from '@/types';
 import { DataTable, Dialog } from '@/components';
@@ -108,7 +109,7 @@ const SpentTimeListContainer = ({ className, spentTimeList }: SpentTimeListProps
 			<Dialog
 				open={isOpen}
 				title='Информация о выполненой работе'
-				type="info"
+				type={DialogType.Info}
 				onCancel={() => setIsOpen(false)}
 				onConfirm={onConfirm}
 			>

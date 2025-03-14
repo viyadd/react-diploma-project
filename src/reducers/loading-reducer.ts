@@ -7,6 +7,7 @@ export interface LoadingStoreData {
 	isTaskLoading?: boolean,
 	isSpentTimeListLoading?: boolean,
 	isSpentTimeLoading?: boolean,
+	isStatusListLoading?: boolean,
 }
 export type LoadingStoreDataKeys = keyof LoadingStoreData
 
@@ -17,6 +18,7 @@ const initialAppState: LoadingStoreData = {
 	isTaskLoading: true,
 	isSpentTimeListLoading: true,
 	isSpentTimeLoading: true,
+	isStatusListLoading: true,
 };
 
 interface ActionLoadingReducer { type: ActionType; payload: LoadingStoreData; }
@@ -30,6 +32,7 @@ export const appLoading = (state = initialAppState, action: ActionLoadingReducer
 		case ActionType.SetTaskLoading:
 		case ActionType.SetSpentTimeListLoading:
 		case ActionType.SetSpentTimeLoading:
+		case ActionType.SetStatusListLoading:
 			return {
 				...state,
 				...action.payload

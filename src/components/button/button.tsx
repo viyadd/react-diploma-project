@@ -16,13 +16,14 @@ const ButtonContainer= ({className, children, ...props }: ButtonProps) => {
 }
 
 export const Button = styled(ButtonContainer)`
+	box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 18px;
   width: ${({ width = '100%' }) => width};
   height: 32px;
-	margin: 11px;
+	margin: 0 0 10px;
 	/* border: none; */
   border: 1px solid #ccc;
   background-color: #eee;

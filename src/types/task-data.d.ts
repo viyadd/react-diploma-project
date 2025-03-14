@@ -20,21 +20,12 @@ export interface DataBaseTasksWhithPaginationData {
 	lastPage: number
 	content: DataBaseTaskData[]
 }
-// export interface AppTaskBaseData {
-// 	id: string,
-// 	title: string,
-// 	description: string,
-// 	createdAt: string,
-// 	projectId: string,
-// 	codeName: string,
-// 	stateId: string,
-// 	ownerId: string,
-// 	executorId: string,
-// }
-
-// export interface AppTaskData extends AppTaskBaseData {
-// 	state?: AppStateData | null
-// 	owner?: AppUserData | null,
-// 	executor?: AppUserData | null
-// }
-
+export interface AppFormTaskData {
+	// id: string,
+	title: string,
+	codeName: string,
+	description: string,
+	stateId: string,
+	ownerId?: string,
+	executorId?: string,
+}

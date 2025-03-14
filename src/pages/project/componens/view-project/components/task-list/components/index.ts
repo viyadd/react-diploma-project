@@ -1,1 +1,1 @@
-export * from './task-row/task-row'
+export * from './view-task-edit/view-task-edit'

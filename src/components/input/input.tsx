@@ -22,8 +22,9 @@ const InputContainer = forwardRef(
 );
 
 export const Input = styled(InputContainer)`
+	box-sizing: border-box;
 	width: ${({ width = '100%' }) => width};
-	height: 20px;
+	height: 100%;
 	margin: 0 0 10px;
 	padding: 10px;
 	font-size: 18px;

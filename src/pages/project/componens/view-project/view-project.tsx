@@ -16,6 +16,7 @@ import { SetProjectLoading, SetTaskListLoading } from '@/actions';
 const ViewProjectContainer = ({ className }: AppComponentsPropsBase) => {
 	const [project, setProject] = useState<DataBaseProjectData | null>(null);
 	const [tasks, setTasks] = useState<DataBaseTaskData[] | null>(null);
+	const [updateData, setUpdateData] = useState(false);
 
 	const dispatch = useAppDispatch();
 
@@ -59,14 +60,29 @@ const ViewProjectContainer = ({ className }: AppComponentsPropsBase) => {
 			}
 			dispatch(SetTaskListLoading(false));
 		});
-	}, [dispatch, params]);
+	}, [dispatch, params, updateData]);
+
+	const handleUpdateTask = (newTask: DataBaseTaskData) => {
+		if (tasks === null) {
+			setTasks([newTask]);
+			return;
+		}
+		if (tasks.filter((task) => task.id === newTask.id).length === 0) {
+			setUpdateData(!updateData);
+		}
+		const taskList = tasks.map((task) => {
+			return task.id === newTask.id ? newTask : task;
+		});
+
+		setTasks([...taskList]);
+	};
 
 	return (
 		<div className={className}>
 			{project !== null && (
 				<>
 					<ProjectTitle project={project} />
-					<TaskList taskList={tasks} />
+					<TaskList taskList={tasks} onUpdateTask={handleUpdateTask} />
 					{/* <Pagination /> */}
 				</>
 			)}

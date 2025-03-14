@@ -2,20 +2,19 @@ import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, FormError, Input, PageTitle, Select } from '../../../../components';
-import { useServerAuthorization } from '../../../../hooks';
+import { Button, FormError, Input, PageTitle, Select } from '@/components';
 import {
 	AppComponentsPropsBase,
 	DataBaseProjectData,
 	DataBaseStateData,
-} from '../../../../types';
+} from '@/types';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {
 	request,
 	serverErrorToString,
 	transformAppStateToOptionList,
-} from '../../../../utils';
+} from '@/utils';
 
 const pageTittleList = ['Новый проект', 'Редактировать проект'];
 
@@ -58,11 +57,8 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 		resolver: yupResolver(projectFormSchema),
 	});
 
-	const serverAuth = useServerAuthorization();
-
 	const fetchProjectAndStates = (id: string) =>
 		Promise.all([request(`/projects/${id}`), request(`/states`)]);
-	// Promise.all([server.fetchProject(hash, { id }), server.fetchStates(hash)]);
 
 	useEffect(() => {
 		reset({
@@ -73,7 +69,6 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 	}, [projectDescription, projectStateId, projectTitle, reset]);
 
 	useEffect(() => {
-		// const hash = serverAuth();
 		if (!isNew && id !== undefined) {
 			fetchProjectAndStates(id).then(([projectData, statesData]) => {
 				if (projectData.error) {
@@ -106,7 +101,7 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 				}
 			});
 		}
-	}, [id, isNew, serverAuth]);
+	}, [id, isNew]);
 
 	useEffect(() => {
 		const subscription = watch((value) => {
@@ -125,7 +120,7 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 		description,
 		state,
 	}: Record<'title' | 'description' | 'state', string>) => {
-		setServerError(null)
+		setServerError(null);
 		const method = !isNew && project && project.id ? 'PATCH' : 'POST';
 
 		const urlId = !isNew && project && project.id ? `/${project.id}` : '';
@@ -142,13 +137,6 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 			const project = loadedProject.data as DataBaseProjectData;
 			navigate(`/project/${project.id}`);
 		});
-		// server
-		// 	.saveProject(serverAuth(), {
-		// 		id: !isNew && project && project.id ? project.id : '',
-		// 		title,
-		// 		description,
-		// 		stateId,
-		// 	})
 	};
 
 	const formError =

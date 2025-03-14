@@ -26,9 +26,10 @@ export interface AppServerResponseData extends ServerResponseData {
 	extendedError?: unknown,
 }
 
-interface RequestProps {
+export type RequestMethods = 'GET' | 'POST' | 'PATCH' | 'DELETE'
+export interface RequestProps {
 	(path: string,
-		method?: 'GET' | 'POST' | 'PATCH' | 'DELETE',
+		method?: RequestMethods,
 		data?: unknown): Promise<AppServerResponseData>
 }
 

@@ -4,15 +4,25 @@ import {
 	DataBaseTaskData,
 	DataTableHeader,
 	DataTableTool,
+	DialogType,
+	ToolbarOptions,
 } from '@/types';
-import { DataTable } from '@/components';
-import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from '@/hooks/use-app-store';
+import { DataTable, Dialog } from '@/components';
+// import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import { selectIsTaskListLoading } from '@/selectors';
+import { useEffect, useState } from 'react';
+import { ViewTaskEdit } from './components';
+import { request } from '@/utils';
+import { SetApiError, SetTaskListLoading } from '@/actions';
+import { AppUserRole } from '@/constants';
+import { useToolbarOptions } from '@/hooks';
 
 interface TaskListProps extends AppComponentsPropsBase {
 	taskList: DataBaseTaskData[] | null;
+	onUpdateTask: (task: DataBaseTaskData) => void;
 }
+const accessRoles = [AppUserRole.Admin, AppUserRole.User];
 
 const taskHeaderList: DataTableHeader[] = [
 	// { key: 'id', text: '' },
@@ -22,39 +32,120 @@ const taskHeaderList: DataTableHeader[] = [
 		link: (v: unknown) => `/task/${(v as DataBaseTaskData)?.id}`,
 	},
 	{ key: 'title', text: 'Заголовок' },
+	{ key: 'state.text', text: 'Статус' },
 	{ key: 'createdAt', text: 'Дата создания', type: 'datetime' },
 	{ key: 'owner.name', text: 'Владелец' },
 	{ key: 'executor.name', text: 'Исполнитель' },
-	{ key: 'state.text', text: 'Статус' },
 	// { key: 'description', },
 ];
 
+const TaskListContainer = ({ className, taskList, onUpdateTask }: TaskListProps) => {
+	const [isShowDialog, setIsShowDialog] = useState(false);
+	const [isShowConfirm, setIsShowConfirm] = useState(false);
+	const [currentTask, setCurrentTask] = useState<DataBaseTaskData | null>(null);
+	const [dataTableTools, setDataTableTools] = useState<DataTableTool[] | null>(null);
 
-const TaskListContainer = ({ className, taskList }: TaskListProps) => {
-		const isTaskListLoading = useAppSelector(selectIsTaskListLoading)
+		const toolbar = useToolbarOptions();
+		const isTaskListLoading = useAppSelector(selectIsTaskListLoading);
 
-	const navigate = useNavigate()
+	const dispatch = useAppDispatch();
 
-	const tools: DataTableTool[] = [
-		{
-			key: 'edit',
-			iconId: 'fa-pencil',
-			onClick: (v: unknown) => {
-				navigate(`/task/${(v as DataBaseTaskData).id}/edit`);
+	useEffect(() => {
+		setDataTableTools([
+			{
+				key: 'edit',
+				iconId: 'fa-pencil',
+				tooltip: 'Редактировать',
+				onClick: ({ value }) => {
+					setIsShowDialog(true);
+					setCurrentTask(value as DataBaseTaskData);
+					// navigate(`/task/${(v as DataBaseTaskData).id}/edit`);
+				},
 			},
-		},
-		// {
-		// 	key: 'delete',
-		// 	iconId: 'fa-trash-o',
-		// 	onClick: (key: string, v: unknown) => {
-		// 		console.log('click', (v as DataBaseTaskData).id, key);
-		// 	},
-		// },
-	];
+			{
+				key: 'setExecutor',
+				iconId: 'fa-user-o', // fa-trash-o
+				tooltip: 'Назначить себя исполнителем',
+				onClick: ({ value }) => {
+					setCurrentTask(value as DataBaseTaskData);
+					setIsShowConfirm(true);
+				},
+			},
+		])
+		const tools: ToolbarOptions[] = [
+			{
+				key: 'add',
+				iconId: 'fa-plus',
+				tooltip: 'Добавить новую задачу',
+				accessRoleList: accessRoles,
+				onClick: () => {
+					setIsShowDialog(true)
+					// navigate(`/project`);
+					// toolbar.resetToolbarOptions();
+				},
+			},
+		];
+		toolbar.setToolbarOptions(tools);
+
+		// if (toolbarOptions === null) {
+		// 	setToolbarOptions(tools);
+		// 	return;
+		// }
+		// dispatch(setToolbarOptionList(toolbarOptions));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	const handleExecutorChangeConfirmed = () => {
+		setIsShowConfirm(false);
+		if (currentTask?.id === undefined) {
+			return;
+		}
+		dispatch(SetTaskListLoading(true));
+
+		request(`/tasks/${currentTask.id}/executor`, 'PATCH').then((savedTask) => {
+			if (savedTask.error) {
+				dispatch(SetApiError(savedTask.error));
+			}
+			onUpdateTask(savedTask.data as DataBaseTaskData);
+			dispatch(SetTaskListLoading(false));
+			console.log('click', savedTask);
+		});
+	};
+
+	const handleTaskEditDialogClose = () => {
+		setIsShowDialog(false);
+		setCurrentTask(null);
+	};
+
 	return (
 		<div className={className}>
 			<div className="title">Список задач</div>
-			<DataTable headers={taskHeaderList} items={taskList} tools={tools} loading={isTaskListLoading} />
+			<DataTable
+				headers={taskHeaderList}
+				items={taskList}
+				tools={dataTableTools}
+				loading={isTaskListLoading}
+			/>
+			<Dialog
+				open={isShowConfirm}
+				type={DialogType.YesNo}
+				onClose={() => setIsShowConfirm(false)}
+				onConfirm={handleExecutorChangeConfirmed}
+			>
+				Изменить исполнителя?
+			</Dialog>
+			<Dialog
+				open={isShowDialog}
+				title={currentTask === null ? 'Создать новую задачу':'Редактировать задачу'}
+				onClose={handleTaskEditDialogClose}
+				width="600px"
+			>
+				<ViewTaskEdit
+					item={currentTask}
+					onUpdateTask={onUpdateTask}
+					setShowMode={setIsShowDialog}
+				/>
+			</Dialog>
 		</div>
 	);
 };

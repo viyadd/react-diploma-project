@@ -1,18 +1,22 @@
 import { ActionType } from '../types';
 import { AppUserRole } from '../constants';
 import { ToolbarOptions } from '../types';
+import { ServerResponseErrorData } from '@/utils';
 
 export interface AppStoreData {
 	wasLogout?: boolean,
 	isUserIdentified?: boolean,
 	appUserRole?: AppUserRole,
 	toolbarOptions?: ToolbarOptions[],
+	apiError?: ServerResponseErrorData | null
 }
+
 const initialAppState: AppStoreData = {
 	wasLogout: false,
 	isUserIdentified: false,
 	appUserRole: AppUserRole.Guest,
-	toolbarOptions: []
+	toolbarOptions: [],
+	apiError: null
 };
 
 export const appReducer = (state = initialAppState, action: { type: ActionType; payload: AppStoreData; }) => {
@@ -42,6 +46,13 @@ export const appReducer = (state = initialAppState, action: { type: ActionType; 
 			return {
 				...state,
 				toolbarOptions: toolbarOptions
+			}
+		}
+		case ActionType.SetApiError: {
+			const { apiError } = action.payload
+			return {
+				...state,
+				apiError
 			}
 		}
 		default:

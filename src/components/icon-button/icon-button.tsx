@@ -1,20 +1,39 @@
 import styled from 'styled-components';
 import { AppComponentsPropsBase } from '../../types';
+import { Tooltip } from '../tooltip/tooltip';
 
 interface IconButton extends AppComponentsPropsBase {
 	id: string;
 	margin?: string;
 	disabled?: boolean;
+	tooltip?: string;
 	onClick?: React.MouseEventHandler<HTMLElement> | undefined;
 }
-const IconButtonContainer = ({ className, id, onClick, disabled }: IconButton) => {
+const IconButtonContainer = ({
+	className,
+	id,
+	tooltip,
+	onClick,
+	disabled,
+}: IconButton) => {
 	return (
 		<div className={className}>
-			<i
-				className={`fa ${id}`}
-				aria-hidden="true"
-				onClick={disabled ? undefined : onClick}
-			></i>
+			{tooltip !== undefined && (
+				<Tooltip text={tooltip}>
+					<i
+						className={`fa ${id}`}
+						aria-hidden="true"
+						onClick={disabled ? undefined : onClick}
+					/>
+				</Tooltip>
+			)}
+			{tooltip === undefined && (
+				<i
+					className={`fa ${id}`}
+					aria-hidden="true"
+					onClick={disabled ? undefined : onClick}
+				/>
+			)}
 		</div>
 	);
 };

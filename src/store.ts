@@ -4,12 +4,14 @@ import {
 	appReducer,
 	userReducer,
 	appLoading,
+	statusReducer,
 } from './reducers';
 
 const reducer = combineReducers({
 	loading: appLoading,
 	app: appReducer,
 	user: userReducer,
+	statuses: statusReducer,
 });
 
 const composeEnhangers = window.__REDUX_DEVTOOLS_EXTANSION_COMPOSE__ || compose;

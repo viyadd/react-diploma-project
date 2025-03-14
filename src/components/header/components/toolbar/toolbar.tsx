@@ -28,8 +28,8 @@ const ToolbarContainer = ({ className }: { className?: string }) => {
 					isIdentifiedUser &&
 					toolbarOptions
 						// .filter((w) => w.accessRoleList.includes(userAccessRole))
-						.map(({ key, iconId, onClick}) => {
-							return <IconButton key={key} id={iconId} onClick={onClick} />;
+						.map(({ key, iconId, tooltip, onClick}) => {
+							return <IconButton key={key} id={iconId} tooltip={tooltip} onClick={onClick} />;
 						})}
 			</div>
 			<div className="options">
