@@ -12,7 +12,7 @@ import { DataTable, Dialog } from '@/components';
 import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import { selectIsTaskListLoading } from '@/selectors';
 import { useEffect, useState } from 'react';
-import { ViewTaskEdit } from './components';
+import { TaskEdit } from './components';
 import { request } from '@/utils';
 import { SetApiError, SetTaskListLoading } from '@/actions';
 import { AppUserRole } from '@/constants';
@@ -45,8 +45,8 @@ const TaskListContainer = ({ className, taskList, onUpdateTask }: TaskListProps)
 	const [currentTask, setCurrentTask] = useState<DataBaseTaskData | null>(null);
 	const [dataTableTools, setDataTableTools] = useState<DataTableTool[] | null>(null);
 
-		const toolbar = useToolbarOptions();
-		const isTaskListLoading = useAppSelector(selectIsTaskListLoading);
+	const toolbar = useToolbarOptions();
+	const isTaskListLoading = useAppSelector(selectIsTaskListLoading);
 
 	const dispatch = useAppDispatch();
 
@@ -71,7 +71,7 @@ const TaskListContainer = ({ className, taskList, onUpdateTask }: TaskListProps)
 					setIsShowConfirm(true);
 				},
 			},
-		])
+		]);
 		const tools: ToolbarOptions[] = [
 			{
 				key: 'add',
@@ -79,7 +79,7 @@ const TaskListContainer = ({ className, taskList, onUpdateTask }: TaskListProps)
 				tooltip: 'Добавить новую задачу',
 				accessRoleList: accessRoles,
 				onClick: () => {
-					setIsShowDialog(true)
+					setIsShowDialog(true);
 					// navigate(`/project`);
 					// toolbar.resetToolbarOptions();
 				},
@@ -112,9 +112,17 @@ const TaskListContainer = ({ className, taskList, onUpdateTask }: TaskListProps)
 		});
 	};
 
-	const handleTaskEditDialogClose = () => {
+	const closeTaskEditDialog = () => {
 		setIsShowDialog(false);
 		setCurrentTask(null);
+	};
+	const handleTaskEditDialogClose = () => {
+		closeTaskEditDialog();
+	};
+
+	const handleTaskUpdate = (task: DataBaseTaskData) => {
+		onUpdateTask(task);
+		closeTaskEditDialog();
 	};
 
 	return (
@@ -136,14 +144,14 @@ const TaskListContainer = ({ className, taskList, onUpdateTask }: TaskListProps)
 			</Dialog>
 			<Dialog
 				open={isShowDialog}
-				title={currentTask === null ? 'Создать новую задачу':'Редактировать задачу'}
+				title={currentTask === null ? 'Создать новую задачу' : 'Редактировать задачу'}
 				onClose={handleTaskEditDialogClose}
 				width="600px"
 			>
-				<ViewTaskEdit
+				<TaskEdit
 					item={currentTask}
-					onUpdateTask={onUpdateTask}
-					setShowMode={setIsShowDialog}
+					onUpdateTask={handleTaskUpdate}
+					onClose={handleTaskEditDialogClose}
 				/>
 			</Dialog>
 		</div>

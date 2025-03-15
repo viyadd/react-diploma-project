@@ -22,10 +22,10 @@ import { loadStatusListAsync } from '@/actions/load-status-list-async';
 import { SetApiError, SetTaskListLoading } from '@/actions';
 import { useParams } from 'react-router-dom';
 
-interface ViewTaskEditProps extends AppComponentsPropsBase {
+interface TaskEditProps extends AppComponentsPropsBase {
 	item: DataBaseTaskData | null;
 	onUpdateTask: (task: DataBaseTaskData) => void;
-	setShowMode: (isShowMode: boolean) => void;
+	onClose: () => void;
 }
 
 const taskFormSchema = yup.object().shape({
@@ -44,12 +44,7 @@ const getFormValue = (item: DataBaseTaskData | null) => {
 	};
 };
 
-const ViewTaskEditContainer = ({
-	className,
-	item,
-	onUpdateTask,
-	setShowMode,
-}: ViewTaskEditProps) => {
+const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditProps) => {
 	const [serverError, setServerError] = useState<string | null>(null);
 
 	const statusList = useAppSelector(selectStatusList);
@@ -100,11 +95,12 @@ const ViewTaskEditContainer = ({
 		request(url, method, data).then((savedTask) => {
 			if (savedTask.error) {
 				dispatch(SetApiError(savedTask.error));
+			} else {
+				onUpdateTask(savedTask.data as DataBaseTaskData);
 			}
-			onUpdateTask(savedTask.data as DataBaseTaskData);
 
 			dispatch(SetTaskListLoading(false));
-			setShowMode(false);
+			onClose();
 			reset();
 
 			// console.log('click', savedTask);
@@ -165,11 +161,7 @@ const ViewTaskEditContainer = ({
 			/>
 			<div className="error">{errorMessage}</div>
 			<div className="buttons">
-				<Button
-					onClick={() => setShowMode(false)}
-					width="45%"
-					disabled={isTaskListLoading}
-				>
+				<Button onClick={() => onClose()} width="45%" disabled={isTaskListLoading}>
 					Отменить
 				</Button>
 				<Button
@@ -184,7 +176,7 @@ const ViewTaskEditContainer = ({
 	);
 };
 
-export const ViewTaskEdit = styled(ViewTaskEditContainer)`
+export const TaskEdit = styled(TaskEditContainer)`
 	display: flex;
 	flex-direction: column;
 	gap: 13px;
