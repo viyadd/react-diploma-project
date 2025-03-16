@@ -5,6 +5,7 @@ import {
 	DataTableHeader,
 	DataTableTool,
 	DialogType,
+	// DialogType,
 	ToolbarOptions,
 } from '@/types';
 import { DataTable, Dialog } from '@/components';
@@ -13,10 +14,12 @@ import { useAppSelector } from '@/hooks/use-app-store';
 import { AppUserRole } from '@/constants';
 import { selectIsSpentTimeListLoading } from '@/selectors';
 import { useToolbarOptions } from '@/hooks';
-import { ViewSpentTimeInfo } from '../view-spent-time/view-spent-time';
+import { ViewSpentTime } from '../view-spent-time/view-spent-time';
+import { EditSpentTime } from '../edit-spent-time/edit-spent-time';
 
 interface SpentTimeListProps extends AppComponentsPropsBase {
 	spentTimeList: DataBaseSpentTimeData[] | null;
+	onUpdateSpentTime: (spentTime: DataBaseSpentTimeData) => void;
 }
 
 const headerList: DataTableHeader[] = [
@@ -31,11 +34,18 @@ const headerList: DataTableHeader[] = [
 	{ key: 'createdAt', text: 'Дата создания', type: 'datetime' },
 ];
 
+type DialogMode = 'info' | 'edit' | 'new' | null;
+
 const accessRoles = [AppUserRole.Admin, AppUserRole.User];
 
-const SpentTimeListContainer = ({ className, spentTimeList }: SpentTimeListProps) => {
+const SpentTimeListContainer = ({
+	className,
+	spentTimeList,
+	onUpdateSpentTime,
+}: SpentTimeListProps) => {
 	const [dataTableTools, setDataTableTools] = useState<DataTableTool[] | null>(null);
 	const [isOpenDialog, setIsOpenDialog] = useState(false);
+	const [dialogMode, setDialogMode] = useState<DialogMode>(null);
 	const [currentSpentTime, setCurrentSpentTime] = useState<DataBaseSpentTimeData | null>(
 		null,
 	);
@@ -50,8 +60,11 @@ const SpentTimeListContainer = ({ className, spentTimeList }: SpentTimeListProps
 			{
 				key: 'add',
 				iconId: 'fa-plus',
+				tooltip: 'Добавить запись выполненной работы',
 				accessRoleList: accessRoles,
 				onClick: () => {
+					setDialogMode('new');
+					setCurrentSpentTime(null);
 					setIsOpenDialog(true);
 					// navigate(`/spentTime`);
 					// toolbar.resetToolbarOptions();
@@ -65,6 +78,7 @@ const SpentTimeListContainer = ({ className, spentTimeList }: SpentTimeListProps
 				key: 'view',
 				iconId: 'fa-eye',
 				onClick: ({ value }) => {
+					setDialogMode('info');
 					const item = value as DataBaseSpentTimeData;
 					console.log('view', value);
 					setCurrentSpentTime(item);
@@ -75,6 +89,7 @@ const SpentTimeListContainer = ({ className, spentTimeList }: SpentTimeListProps
 				key: 'edit',
 				iconId: 'fa-pencil',
 				onClick: ({ value }) => {
+					setDialogMode('edit');
 					const item = value as DataBaseSpentTimeData;
 					setCurrentSpentTime(item);
 					setIsOpenDialog(true);
@@ -95,6 +110,33 @@ const SpentTimeListContainer = ({ className, spentTimeList }: SpentTimeListProps
 	// 	setIsOpenDialog(false);
 	// };
 
+	const closeSpentTimeEditDialog = () => {
+		setIsOpenDialog(false);
+		// setCurrentSpentTime(null);
+	};
+
+	const handleSpentTimeEditDialogClose = () => {
+		closeSpentTimeEditDialog();
+	};
+
+	const handleSpentTimeUpdate = (spentTime: DataBaseSpentTimeData) => {
+		onUpdateSpentTime(spentTime);
+		closeSpentTimeEditDialog();
+	};
+
+	const getDialogTitle = (mode: DialogMode) => {
+		switch (mode) {
+			case 'info':
+				return 'Информация о выполненой работе';
+			case 'edit':
+				return 'Редактирование записи';
+			case 'new':
+				return 'Добавить новую запись';
+			default:
+				return '-';
+		}
+	};
+
 	return (
 		<div className={className}>
 			<div className="content">
@@ -108,12 +150,19 @@ const SpentTimeListContainer = ({ className, spentTimeList }: SpentTimeListProps
 			</div>
 			<Dialog
 				open={isOpenDialog}
-				title="Информация о выполненой работе"
-				type={DialogType.Info}
-				onClose={() => setIsOpenDialog(false)}
-				// onConfirm={onConfirm}
+				title={getDialogTitle(dialogMode)}
+				type={dialogMode === 'info' ? DialogType.Info : undefined}
+				width='500px'
+				onClose={handleSpentTimeEditDialogClose}
 			>
-				<ViewSpentTimeInfo item={currentSpentTime} />
+				{dialogMode === 'info' && <ViewSpentTime item={currentSpentTime} />}
+				{['edit', 'new'].includes(dialogMode!) && (
+					<EditSpentTime
+						item={currentSpentTime}
+						onUpdate={handleSpentTimeUpdate}
+						onClose={handleSpentTimeEditDialogClose}
+					/>
+				)}
 			</Dialog>
 		</div>
 	);

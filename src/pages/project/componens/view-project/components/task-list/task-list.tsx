@@ -13,8 +13,8 @@ import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import { selectIsTaskListLoading } from '@/selectors';
 import { useEffect, useState } from 'react';
 import { TaskEdit } from './components';
-import { request } from '@/utils';
-import { SetApiError, SetTaskListLoading } from '@/actions';
+import { pushServerApiSnackbarMessage, request } from '@/utils';
+import { SetTaskListLoading } from '@/actions';
 import { AppUserRole } from '@/constants';
 import { useToolbarOptions } from '@/hooks';
 
@@ -104,7 +104,7 @@ const TaskListContainer = ({ className, taskList, onUpdateTask }: TaskListProps)
 
 		request(`/tasks/${currentTask.id}/executor`, 'PATCH').then((savedTask) => {
 			if (savedTask.error) {
-				dispatch(SetApiError(savedTask.error));
+				pushServerApiSnackbarMessage({ error: savedTask.error });
 			}
 			onUpdateTask(savedTask.data as DataBaseTaskData);
 			dispatch(SetTaskListLoading(false));

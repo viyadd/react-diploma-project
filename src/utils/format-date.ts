@@ -1,6 +1,8 @@
-export type DateFormat = 'date' | 'datetime' | 'time';
+export type DateFormat = 'date' | 'dateYMD' | 'datetime' | 'time';
 
 const formatDateToDMG = (date: string) => date.slice(0, 10).split('-').reverse().join('.')
+
+const formatDateToYMD = (date: string) => date.slice(0, 10)
 
 const formatDateToTime = (date: string) => date.slice(11, 16)
 
@@ -20,6 +22,8 @@ export function formatDate(date: string, type: DateFormat): string {
 	switch (type) {
 		case "date":
 			return formatDateToDMG(date)
+		case "dateYMD":
+			return formatDateToYMD(date)
 		case "datetime":
 			return formatDateToDMGTime(date)
 		case "time":

@@ -7,7 +7,7 @@ interface ViewSpentTimeInfoProps extends AppComponentsPropsBase {
 	item: DataBaseSpentTimeData | null;
 }
 
-const ViewSpentTimeInfoContainer = ({ className, item }: ViewSpentTimeInfoProps) => {
+const ViewSpentTimeContainer = ({ className, item }: ViewSpentTimeInfoProps) => {
 	const getFullName = ({ executor }: DataBaseSpentTimeData) => {
 		const { surname, name, patronymic } = executor ?? {};
 		return [surname, name, patronymic].filter(Boolean).join(' ');
@@ -37,7 +37,7 @@ const ViewSpentTimeInfoContainer = ({ className, item }: ViewSpentTimeInfoProps)
 	);
 };
 
-export const ViewSpentTimeInfo = styled(ViewSpentTimeInfoContainer)`
+export const ViewSpentTime = styled(ViewSpentTimeContainer)`
 	display: flex;
 	flex-direction: column;
 	gap: 13px;

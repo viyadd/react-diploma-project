@@ -7,6 +7,7 @@ import { AppComponentsPropsBase, DataBaseTaskData } from '@/types';
 import {
 	formatDate,
 	getUserFullName,
+	pushServerApiSnackbarMessage,
 	request,
 	RequestMethods,
 	transformAppStateToOptionList,
@@ -19,7 +20,7 @@ import {
 	selectStatusList,
 } from '@/selectors';
 import { loadStatusListAsync } from '@/actions/load-status-list-async';
-import { SetApiError, SetTaskListLoading } from '@/actions';
+import { SetTaskListLoading } from '@/actions';
 import { useParams } from 'react-router-dom';
 
 interface TaskEditProps extends AppComponentsPropsBase {
@@ -71,7 +72,6 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 		if (statusList === null) {
 			dispatch(loadStatusListAsync());
 		}
-		console.log('loadStatusListAsync >>', { statusList });
 	}, [dispatch, statusList]);
 
 	const formError =
@@ -87,14 +87,13 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 			method: item !== null ? 'PATCH' : 'POST',
 			data: getValues(),
 		};
-		// console.log(item, requestParams, params)
 
 		dispatch(SetTaskListLoading(true));
 
 		const { url, method, data } = requestParams;
 		request(url, method, data).then((savedTask) => {
 			if (savedTask.error) {
-				dispatch(SetApiError(savedTask.error));
+				pushServerApiSnackbarMessage({ error: savedTask.error });
 			} else {
 				onUpdateTask(savedTask.data as DataBaseTaskData);
 			}
@@ -102,14 +101,10 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 			dispatch(SetTaskListLoading(false));
 			onClose();
 			reset();
-
-			// console.log('click', savedTask);
 		});
 	};
 
 	const onSubmit = () => {
-		const v = getValues();
-		console.log('onSubmit', v);
 		saveTask();
 	};
 

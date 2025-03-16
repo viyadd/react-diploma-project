@@ -18,6 +18,7 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 	const [spentTimeList, setSpentTimeList] = useState<DataBaseSpentTimeData[] | null>(
 		null,
 	);
+	const [updateData, setUpdateData] = useState(false);
 
 	const params = useParams();
 	const dispatch = useAppDispatch();
@@ -70,14 +71,37 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 				);
 			}
 		});
-	}, [dispatch, params]);
+	}, [dispatch, params, updateData]);
+
+	const onUpdateSpentTime = (newSpentTime: DataBaseSpentTimeData) => {
+		console.log(newSpentTime);
+		if (spentTimeList === null) {
+			setSpentTimeList([newSpentTime]);
+			return;
+		}
+		if (
+			spentTimeList.filter((spentTime) => spentTime.id === newSpentTime.id).length === 0
+		) {
+			setUpdateData(!updateData);
+		}
+		const newSpentTimeList = spentTimeList.map((spentTime) => {
+			return spentTime.id === newSpentTime.id ? newSpentTime : spentTime;
+		});
+
+		setSpentTimeList([...newSpentTimeList]);
+	};
 
 	return (
 		<div className={className}>
 			{task !== null && (
 				<>
 					<TaskTitle task={task} />
-					{<SpentTimeList spentTimeList={spentTimeList} />}
+					{
+						<SpentTimeList
+							spentTimeList={spentTimeList}
+							onUpdateSpentTime={onUpdateSpentTime}
+						/>
+					}
 					{/* <Pagination /> */}
 				</>
 			)}
