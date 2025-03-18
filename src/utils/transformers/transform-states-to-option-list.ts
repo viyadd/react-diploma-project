@@ -1,6 +1,6 @@
-import { AppStateData } from "../types";
+import { AppStateData } from "../../types";
 
-export const transformAppStateToOptionList = (stateList: AppStateData[]) => {
+export const transformStatesToOptionList = (stateList: AppStateData[]) => {
 	return stateList.map((state) => {
 		if (state === null) {
 			return state;

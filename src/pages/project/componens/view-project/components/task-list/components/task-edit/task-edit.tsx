@@ -10,7 +10,7 @@ import {
 	pushServerApiSnackbarMessage,
 	request,
 	RequestMethods,
-	transformAppStateToOptionList,
+	transformStatesToOptionList,
 } from '@/utils';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
@@ -20,7 +20,7 @@ import {
 	selectStatusList,
 } from '@/selectors';
 import { loadStatusListAsync } from '@/actions/load-status-list-async';
-import { SetTaskListLoading } from '@/actions';
+import { setTaskListLoading } from '@/actions';
 import { useParams } from 'react-router-dom';
 
 interface TaskEditProps extends AppComponentsPropsBase {
@@ -88,7 +88,7 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 			data: getValues(),
 		};
 
-		dispatch(SetTaskListLoading(true));
+		dispatch(setTaskListLoading(true));
 
 		const { url, method, data } = requestParams;
 		request(url, method, data).then((savedTask) => {
@@ -98,7 +98,7 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 				onUpdateTask(savedTask.data as DataBaseTaskData);
 			}
 
-			dispatch(SetTaskListLoading(false));
+			dispatch(setTaskListLoading(false));
 			onClose();
 			reset();
 		});
@@ -148,7 +148,7 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 				})}
 			/> */}
 			<Select
-				optionsList={transformAppStateToOptionList(statusList || [])}
+				optionsList={transformStatesToOptionList(statusList || [])}
 				loading={isStatusListLoading}
 				{...register('state', {
 					onChange: () => setServerError(null),

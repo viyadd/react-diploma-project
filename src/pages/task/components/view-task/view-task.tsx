@@ -10,7 +10,7 @@ import {
 } from '@/types';
 import { SpentTimeList, TaskTitle } from './components';
 import { useAppDispatch } from '@/hooks/use-app-store';
-import { SetSpentTimeListLoading, SetTaskLoading } from '@/actions';
+import { setSpentTimeListLoading, setTaskLoading } from '@/actions';
 // import { Pagination } from '../../../../components';
 
 const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
@@ -24,12 +24,12 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		dispatch(SetTaskLoading(true));
-		dispatch(SetSpentTimeListLoading(true));
+		dispatch(setTaskLoading(true));
+		dispatch(setSpentTimeListLoading(true));
 		const { id } = params;
 		if (id === undefined) {
-			dispatch(SetTaskLoading(false));
-			dispatch(SetSpentTimeListLoading(false));
+			dispatch(setTaskLoading(false));
+			dispatch(setSpentTimeListLoading(false));
 			return;
 		}
 		request(`/tasks/${id}`).then((loadedTask) => {
@@ -37,17 +37,17 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 			if (loadedTask.error) {
 				console.log('не удалось загрузить задачу', loadedTask.error);
 				// TODO вывести сообщение об ошибке
-				dispatch(SetTaskLoading(false));
-				dispatch(SetSpentTimeListLoading(false));
+				dispatch(setTaskLoading(false));
+				dispatch(setSpentTimeListLoading(false));
 				return;
 			}
 			const currentTask = loadedTask.data as DataBaseTaskData;
 			setTask(currentTask);
-			dispatch(SetTaskLoading(false));
+			dispatch(setTaskLoading(false));
 
 			const spentTimeList = currentTask.spentTimes;
 			if (spentTimeList.length === 0) {
-				dispatch(SetSpentTimeListLoading(false));
+				dispatch(setSpentTimeListLoading(false));
 			}
 
 			console.log('tasks >>', { t: currentTask, st: spentTimeList });
@@ -57,7 +57,7 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 						if (spentTimes.error) {
 							console.log('не удалось загрузить задачи', spentTimes.error);
 							// TODO вывести сообщение об ошибке
-							dispatch(SetSpentTimeListLoading(false));
+							dispatch(setSpentTimeListLoading(false));
 							return;
 						}
 						const currentSpentTimeList =
@@ -65,7 +65,7 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 						if (currentSpentTimeList?.content) {
 							setSpentTimeList(currentSpentTimeList.content);
 						}
-						dispatch(SetSpentTimeListLoading(false));
+						dispatch(setSpentTimeListLoading(false));
 						console.log('currentSpentTimeList', currentSpentTimeList.content);
 					},
 				);

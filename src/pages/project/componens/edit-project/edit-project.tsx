@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import {
 	request,
 	serverErrorToString,
-	transformAppStateToOptionList,
+	transformStatesToOptionList,
 } from '@/utils';
 
 const pageTittleList = ['Новый проект', 'Редактировать проект'];
@@ -162,7 +162,7 @@ const EditProjectContainer = ({ className, isNew, id }: EditProjectProps) => {
 					})}
 				/>
 				<Select
-					optionsList={transformAppStateToOptionList(stateList || [])}
+					optionsList={transformStatesToOptionList(stateList || [])}
 					{...register('state', {
 						onChange: () => setServerError(null),
 					})}

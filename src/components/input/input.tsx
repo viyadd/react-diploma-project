@@ -5,6 +5,7 @@ import { AppComponentsPropsBase } from '../../types';
 interface InputProps extends AppComponentsPropsBase {
 	width?: string;
 	type?: string;
+	disabled?: boolean;
 	placeholder?: string;
 	onChange: React.ChangeEventHandler<HTMLInputElement>;
 	defaultValue?: string | number | readonly string[];

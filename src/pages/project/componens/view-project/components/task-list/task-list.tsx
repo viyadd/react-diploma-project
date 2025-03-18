@@ -14,7 +14,7 @@ import { selectIsTaskListLoading } from '@/selectors';
 import { useEffect, useState } from 'react';
 import { TaskEdit } from './components';
 import { pushServerApiSnackbarMessage, request } from '@/utils';
-import { SetTaskListLoading } from '@/actions';
+import { setTaskListLoading } from '@/actions';
 import { AppUserRole } from '@/constants';
 import { useToolbarOptions } from '@/hooks';
 
@@ -100,14 +100,14 @@ const TaskListContainer = ({ className, taskList, onUpdateTask }: TaskListProps)
 		if (currentTask?.id === undefined) {
 			return;
 		}
-		dispatch(SetTaskListLoading(true));
+		dispatch(setTaskListLoading(true));
 
 		request(`/tasks/${currentTask.id}/executor`, 'PATCH').then((savedTask) => {
 			if (savedTask.error) {
 				pushServerApiSnackbarMessage({ error: savedTask.error });
 			}
 			onUpdateTask(savedTask.data as DataBaseTaskData);
-			dispatch(SetTaskListLoading(false));
+			dispatch(setTaskListLoading(false));
 			console.log('click', savedTask);
 		});
 	};

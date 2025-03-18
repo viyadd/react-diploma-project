@@ -22,18 +22,23 @@ interface ServerResponseData {
 	data?: unknown,
 }
 
+export function isServerResponseDataNull(val: ServerResponseData | null): val is null {
+	return val === null
+}
+
 export interface AppServerResponseData extends ServerResponseData {
 	extendedError?: unknown,
 }
 
 export type RequestMethods = 'GET' | 'POST' | 'PATCH' | 'DELETE'
-export interface RequestProps {
+
+export interface RequestFunc {
 	(path: string,
 		method?: RequestMethods,
 		data?: unknown): Promise<AppServerResponseData>
 }
 
-export const request: RequestProps = async (path, method, data) => {
+export const request: RequestFunc = async (path, method, data) => {
 	try {
 		const res = await fetch('/api/v1' + path, {
 			headers: {

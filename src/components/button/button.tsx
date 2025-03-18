@@ -23,8 +23,6 @@ export const Button = styled(ButtonContainer)`
   font-size: 18px;
   width: ${({ width = '100%' }) => width};
   height: 32px;
-	margin: 0 0 10px;
-	/* border: none; */
   border: 1px solid #ccc;
   background-color: #eee;
 

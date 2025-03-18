@@ -48,17 +48,20 @@ export const Header = styled(HeaderContainer)`
 	display: flex;
 	align-items: center;
 	border-bottom: 1px solid #777777;
+	align-items: stretch;
+	height: 6vh;
 
 	& .link-list {
 		display: flex;
 		background-color: #eee;
-		padding: 20px 9px;
+		gap: 6px;
+		padding: 0 9px;
+		align-items: center;
 	}
 
 	& .link {
 		text-decoration: none;
 		font-size: 19px;
-		padding-right: 9px;
 		color: #213547;
 		border-bottom: 1px solid transparent;
 		transition: border-bottom 150ms;
@@ -70,7 +73,10 @@ export const Header = styled(HeaderContainer)`
 	}
 
 	& .toolbar {
-		margin: 14px 9px;
+		display: flex;
+		/* justify-content: flex-end; */
+		/* margin: 14px 9px; */
+		align-items: center;
 		width: 100%;
 	}
 `;

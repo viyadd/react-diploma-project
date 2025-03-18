@@ -2,16 +2,22 @@ import { DataBaseSpentTimeData } from "./spent-time"
 import { DataBaseStateData } from "./state-data"
 import { DataBaseUserData } from "./user-data"
 
-export interface DataBaseTaskData {
+export interface DataBaseTaskShortData {
 	id: string,
 	title: string,
+	spentTimes: string[] | DataBaseSpentTimeData[]
+}
+
+export function isDataBaseTaskShortData(val: DataBaseTaskShortData | unknown): val is DataBaseTaskShortData {
+	return val.spentTimes !== undefined && val.id !== undefined && val.title !== undefined
+}
+export interface DataBaseTaskData extends DataBaseTaskShortData {
 	codeName: string,
 	description: string,
 	createdAt: string,
 	state: DataBaseStateData,
 	owner: DataBaseUserData,
 	executor: DataBaseUserData,
-	spentTimes: DataBaseSpentTimeData[]
 }
 
 export type DataBaseTaskDataKeys = keyof DataBaseTaskData

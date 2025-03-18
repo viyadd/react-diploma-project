@@ -10,7 +10,7 @@ import { ProjectTitle, TaskList } from './components';
 import styled from 'styled-components';
 import { request } from '@/utils';
 import { useAppDispatch } from '@/hooks/use-app-store';
-import { SetProjectLoading, SetTaskListLoading } from '@/actions';
+import { setProjectLoading, setTaskListLoading } from '@/actions';
 // import { Pagination } from '../../../../components';
 
 const ViewProjectContainer = ({ className }: AppComponentsPropsBase) => {
@@ -23,26 +23,26 @@ const ViewProjectContainer = ({ className }: AppComponentsPropsBase) => {
 	const params = useParams();
 
 	useEffect(() => {
-		dispatch(SetProjectLoading(true));
-		dispatch(SetTaskListLoading(true));
+		dispatch(setProjectLoading(true));
+		dispatch(setTaskListLoading(true));
 		const { id } = params;
 		if (id === undefined) {
-			dispatch(SetProjectLoading(false));
-			dispatch(SetTaskListLoading(false));
+			dispatch(setProjectLoading(false));
+			dispatch(setTaskListLoading(false));
 			return;
 		}
 
 		request(`/projects/${id}`).then(async (loadedProject) => {
 			if (loadedProject.error) {
 				console.log('не удалось загрузить проект', loadedProject.error);
-				dispatch(SetProjectLoading(false));
-				dispatch(SetTaskListLoading(true));
+				dispatch(setProjectLoading(false));
+				dispatch(setTaskListLoading(true));
 				return;
 			}
 
 			const currentProject = loadedProject.data as DataBaseProjectData;
 			setProject(currentProject);
-			dispatch(SetProjectLoading(false));
+			dispatch(setProjectLoading(false));
 
 			const taskList = currentProject.tasks;
 			if (taskList.length > 0) {
@@ -51,14 +51,14 @@ const ViewProjectContainer = ({ className }: AppComponentsPropsBase) => {
 				);
 				if (loadedTasks.error) {
 					console.log('не удалось загрузить задачи', loadedTasks.error);
-					dispatch(SetTaskListLoading(false));
+					dispatch(setTaskListLoading(false));
 					return;
 				}
 				const currentTaskList = loadedTasks.data as DataBaseTasksWhithPaginationData;
 				setTasks(currentTaskList.content);
 				console.log(currentTaskList.content);
 			}
-			dispatch(SetTaskListLoading(false));
+			dispatch(setTaskListLoading(false));
 		});
 	}, [dispatch, params, updateData]);
 

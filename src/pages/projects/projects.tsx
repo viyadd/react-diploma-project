@@ -1,6 +1,6 @@
 import { DataTable, PageTitle, PrivateContent } from '@/components';
 import { useEffect, useState } from 'react';
-import { request, serverErrorToString } from '@/utils';
+import { pushServerApiSnackbarMessage, request, serverErrorToString } from '@/utils';
 import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import {
 	AppComponentsPropsBase,
@@ -9,7 +9,7 @@ import {
 	DataTableTool,
 	ToolbarOptions,
 } from '@/types';
-import { SetProjectListLoading, setToolbarOptionList } from '@/actions';
+import { setProjectListLoading, setToolbarOptionList } from '@/actions';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppUserRole } from '@/constants';
@@ -98,12 +98,13 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 			// 	},
 			// },
 		]);
-		dispatch(SetProjectListLoading(true));
+		dispatch(setProjectListLoading(true));
 		// const hash = serverAuth();
 		request('/projects').then((projectsData) => {
 			if (projectsData.error) {
-				setErrorMessage(serverErrorToString(projectsData.error));
-				dispatch(SetProjectListLoading(false));
+				pushServerApiSnackbarMessage({ error: projectsData.error });
+				// setErrorMessage(serverErrorToString(projectsData.error));
+				dispatch(setProjectListLoading(false));
 				return;
 			}
 
@@ -111,7 +112,7 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 				setProjectList(projectsData.data as DataBaseProjectData[]);
 				console.log('>>>', projectsData.data as DataBaseProjectData[]);
 			}
-			dispatch(SetProjectListLoading(false));
+			dispatch(setProjectListLoading(false));
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

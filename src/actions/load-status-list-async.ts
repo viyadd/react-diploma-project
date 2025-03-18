@@ -1,17 +1,17 @@
 import { AppDispatch } from '@/store';
 import { request } from '../utils/request';
-import { SetStatusListLoading } from './loading/set-status-loading';
+import { setStatusListLoading } from './loading/set-status-loading';
 import { ActionType, DataBaseStateData } from '@/types';
 import { pushServerApiSnackbarMessage } from '@/utils';
 
 export const loadStatusListAsync = () => (dispatch: AppDispatch) => {
-	dispatch(SetStatusListLoading(true))
+	dispatch(setStatusListLoading(true))
 	console.log('loadStatusListAsync')
 
 	request(`/states`,).then((loadedStatuses) => {
 		if (loadedStatuses.error) {
 			pushServerApiSnackbarMessage({ error: loadedStatuses.error });
-			dispatch(SetStatusListLoading())
+			dispatch(setStatusListLoading())
 
 			return dispatch({
 				type: ActionType.ResetStatusList,
@@ -19,7 +19,7 @@ export const loadStatusListAsync = () => (dispatch: AppDispatch) => {
 			});
 		}
 
-		dispatch(SetStatusListLoading())
+		dispatch(setStatusListLoading())
 		return dispatch({
 			type: ActionType.SetStatusList,
 			payload: { statusList: (loadedStatuses.data as DataBaseStateData[]) },

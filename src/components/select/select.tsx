@@ -11,22 +11,27 @@ interface OptionListData {
 
 interface SelectProps extends AppComponentsOptionsProps {
 	width?: string;
-	value?: string;
+	value?: string | number | readonly string[];
 	loading?: boolean;
+	disabled?: boolean;
 	optionsList: OptionListData[];
+	defaultValue?: string | number | readonly string[];
 	onChange?: React.ChangeEventHandler<HTMLSelectElement>;
 }
 
 const SelectContainer = forwardRef(
 	(
-		{ className, value, optionsList, loading, ...props }: SelectProps,
+		{ className, value, optionsList, loading, defaultValue, ...props }: SelectProps,
 		ref: React.Ref<HTMLSelectElement>,
 	) => {
 		return (
 			<div className={className}>
 				<SkeletonLoader type="field" loading={loading} />
 				{!loading && (
-					<select value={value} {...props} ref={ref}>
+					<select value={value} defaultValue={defaultValue || ''} {...props} ref={ref}>
+						<option value="" disabled hidden>
+							Выбрать здесь
+						</option>
 						{optionsList.map(({ key, value: optionValue, text }) => (
 							<option key={key} value={key}>
 								{text || optionValue}

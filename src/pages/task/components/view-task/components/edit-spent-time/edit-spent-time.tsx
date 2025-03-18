@@ -14,7 +14,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { useAppDispatch } from '@/hooks/use-app-store';
 import { useParams } from 'react-router-dom';
-import { SetSpentTimeListLoading } from '@/actions';
+import { setSpentTimeListLoading } from '@/actions';
 
 const spentFormSchema = yup.object().shape({
 	comment: yup.string().required('Заполните комментарий'),
@@ -86,20 +86,20 @@ const EditSpentTimeContainer = ({
 			data: { ...parsingFormData(formData) },
 		};
 
-		dispatch(SetSpentTimeListLoading(true));
+		dispatch(setSpentTimeListLoading(true));
 
 		const { url, method, data } = requestParams;
 		request(url, method, data).then((savedSpendTime) => {
 			if (savedSpendTime.error) {
 				pushServerApiSnackbarMessage({ error: savedSpendTime.error });
 
-				dispatch(SetSpentTimeListLoading(false));
+				dispatch(setSpentTimeListLoading(false));
 				return;
 			} else {
 				onUpdate(savedSpendTime.data as DataBaseSpentTimeData);
 			}
 
-			dispatch(SetSpentTimeListLoading(false));
+			dispatch(setSpentTimeListLoading(false));
 			onClose();
 			reset();
 		});
@@ -123,14 +123,14 @@ const EditSpentTimeContainer = ({
 			/>
 			<Input
 				type="date"
-				placeholder="Описание"
+				placeholder="Дата"
 				{...register('date', {
 					onChange: () => setServerError(null),
 				})}
 			/>
 			<Input
 				type="time"
-				placeholder="state"
+				placeholder="время"
 				{...register('time', {
 					onChange: () => setServerError(null),
 				})}

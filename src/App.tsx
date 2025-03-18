@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Header } from './components';
 import { Route, Routes } from 'react-router';
 import { Authorization, Project, Projects, Registration, Task, Users } from './pages';
+import { Main } from './pages/main/main';
 // import { useLayoutEffect } from 'react';
 // import { setAccessRole, setUser } from './actions';
 // import { useAppDispatch } from './hooks/use-app-store';
@@ -28,7 +29,7 @@ function App() {
 			<Header />
 			<Page>
 				<Routes>
-					<Route path="/" element={<div>Главная</div>} />
+					<Route path="/" element={<Main />} />
 					<Route path="/login" element={<Authorization />} />
 					<Route path="/register" element={<Registration />} />
 					<Route path="/analytics" element={<div>Аналитика</div>} />

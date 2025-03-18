@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AppUserData, DataBaseUserData } from "../types";
 import { AppUserRole } from "../constants"
-import { convertDBRoleIdToAppRole, request } from "../utils";
+import { convertDBRoleIdToAppRole, pushServerApiSnackbarMessage, request } from "../utils";
 import { useAppDispatch, useAppSelector } from "./use-app-store";
 import { setAppUserIdentified, setUser, userLogout } from "../actions";
 import { setAppUserRole } from "../actions/set-app-user-role";
@@ -15,10 +15,12 @@ export const useUserRights = () => {
 	const dispatch = useAppDispatch();
 
 	const getUser = async () => {
-		console.log('getUser >>')
-
 		try {
 			const loadedUser = await request('/users/user');
+
+			if (loadedUser.error) {
+				pushServerApiSnackbarMessage({ error: loadedUser.error });
+			}
 
 			const identified = !!loadedUser?.data
 			dispatch(setAppUserIdentified(identified));
@@ -30,8 +32,10 @@ export const useUserRights = () => {
 			const user = loadedUser?.data as DataBaseUserData
 
 			return user
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (error) { // todo ощибка получения данных с сервера
+		} catch (e) {
+			const message = (e as Error).message
+			pushServerApiSnackbarMessage({ error: { code: 'Unknown error (01)', message } });
+
 			dispatch(setAppUserIdentified(false));
 			return;
 		}

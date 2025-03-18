@@ -7,6 +7,7 @@ interface IconButton extends AppComponentsPropsBase {
 	margin?: string;
 	disabled?: boolean;
 	tooltip?: string;
+	iconSize?: string;
 	onClick?: React.MouseEventHandler<HTMLElement> | undefined;
 }
 const IconButtonContainer = ({
@@ -44,9 +45,9 @@ export const IconButton = styled(IconButtonContainer)`
 	align-items: center;
 	margin: ${({ margin = '0' }) => margin};
 	color: ${({ disabled }) => (disabled ? '#969696' : '#3b6a94')};
-	font-size: 20px;
-	width: 26px;
-	height: 26px;
+	font-size: ${({iconSize = '20px'}) => iconSize};
+	width: ${({iconSize = '26px'}) => iconSize};
+	height: ${({iconSize = '26px'}) => iconSize};
 
 	:hover {
 		cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
