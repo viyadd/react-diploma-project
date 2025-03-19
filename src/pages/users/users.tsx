@@ -1,80 +1,217 @@
 import styled from 'styled-components';
-import { PageTitle } from '../../components';
+import { DataTable, Dialog, PageTitle, PrivateContent } from '../../components';
 import { useEffect, useState } from 'react';
-import { TableRow } from './components';
-import { request } from '../../utils';
-import { UserRow } from './components/user-row/user-row';
+// import { TableRow } from './components';
+import { pushSnackbarMessage, request } from '../../utils';
+// import { UserRow } from './components/user-row/user-row';
 import { AppUserRole } from '../../constants';
 import { useUserRights } from '../../hooks/use-user-rights';
+import {
+	DataBaseUserData,
+	DataTableHeader,
+	DataTableTool,
+	DialogType,
+	ToolbarOptions,
+} from '@/types';
+import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
+import { selectIsUserListLoading, selectUserId } from '@/selectors';
+import { setToolbarOptionList, setUserListLoading } from '@/actions';
+import { EditUser } from './components';
 
-const accessRoles = [AppUserRole.Admin, AppUserRole.User];
+type DialogUserMode = 'info' | 'edit' | 'new';
+
+const accessRoles = [AppUserRole.Admin];
+
+const headerList: DataTableHeader[] = [
+	{
+		key: 'login',
+		text: 'Логин',
+		// link: (v: unknown) => `/project/${(v as DataBaseProjectData)?.id}`,
+	},
+	{ key: 'registredAt', text: 'Дата регистрации', type: 'datetime' },
+	{ key: 'roleId', text: 'Роль' },
+	{ key: 'name', text: 'Имя' },
+	// { key: 'startedAt', text: 'Дата начала', type: 'datetime' },
+	// { key: 'endedAt', text: 'Дата завершения', type: 'datetime' },
+];
 
 const UsersContainer = ({ className }: { className?: string }) => {
-	const [users, setUsers] = useState([]);
-  const [roles, setRoles] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
-	const [shouldUpdateUserList, setShouldUpdateUserList] = useState(false);
+	const [userList, setUserList] = useState<DataBaseUserData[] | []>([]);
+	const [currentUser, setCurrentUser] = useState<DataBaseUserData | null>(null);
+	const [dataTableTools, setDataTableTools] = useState<DataTableTool[] | null>(null);
+	const [toolbarOptions, setToolbarOptions] = useState<ToolbarOptions[] | null>(null);
+	const [dialogUserMode, setDialogUserMode] = useState<DialogUserMode | null>(null);
+	const [isOpenUserDialog, setIsOpenUserDialog] = useState(false);
+	const [isOpenYesNo, setIsOpenYesNo] = useState(false);
+	const [updateData, setUpdateData] = useState(false);
 
+	const isUserListLoading = useAppSelector(selectIsUserListLoading);
+	const userId = useAppSelector(selectUserId);
 
-	// const userRole = useAppSelector(selectUserRole);
-	// const serverAuth = useServerAuthorization();
-const usersRights = useUserRights();
+	const dispatch = useAppDispatch();
+
+	const usersRights = useUserRights();
 
 	useEffect(() => {
-    if (!usersRights.isAccessGranted(accessRoles)) {
-      return;
-    }
-
-    Promise.all([
-			request('/users'),
-			request('/users/roles'),
-			// server.fetchUsers(serverAuth()),
-			// server.fetchRoles(serverAuth())
-		]).then(
-      ([loadedUsers, loadedRoles]) => {
-        if (loadedUsers.error || loadedRoles.error) {
-          setErrorMessage(loadedUsers.error || loadedRoles.error);
-          return;
-        }
-
-        setUsers(loadedUsers.data);
-        setRoles(loadedRoles.data);
-      },
-    );
-  }, [shouldUpdateUserList, usersRights]);
-
-	const onUserRemove = (userId: string) => {
-		if (!usersRights.isAccessGranted([AppUserRole.Admin])) {
+		const tools: ToolbarOptions[] = [
+			{
+				key: 'add',
+				iconId: 'fa-plus',
+				accessRoleList: accessRoles,
+				onClick: () => {
+					// todo delete file
+					// navigate(`/project`);
+					setDialogUserMode('new');
+					setIsOpenUserDialog(true);
+				},
+			},
+		];
+		if (toolbarOptions === null) {
+			setToolbarOptions(tools);
 			return;
-    }
-		// todoo удаление пользователя
-		console.log('todoo -> удаление пользователя', userId)
+		}
+		dispatch(setToolbarOptionList(toolbarOptions));
+	}, [dispatch, toolbarOptions]);
 
-    // server.removeUser(serverAuth(),userId).then(() => {
-    //   setShouldUpdateUserList(!shouldUpdateUserList);
-    // });
-  };
+	useEffect(() => {
+		setDataTableTools([
+			{
+				key: 'view',
+				iconId: 'fa-eye',
+				onClick: ({ value }) => {
+					setCurrentUser(value as DataBaseUserData);
+					setDialogUserMode('info');
+					setIsOpenUserDialog(true);
+				},
+			},
+			{
+				key: 'edit',
+				iconId: 'fa-pencil',
+				onClick: ({ value }) => {
+					setCurrentUser(value as DataBaseUserData);
+					setDialogUserMode('edit');
+					setIsOpenUserDialog(true);
+				},
+			},
+			{
+				key: 'delete',
+				iconId: 'fa-trash-o',
+				onClick: ({ value }) => {
+					const user =value as DataBaseUserData
+					if(userId === user.id) {
+						pushSnackbarMessage.error('Пользователь не может удалить сам себя')
+						return
+					}
+					setCurrentUser(user);
+					setIsOpenYesNo(true);
+				},
+			},
+		]);
+		console.log('>>');
+	}, []);
+
+	useEffect(() => {
+		if (!usersRights.isAccessGranted(accessRoles)) {
+			return;
+		}
+		dispatch(setUserListLoading(true));
+		request('/users').then((usersData) => {
+			if (usersData.error) {
+				pushSnackbarMessage.errorServerApi(usersData.error);
+				dispatch(setUserListLoading(false));
+				return;
+			}
+
+			if (usersData.data !== null) {
+				setUserList(usersData.data as DataBaseUserData[]);
+				console.log('>>>', usersData.data as DataBaseUserData[]);
+			}
+			dispatch(setUserListLoading(false));
+		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dispatch, updateData]);
+
+	const getDialogTitle = (mode: DialogUserMode | null) => {
+		switch (mode) {
+			case 'edit':
+				return 'Редактировать данные пользователя';
+			case 'new':
+				return 'Добавить нового пользователя';
+			case 'info':
+				return 'Информация о пользователе';
+			default:
+				return '-';
+		}
+	};
+
+	const handleUserDialogClose = () => {
+		setIsOpenUserDialog(false);
+	};
+
+	const handleUserUpdate = (newUser: DataBaseUserData) => {
+		if (userList === null) {
+			setUserList([newUser]);
+			return;
+		}
+		if (userList.filter((user) => user.id === newUser.id).length === 0) {
+			setUpdateData(!updateData);
+		}
+		const newUserList = userList.map((user) => {
+			return user.id === newUser.id ? newUser : user;
+		});
+
+		setUserList(newUserList);
+	};
+
+	const handleYesConfirmed = () => {
+		setIsOpenYesNo(false);
+		if (currentUser?.id === undefined) {
+			return;
+		}
+		dispatch(setUserListLoading(true));
+
+		request(`/users/${currentUser.id}`, 'DELETE').then((response) => {
+			if (response.error) {
+				pushSnackbarMessage.errorServerApi(response.error);
+			}
+			setUpdateData(!updateData);
+		});
+	};
 
 	return (
-		<div className={className}>
-			<PageTitle>Список пользователей</PageTitle>
-			<TableRow>
-				<div className="login-column">Логин</div>
-				<div className="registred-at-column">Дата регистрации</div>
-				<div className="role-column">Роль</div>
-			</TableRow>
-			{users.map(({ id, login, registredAt, roleId }) => (
-            <UserRow
-              key={id}
-              id={id}
-              login={login}
-              registredAt={registredAt}
-              roleId={roleId}
-              roles={roles.filter(({ id: roleId }) => transformDBFieldToAppRoleId(roleId) !== AppUserRole.Guest)}
-              onUserRemove={() => onUserRemove(id)}
-            />
-          ))}
-		</div>
+		<PrivateContent access={accessRoles}>
+			<div className={className}>
+				<PageTitle>Список пользователей</PageTitle>
+				<div className="content">
+					<DataTable
+						headers={headerList}
+						items={userList}
+						tools={dataTableTools}
+						loading={isUserListLoading}
+					/>
+				</div>
+				<Dialog
+					open={isOpenYesNo}
+					type={DialogType.YesNo}
+					onClose={() => setIsOpenYesNo(false)}
+					onConfirm={handleYesConfirmed}
+				>
+					Удалить пользователя?
+				</Dialog>
+				<Dialog
+					open={isOpenUserDialog}
+					title={getDialogTitle(dialogUserMode)}
+					width="500px"
+					onClose={handleUserDialogClose}
+				>
+					<EditUser
+						item={currentUser}
+						onUpdate={handleUserUpdate}
+						onClose={handleUserDialogClose}
+					/>
+				</Dialog>
+			</div>
+		</PrivateContent>
 	);
 };
 

@@ -1,1 +1,1 @@
-export * from './table-row/table-row'
+export * from './edit-user/edit-user'

@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormError, Input, Button, PageTitle } from '../../components';
 import { useResetForm } from '../../hooks';
 import styled from 'styled-components';
-import { request } from '../../utils';
+import { pushSnackbarMessage, request } from '../../utils';
 import { useUserRights } from '../../hooks/use-user-rights';
 import { AppUserRole } from '../../constants';
 import { AppComponentsPropsBase, DataBaseUserData } from '../../types';
@@ -18,6 +18,8 @@ const regFormSchema = yup.object().shape({
 		.matches(/^\w+$/, 'Неверно заполнен  логин. Допускается только буквы и цифры')
 		.min(3, 'Неверно заполнен  логин. Минимум 3 символа')
 		.max(15, 'Неверно заполнен  логин. Максимум 15 символов'),
+	name: yup.string().required('Заполните имя'),
+	surname: yup.string().required('Заполните имя'),
 	password: yup
 		.string()
 		.required('Заполните пароль')
@@ -37,10 +39,13 @@ const RegistrationContainer = ({ className }: AppComponentsPropsBase) => {
 		register,
 		reset,
 		handleSubmit,
+		getValues,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
 			login: '',
+			name: '',
+			surname: '',
 			password: '',
 			passcheck: '',
 		},
@@ -49,35 +54,40 @@ const RegistrationContainer = ({ className }: AppComponentsPropsBase) => {
 
 	const [serverError, setServerError] = useState<string | null>(null);
 
-	// const dispatch = useAppDispatch();
-	const usersRights = useUserRights()
+	const navigate = useNavigate()
+	const usersRights = useUserRights();
 
 	useResetForm(reset);
 
 	// const userAccessRole = useAppSelector(selectUserAccessRole)
 
-	const onSubmit = ({ login, password }: { login: string; password: string }) => {
-		request('/register', 'POST', {login, password}).then(({ error, data }) => {
-			if (error) {
-				setServerError(`Ошибка запроса: ${error}`);
-				return;
-			}
-			if (data !== null) {
-				usersRights.updateAccessRight(data as DataBaseUserData, accessRoles)
-				// dispatch(setUser(data));
-				// dispatch(setAccessRole(data))
-				// sessionStorage.setItem('userData', JSON.stringify(data));
-			}
-		});
+	const onSubmit = () => {
+		const { login, name, surname, password } = getValues();
+		request('/register', 'POST', { login, name, surname, password }).then(
+			({ error, data }) => {
+				if (error) {
+					setServerError(`Ошибка запроса: ${error}`);
+					return;
+				}
+				if (data !== null) {
+					usersRights.updateAccessRight(data as DataBaseUserData, accessRoles);
+					pushSnackbarMessage.success('Пользователь успешно зарегистрирован.')
+					navigate(`/`);
+				}
+			},
+		);
 	};
 
 	const formError =
-		errors?.login?.message || errors?.password?.message || errors?.passcheck?.message;
+		errors?.login?.message ||
+		errors?.name?.message ||
+		errors?.surname?.message ||
+		errors?.password?.message ||
+		errors?.passcheck?.message;
 	const errorMessage = formError || serverError;
 
 	if (!usersRights.isUserGuest()) {
 		return <Navigate to="/" />;
-
 	}
 	return (
 		<div className={className}>
@@ -87,6 +97,20 @@ const RegistrationContainer = ({ className }: AppComponentsPropsBase) => {
 					type="text"
 					placeholder="Логин..."
 					{...register('login', {
+						onChange: () => setServerError(null),
+					})}
+				/>
+				<Input
+					type="text"
+					placeholder="Имя..."
+					{...register('name', {
+						onChange: () => setServerError(null),
+					})}
+				/>
+				<Input
+					type="text"
+					placeholder="Фамилия..."
+					{...register('surname', {
 						onChange: () => setServerError(null),
 					})}
 				/>

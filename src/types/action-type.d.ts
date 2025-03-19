@@ -14,6 +14,7 @@ export enum ActionType {
 	SetProjectLoading = 'SET_PROJECT_LOADING',
 	SetTaskListLoading = 'SET_TASK_LIST_LOADING',
 	SetTaskLoading = 'SET_TASK_LOADING',
+	SetLoading = 'SET_LOADING',
 	SetSpentTimeListLoading = 'SET_SPENT_TIME_LIST_LOADING',
 	SetSpentTimeLoading = 'SET_SPENT_TIME_LOADING',
 	SetStatusListLoading = 'SET_STATUS_LIST_LOADING',
@@ -23,4 +24,7 @@ export enum ActionType {
 	// status
 	ResetStatusList = 'RESET_STATUS',
 	SetStatusList = 'SET_STATUS',
+	// roles
+	ResetRolesList = 'RESET_ROLES_LIST',
+	SetRolesList = 'SET_ROLES_LIST',
 };

@@ -152,8 +152,8 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 		if (projectList.filter((project) => project.id === newProject.id).length === 0) {
 			setUpdateData(!updateData);
 		}
-		const newProjectList = projectList.map((spentTime) => {
-			return spentTime.id === newProject.id ? newProject : spentTime;
+		const newProjectList = projectList.map((project) => {
+			return project.id === newProject.id ? newProject : project;
 		});
 
 		setProjectList(newProjectList);

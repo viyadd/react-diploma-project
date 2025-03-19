@@ -5,6 +5,7 @@ import {
 	userReducer,
 	appLoading,
 	statusReducer,
+	roleReducer,
 } from './reducers';
 
 const reducer = combineReducers({
@@ -12,6 +13,7 @@ const reducer = combineReducers({
 	app: appReducer,
 	user: userReducer,
 	statuses: statusReducer,
+	roles: roleReducer
 });
 
 const composeEnhangers = window.__REDUX_DEVTOOLS_EXTANSION_COMPOSE__ || compose;

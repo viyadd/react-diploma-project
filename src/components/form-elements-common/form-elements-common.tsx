@@ -3,7 +3,7 @@ import { Button } from '../button/button';
 import { AppComponentsPropsBase } from '@/types';
 
 interface FormElementsCommonProps extends AppComponentsPropsBase {
-	error: string;
+	error?: string;
 	disabledCancel?: boolean;
 	disabledSubmit?: boolean;
 	onCancel: () => void;
