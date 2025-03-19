@@ -1,6 +1,6 @@
-import { DataTable, PageTitle, PrivateContent } from '@/components';
+import { DataTable, Dialog, PageTitle, PrivateContent } from '@/components';
 import { useEffect, useState } from 'react';
-import { pushServerApiSnackbarMessage, request, serverErrorToString } from '@/utils';
+import { pushServerApiSnackbarMessage, request } from '@/utils';
 import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import {
 	AppComponentsPropsBase,
@@ -10,11 +10,13 @@ import {
 	ToolbarOptions,
 } from '@/types';
 import { setProjectListLoading, setToolbarOptionList } from '@/actions';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AppUserRole } from '@/constants';
 import { useUserRights } from '@/hooks/use-user-rights';
 import { selectIsProjectListLoading } from '@/selectors';
+import { EditProject } from './components';
+
+type DialogPrjMode = 'edit' | 'new';
 
 const headerList: DataTableHeader[] = [
 	{
@@ -35,39 +37,40 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 	const [dataTableTools, setDataTableTools] = useState<DataTableTool[] | null>(null);
 	const [toolbarOptions, setToolbarOptions] = useState<ToolbarOptions[] | null>(null);
 	const [projectList, setProjectList] = useState<DataBaseProjectData[] | []>([]);
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [currentProject, setCurrentProject] = useState<DataBaseProjectData | null>(null);
+	const [dialogPrjMode, setDialogPrjMode] = useState<DialogPrjMode | null>(null);
+	const [isOpenPrgDialog, setIsOpenPrjDialog] = useState(false);
+	const [updateData, setUpdateData] = useState(false);
 
 	const isProjectListLoading = useAppSelector(selectIsProjectListLoading);
 
 	const dispatch = useAppDispatch();
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
 	const usersRights = useUserRights();
 
-	const tools: ToolbarOptions[] = [
-		{
-			key: 'add',
-			iconId: 'fa-plus',
-			accessRoleList: accessRoles,
-			onClick: () => {
-				navigate(`/project`);
-				setToolbarOptions([]);
-			},
-		},
-	];
-
 	useEffect(() => {
+		const tools: ToolbarOptions[] = [
+			{
+				key: 'add',
+				iconId: 'fa-plus',
+				accessRoleList: accessRoles,
+				onClick: () => {
+					// todo delete file
+					// navigate(`/project`);
+					setDialogPrjMode('new');
+					setIsOpenPrjDialog(true);
+				},
+			},
+		];
 		if (toolbarOptions === null) {
 			setToolbarOptions(tools);
 			return;
 		}
 		dispatch(setToolbarOptionList(toolbarOptions));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch, toolbarOptions]);
 
 	useEffect(() => {
-		if (!usersRights.isAccessGranted(accessRoles)) {
-			return;
-		}
+
 		setDataTableTools([
 			// {
 			// 	key: 'view',
@@ -83,11 +86,10 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 			{
 				key: 'edit',
 				iconId: 'fa-pencil',
-				onClick: (v: unknown) => {
-					// navigate(`/task/${(v as DataBaseProjectData).id}/edit`);
-					// toolbar.resetToolbarOptions();
-					navigate(`/project/${(v as DataBaseProjectData).id}/edit`);
-					setToolbarOptions([]);
+				onClick: ({ value }) => {
+					setCurrentProject(value as DataBaseProjectData);
+					setDialogPrjMode('edit');
+					setIsOpenPrjDialog(true);
 				},
 			},
 			// {
@@ -98,6 +100,13 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 			// 	},
 			// },
 		]);
+		console.log('>>')
+	}, []);
+
+	useEffect(() => {
+		if (!usersRights.isAccessGranted(accessRoles)) {
+			return;
+		}
 		dispatch(setProjectListLoading(true));
 		// const hash = serverAuth();
 		request('/projects').then((projectsData) => {
@@ -114,16 +123,44 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 			}
 			dispatch(setProjectListLoading(false));
 		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dispatch, updateData]);
 
-	// const onProjectEdit = (id: string) => {
+	// todo delete file
 	// 	navigate(`/project/${id}/edit`);
-	// 	setToolbarOptions([]);
-	// };
+
+	const getDialogTitle = (mode: DialogPrjMode | null) => {
+		switch (mode) {
+			case 'edit':
+				return 'Редактирование записи';
+			case 'new':
+				return 'Добавить новую запись';
+			default:
+				return '-';
+		}
+	};
+
+	const handleProjectDialogClose = () => {
+		setIsOpenPrjDialog(false);
+	};
+
+	const handleProjectUpdate = (newProject: DataBaseProjectData) => {
+		if (projectList === null) {
+			setProjectList([newProject]);
+			return;
+		}
+		if (projectList.filter((project) => project.id === newProject.id).length === 0) {
+			setUpdateData(!updateData);
+		}
+		const newProjectList = projectList.map((spentTime) => {
+			return spentTime.id === newProject.id ? newProject : spentTime;
+		});
+
+		setProjectList(newProjectList);
+	};
 
 	return (
-		<PrivateContent access={accessRoles} serverError={errorMessage}>
+		<PrivateContent access={accessRoles}>
 			<div className={className}>
 				<PageTitle>Список проектов</PageTitle>
 				<div className="content">
@@ -134,6 +171,18 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 						loading={isProjectListLoading}
 					/>
 				</div>
+				<Dialog
+					open={isOpenPrgDialog}
+					title={getDialogTitle(dialogPrjMode)}
+					width="500px"
+					onClose={handleProjectDialogClose}
+				>
+					<EditProject
+						item={currentProject}
+						onUpdate={handleProjectUpdate}
+						onClose={handleProjectDialogClose}
+					/>
+				</Dialog>
 			</div>
 		</PrivateContent>
 	);
