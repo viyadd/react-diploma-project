@@ -20,6 +20,7 @@ export function isServerResponseErrorCodeMessage(val: ServerResponseErrorData): 
 interface ServerResponseData {
 	error?: ServerResponseErrorData,
 	data?: unknown,
+	content?: unknown,
 }
 
 export function isServerResponseDataNull(val: ServerResponseData | null): val is null {

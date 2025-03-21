@@ -18,9 +18,11 @@ import { setSpentTimeListLoading } from '@/actions';
 
 const spentFormSchema = yup.object().shape({
 	comment: yup.string().required('Заполните комментарий'),
-	duration: yup.number().typeError('Продолжительность должна быть числом в минутах')
-	.positive('Продолжительность должна быть положительным числом')
-	.required('Заполните продолжительность'),
+	duration: yup
+		.number()
+		.typeError('Продолжительность должна быть числом в минутах')
+		.positive('Продолжительность должна быть положительным числом')
+		.required('Заполните продолжительность'),
 	date: yup.string().required('Заполните дату начала работы'),
 	time: yup.string().required('Заполните время начала'),
 });
@@ -95,8 +97,9 @@ const EditSpentTimeContainer = ({
 
 				dispatch(setSpentTimeListLoading(false));
 				return;
-			} else {
-				onUpdate(savedSpendTime.data as DataBaseSpentTimeData);
+			}
+			if (savedSpendTime.content) {
+				onUpdate(savedSpendTime.content as DataBaseSpentTimeData);
 			}
 
 			dispatch(setSpentTimeListLoading(false));

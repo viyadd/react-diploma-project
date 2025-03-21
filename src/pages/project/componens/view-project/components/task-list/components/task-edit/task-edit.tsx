@@ -7,9 +7,9 @@ import { AppComponentsPropsBase, DataBaseTaskData } from '@/types';
 import {
 	formatDate,
 	getUserFullName,
-	pushServerApiSnackbarMessage,
 	request,
 	RequestMethods,
+	serverErrorToString,
 	transformStatesToOptionList,
 } from '@/utils';
 import styled from 'styled-components';
@@ -33,6 +33,7 @@ const taskFormSchema = yup.object().shape({
 	codeName: yup.string().required('Заполните заголовок'),
 	title: yup.string().required('Заполните заголовок'),
 	description: yup.string().required('Заполните описание'),
+	expectedSpentTime: yup.number().required('Заполните ожидаемое время выполнения'),
 	state: yup.string().required('Заполните статус'),
 });
 
@@ -40,6 +41,7 @@ const getFormValue = (item: DataBaseTaskData | null) => {
 	return {
 		codeName: typeof item?.codeName === 'string' ? item?.codeName : '',
 		title: typeof item?.title === 'string' ? item?.title : '',
+		expectedSpentTime: typeof item?.expectedSpentTime === 'number' ? item?.expectedSpentTime : 20,
 		description: typeof item?.description === 'string' ? item?.description : '',
 		state: typeof item?.state?.id === 'string' ? item.state.id : '',
 	};
@@ -77,6 +79,7 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 	const formError =
 		errors?.codeName?.message ||
 		errors?.title?.message ||
+		errors?.expectedSpentTime?.message ||
 		errors?.description?.message ||
 		errors?.state?.message;
 	const errorMessage = serverError || formError;
@@ -93,7 +96,10 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 		const { url, method, data } = requestParams;
 		request(url, method, data).then((savedTask) => {
 			if (savedTask.error) {
-				pushServerApiSnackbarMessage({ error: savedTask.error });
+				setServerError(serverErrorToString(savedTask.error))
+				// pushSnackbarMessage.errorServerApi(savedTask.error);
+				dispatch(setTaskListLoading(false));
+				return
 			} else {
 				onUpdateTask(savedTask.data as DataBaseTaskData);
 			}
@@ -137,6 +143,13 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 				type="text"
 				placeholder="Описание"
 				{...register('description', {
+					onChange: () => setServerError(null),
+				})}
+			/>
+			<Input
+				type="number"
+				placeholder="Ожидаемое время выполнения"
+				{...register('expectedSpentTime', {
 					onChange: () => setServerError(null),
 				})}
 			/>

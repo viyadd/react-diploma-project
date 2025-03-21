@@ -110,7 +110,7 @@ const EditProjectContainer = ({
 			))}
 			<Input
 				type="text"
-				placeholder="Название"
+				placeholder="Акроним проекта"
 				{...register('title', {
 					onChange: () => setServerError(null),
 				})}

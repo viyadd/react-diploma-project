@@ -141,22 +141,28 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 	};
 
 	const handleProjectDialogClose = () => {
+		setCurrentProject(null)
 		setIsOpenPrjDialog(false);
 	};
 
 	const handleProjectUpdate = (newProject: DataBaseProjectData) => {
 		if (projectList === null) {
 			setProjectList([newProject]);
+			setCurrentProject(null)
 			return;
 		}
-		if (projectList.filter((project) => project.id === newProject.id).length === 0) {
+		console.log('>>>',projectList)
+		if (projectList.filter((project) => project?.id === newProject?.id).length === 0) {
 			setUpdateData(!updateData);
+			setCurrentProject(null)
+			return
 		}
 		const newProjectList = projectList.map((project) => {
 			return project.id === newProject.id ? newProject : project;
 		});
 
 		setProjectList(newProjectList);
+		setCurrentProject(null)
 	};
 
 	return (

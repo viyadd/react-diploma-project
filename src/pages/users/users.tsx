@@ -16,9 +16,10 @@ import {
 import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import { selectIsUserListLoading, selectUserId } from '@/selectors';
 import { setToolbarOptionList, setUserListLoading } from '@/actions';
-import { EditUser } from './components';
+import { EditUser, ViewUser } from './components';
 
 type DialogUserMode = 'info' | 'edit' | 'new';
+const editFormsModList: (DialogUserMode | null)[] = ['edit', 'new'];
 
 const accessRoles = [AppUserRole.Admin];
 
@@ -97,10 +98,10 @@ const UsersContainer = ({ className }: { className?: string }) => {
 				key: 'delete',
 				iconId: 'fa-trash-o',
 				onClick: ({ value }) => {
-					const user =value as DataBaseUserData
-					if(userId === user.id) {
-						pushSnackbarMessage.error('Пользователь не может удалить сам себя')
-						return
+					const user = value as DataBaseUserData;
+					if (userId === user.id) {
+						pushSnackbarMessage.error('Пользователь не может удалить сам себя');
+						return;
 					}
 					setCurrentUser(user);
 					setIsOpenYesNo(true);
@@ -199,16 +200,20 @@ const UsersContainer = ({ className }: { className?: string }) => {
 					Удалить пользователя?
 				</Dialog>
 				<Dialog
+					type={dialogUserMode === 'info' ? DialogType.Info : undefined}
 					open={isOpenUserDialog}
 					title={getDialogTitle(dialogUserMode)}
 					width="500px"
 					onClose={handleUserDialogClose}
 				>
-					<EditUser
-						item={currentUser}
-						onUpdate={handleUserUpdate}
-						onClose={handleUserDialogClose}
-					/>
+					{dialogUserMode === 'info' && <ViewUser item={currentUser} />}
+					{editFormsModList.includes(dialogUserMode) && (
+						<EditUser
+							item={currentUser}
+							onUpdate={handleUserUpdate}
+							onClose={handleUserDialogClose}
+						/>
+					)}
 				</Dialog>
 			</div>
 		</PrivateContent>

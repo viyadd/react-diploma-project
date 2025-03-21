@@ -48,7 +48,7 @@ const DataTableContainer = ({
 					{items?.map((item) =>
 						getColumns(headers, tools).map((header) => (
 							<DataTableCellElement
-								key={header.key + item.id}
+								key={header.key + item?.id}
 								item={item}
 								header={header}
 							/>

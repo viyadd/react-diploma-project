@@ -14,6 +14,7 @@ export function isDataBaseTaskShortData(val: DataBaseTaskShortData | unknown): v
 export interface DataBaseTaskData extends DataBaseTaskShortData {
 	codeName: string,
 	description: string,
+	expectedSpentTime: number,
 	createdAt: string,
 	state: DataBaseStateData,
 	owner: DataBaseUserData,
