@@ -1,6 +1,6 @@
 import { ActionType } from "@/types";
 
-export const setTaskLoading = (isTaskLoading?: boolean) => ({
-	type: ActionType.SetTaskLoading,
-	payload: { isTaskLoading: !!isTaskLoading },
+export const setTaskLoading = (isLoading?: boolean) => ({
+	type: ActionType.SetLoading,
+	payload: { isTaskLoading: !!isLoading },
 })

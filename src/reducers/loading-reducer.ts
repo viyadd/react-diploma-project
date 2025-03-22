@@ -1,6 +1,7 @@
 import { ActionType } from "@/types";
 
 export interface LoadingStoreData {
+	isAccessRightLoading?: boolean,
 	isUserListLoading?: boolean,
 	isUserLoading?: boolean,
 	isProjectListLoading?: boolean,
@@ -15,6 +16,7 @@ export interface LoadingStoreData {
 export type LoadingStoreDataKeys = keyof LoadingStoreData
 
 const initialAppState: LoadingStoreData = {
+	isAccessRightLoading: true,
 	isUserListLoading: true,
 	isUserLoading: true,
 	isProjectListLoading: true,
