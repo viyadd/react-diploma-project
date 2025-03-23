@@ -10,7 +10,6 @@ import {
 } from '@/types';
 import { AppUserRole } from '@/constants';
 import {
-	isServerResponseDataNull,
 	pushSnackbarMessage,
 	request,
 	transformProjectsToOptionList,
@@ -59,7 +58,7 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 				pushSnackbarMessage.errorServerApi(error);
 			}
 
-			if (data !== undefined && !isServerResponseDataNull(data)) {
+			if (data !== undefined && data !== null) {
 				const projecs = data as DataBaseProjectShortData[];
 				setProjectList(projecs);
 			}
@@ -86,11 +85,7 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 			if (error !== undefined) {
 				pushSnackbarMessage.errorServerApi(error);
 			}
-			if (
-				data !== undefined &&
-				!isServerResponseDataNull(data) &&
-				isApiDataPageDescriptor(data)
-			) {
+			if (data !== undefined && data !== null && isApiDataPageDescriptor(data)) {
 				const tasks = data.content as DataBaseTaskData[];
 				setTaskList(tasks);
 			} else {
@@ -117,7 +112,7 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 			setSaving(false);
 			return;
 		}
-		pushSnackbarMessage.success('Данные успешно сохранены')
+		pushSnackbarMessage.success('Данные успешно сохранены');
 		setSaving(false);
 	};
 
@@ -155,14 +150,14 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 		setIsShowSaveDialog(false);
 		fsmSpentTime.handleOnStateChange('stop');
 		setSaving(true);
-		pushSnackbarMessage.info('Соъранение данных')
+		pushSnackbarMessage.info('Соъранение данных');
 		createSpentTime();
 	};
 
 	const isTaskSelected = currentTaskId !== null;
 
 	return (
-		<PrivateContent access={accessRoles} >
+		<PrivateContent access={accessRoles}>
 			<div className={className}>
 				<div className="main-form">
 					<SpentTimeControl
@@ -184,11 +179,16 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 					<Select
 						optionsList={transformTasksToOptionList(taskList || [])}
 						loading={isTaskListLoading}
-						disabled={(!(Array.isArray(taskList) && taskList.length > 0))|| saving}
+						disabled={!(Array.isArray(taskList) && taskList.length > 0) || saving}
 						defaultValue=""
 						onChange={(e) => setCurrentTaskId(e.target.value)}
 					/>
-					<Input type="text" placeholder="Комментарий" disabled={saving} onChange={handleOnCommentChange} />
+					<Input
+						type="text"
+						placeholder="Комментарий"
+						disabled={saving}
+						onChange={handleOnCommentChange}
+					/>
 				</div>
 			</div>
 			<Dialog
@@ -209,7 +209,7 @@ export const Main = styled(MainContainer)`
 	justify-content: center;
 	place-items: center;
 	min-width: 320px;
-	min-height: 94vh;
+	min-height: 93vh;
 
 	& .main-form {
 		display: flex;

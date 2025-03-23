@@ -13,6 +13,8 @@ interface DataTableProps extends AppComponentsPropsBase {
 	headers: DataTableHeader[];
 	tools?: DataTableTool[] | null;
 	loading?: boolean;
+	width?: string;
+	rows?: number;
 }
 
 const DataTableContainer = ({
@@ -21,6 +23,8 @@ const DataTableContainer = ({
 	items,
 	tools,
 	loading,
+	width,
+	rows,
 }: DataTableProps) => {
 	const getColumns = (
 		h: DataTableHeader[],
@@ -37,7 +41,7 @@ const DataTableContainer = ({
 
 	return (
 		<div className={className}>
-			<SkeletonLoader type="table-tbody" loading={loading} />
+			<SkeletonLoader type="table-tbody" loading={loading} width={width} rows={rows} />
 			{!loading && (
 				<div className="content">
 					{headers.map(({ key, text }, i) => (
@@ -75,7 +79,7 @@ export const DataTable = styled(DataTableContainer)`
 		display: grid;
 		grid-template-columns: ${calccalculateGridColumns};
 		grid-template-rows: 30px ${calccalculateGridRows};
-		width: 1000px;
+		width: ${({ width = '1000px' }) => width};
 		margin-top: 20px;
 	}
 

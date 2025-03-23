@@ -1,10 +1,37 @@
-import { ApiErrorData } from "./api-error-data"
+export type ServerResponseErrorCodeMessageData = { code: string, message: string }
 
-// TODO ??? ошибка определена в resuest
-export interface AppServerApiResult {
-	error: ApiErrorData | null
+export type ServerResponseErrorData = string | ServerResponseErrorCodeMessageData
+
+export function isServerResponseErrorString(val: ServerResponseErrorData): val is string {
+	return typeof val === 'string'
 }
 
+export function isServerResponseErrorCodeMessage(val: ServerResponseErrorData): val is ServerResponseErrorCodeMessageData {
+	if (typeof val !== 'object') {
+		return false
+	}
+	return typeof val?.code === 'number' && typeof val?.message === 'string'
+}
+
+interface ServerResponseData {
+	error: ServerResponseErrorData | null,
+	data: unknown | null,
+}
+
+export function isValueServerResponseErrorData(val: unknown): val is ServerResponseErrorData {
+	if (val === undefined || val === null) {
+		return false
+	}
+	const error = val as ServerResponseErrorData
+	return (
+		isServerResponseErrorString(error) ||
+		isServerResponseErrorCodeMessage(error)
+	)
+}
+export interface AppServerResponseData extends ServerResponseData {
+	extendedError?: unknown,
+}
+export type OrderByProps = 'asc' | 'desc'
 export interface ApiDataPageDescriptor {
 	content: unknown[]
 	// perPage: number

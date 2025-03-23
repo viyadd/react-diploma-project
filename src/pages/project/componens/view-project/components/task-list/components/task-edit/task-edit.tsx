@@ -8,7 +8,7 @@ import {
 	formatDate,
 	getUserFullName,
 	request,
-	RequestMethods,
+	RequestParams,
 	serverErrorToString,
 	transformStatesToOptionList,
 } from '@/utils';
@@ -85,7 +85,7 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 	const errorMessage = serverError || formError;
 
 	const saveTask = () => {
-		const requestParams: { url: string; method: RequestMethods; data: unknown } = {
+		const requestParams: RequestParams = {
 			url: item !== null ? `/tasks/${item.id}` : `/projects/${params.id}/tasks`,
 			method: item !== null ? 'PATCH' : 'POST',
 			data: getValues(),

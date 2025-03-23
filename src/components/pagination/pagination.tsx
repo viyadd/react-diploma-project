@@ -1,40 +1,55 @@
 import styled from 'styled-components';
-import { Button } from '../button/button';
 import { AppComponentsPropsBase } from '../../types';
+import { IconButton } from '../icon-button/icon-button';
 
 interface PaginationProps extends AppComponentsPropsBase {
-	page: number;
-	lastPage: number;
+	page: number | null;
+	lastPage: number | null;
+	width?: string;
 	setPage: (page: number) => void;
 }
-
 const PaginationContainer = ({ className, page, lastPage, setPage }: PaginationProps) => {
+	if (lastPage === null || page === null) {
+		return;
+	}
+
 	return (
 		<div className={className}>
-			<Button disabled={page === 1} onClick={() => setPage(1)}>
-				В начало
-			</Button>
-			<Button disabled={page === 1} onClick={() => setPage(page - 1)}>
-				Предыдущая
-			</Button>
-			<div className="current-page">Страница: {page}</div>
-			<Button disabled={page === lastPage} onClick={() => setPage(page + 1)}>
-				Следующая
-			</Button>
-			<Button disabled={page === lastPage} onClick={() => setPage(lastPage)}>
-				В конец
-			</Button>
+			<IconButton
+				disabled={page === 1}
+				id="fa-angle-double-left"
+				tooltip="В начало"
+				onClick={() => setPage(1)}
+			/>
+			<IconButton
+				disabled={page === 1}
+				id="fa-angle-left"
+				tooltip="Предыдущая"
+				onClick={() => setPage(page - 1)}
+			/>
+
+			<div className="current-page">{page}</div>
+			<IconButton
+				disabled={page === lastPage}
+				id="fa-angle-right"
+				tooltip="Следующая"
+				onClick={() => setPage(page + 1)}
+			/>
+			<IconButton
+				disabled={page === lastPage}
+				id="fa-angle-double-right"
+				tooltip="В конец"
+				onClick={() => setPage(lastPage)}
+			/>
 		</div>
 	);
 };
 
 export const Pagination = styled(PaginationContainer)`
 	display: flex;
-	justify-content: center;
-	position: absolute;
-	bottom: 140px;
-	width: 100%;
-	margin: 0 0 20px;
+	justify-content: end;
+	width: ${({ width = '100%' }) => width};
+	margin: 10px 0 0;
 	padding: 0 35px;
 
 	& button {
@@ -42,13 +57,14 @@ export const Pagination = styled(PaginationContainer)`
 	}
 
 	& .current-page {
-		width: 100%;
+		width: auto;
+		min-width: 20px;
 		height: 32px;
 		margin: 0 5px;
 		font-size: 18px;
 		font-weight: 500;
 		line-height: 26px;
 		text-align: center;
-		border: 1px solid #000;
+		/* border: 1px solid #000; */
 	}
 `;

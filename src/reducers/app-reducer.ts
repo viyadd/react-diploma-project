@@ -1,7 +1,6 @@
-import { ActionType } from '../types';
+import { ActionType, ServerResponseErrorData } from '../types';
 import { AppUserRole } from '../constants';
 import { ToolbarOptions } from '../types';
-import { ServerResponseErrorData } from '@/utils';
 
 export interface AppStoreData {
 	wasLogout?: boolean,

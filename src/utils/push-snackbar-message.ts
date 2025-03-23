@@ -1,11 +1,8 @@
+import { isServerResponseErrorCodeMessage, ServerResponseErrorData } from "@/types"
 import { enqueueSnackbar } from "notistack"
-import { isServerResponseErrorNull, isServerResponseErrorString, ServerResponseErrorData } from "./request"
 
 export const pushServerApiSnackbarMessage = (data: { error: ServerResponseErrorData }) => {
-	if (isServerResponseErrorNull(data.error)) {
-		return
-	}
-	const message = isServerResponseErrorString(data.error) ? data.error : `${data.error.code}: ${data.error.message}`
+	const message = isServerResponseErrorCodeMessage(data.error) ? `${data.error.code}: ${data.error.message}` : data.error
 	enqueueSnackbar(message, { variant: 'error', autoHideDuration: 5000 })
 }
 

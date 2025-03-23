@@ -1,11 +1,8 @@
-import { isServerResponseErrorNull, isServerResponseErrorString, ServerResponseErrorData } from "./request";
+import { isServerResponseErrorCodeMessage, ServerResponseErrorData } from "@/types"
 
 export function serverErrorToString(error: ServerResponseErrorData) {
-	if (isServerResponseErrorNull(error)) {
-		return ''
+	if (isServerResponseErrorCodeMessage(error)) {
+		return `code: ${error.code} message: ${error.message}`
 	}
-	if (isServerResponseErrorString(error)) {
-		return error
-	}
-	return `code: ${error.code} message: ${error.message}`
+	return error
 }

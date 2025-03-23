@@ -4,18 +4,24 @@ import { useUserRights } from '../../hooks/use-user-rights';
 import { AppUserRole } from '../../constants';
 import { AppComponentsProps } from '../../types';
 import { ERROR } from '../../constants/error';
+import { useAppSelector } from '@/hooks/use-app-store';
+import { selectIsAccessRightLoading } from '@/selectors';
+import { Loader } from './components';
+import styled from 'styled-components';
 
 interface PrivateContentProps extends AppComponentsProps {
 	access: AppUserRole[];
 	serverError?: string | null;
 }
 
-export const PrivateContent = ({
+export const PrivateContentContainer = ({
+	className,
 	children,
 	access,
 	serverError = null,
 }: PrivateContentProps) => {
 	const [error, setError] = useState<string | null>(null);
+	const isAccessRightLoading = useAppSelector(selectIsAccessRightLoading);
 	const userRights = useUserRights();
 
 	useEffect(() => {
@@ -28,5 +34,21 @@ export const PrivateContent = ({
 		setError(serverError || accessError);
 	}, [userRights.isAccessDenied, serverError]);
 
-	return userRights.isAccessDenied ? <Error error={error} /> : children;
+	return (
+		<>
+			{isAccessRightLoading && (
+				<div className={className}>
+					<Loader />
+				</div>
+			)}
+			{userRights.isAccessDenied ? error && <Error error={error} /> : children}
+		</>
+	);
 };
+
+export const PrivateContent = styled(PrivateContentContainer)`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+`;

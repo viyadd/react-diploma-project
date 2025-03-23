@@ -4,14 +4,23 @@ import { Article, Field, SkeletonLoaderTableBbody } from './components';
 
 interface SkeletonLoaderProps extends AppComponentsPropsBase {
 	loading?: boolean;
-	type?: 'table-tbody'|'article'|'field';
+	type?: 'table-tbody' | 'article' | 'field';
+	width?: string;
+	rows?: number;
 }
 
-const SkeletonLoaderContainer = ({ className, type, loading }: SkeletonLoaderProps) => {
+const SkeletonLoaderContainer = ({
+	className,
+	type,
+	loading,
+	...props
+}: SkeletonLoaderProps) => {
 	return (
 		<div className={className}>
 			{type === undefined && <span className="loader"></span>}
-			{type === 'table-tbody' && <SkeletonLoaderTableBbody loading={loading} />}
+			{type === 'table-tbody' && (
+				<SkeletonLoaderTableBbody loading={loading} {...props} />
+			)}
 			{type === 'article' && <Article loading={loading} />}
 			{type === 'field' && <Field loading={loading} />}
 		</div>

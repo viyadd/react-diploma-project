@@ -1,5 +1,4 @@
-import { ActionType } from "@/types";
-import { ServerResponseErrorData } from "@/utils";
+import { ActionType, ServerResponseErrorData } from "@/types";
 
 export const SetApiError = (apiErrorData?: ServerResponseErrorData) => {
 	return ({

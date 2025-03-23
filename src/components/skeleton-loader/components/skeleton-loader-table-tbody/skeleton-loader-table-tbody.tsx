@@ -5,6 +5,7 @@ interface SkeletonLoaderTableBbodyProps extends AppComponentsPropsBase {
 	loading?: boolean;
 	rows?: number;
 	columns?: number;
+	width?: string;
 }
 
 const SkeletonLoaderTableBbodyContainer = ({
@@ -22,8 +23,8 @@ const SkeletonLoaderTableBbodyContainer = ({
 	};
 	return (
 		<div className={className}>
-			{calccalculateElements(rows, columns).map((w,i) => (
-				<div className="loader" key={w+i}></div>
+			{calccalculateElements(rows, columns).map((w, i) => (
+				<div className="loader" key={w + i}></div>
 			))}
 		</div>
 	);
@@ -41,7 +42,7 @@ export const SkeletonLoaderTableBbody = styled(SkeletonLoaderTableBbodyContainer
 	display: grid;
 	grid-template-columns: ${calccalculateGridColumns};
 	grid-template-rows: ${calccalculateGridRows};
-	width: 1000px;
+	width: ${({ width = '1000px' }) => width};
 	margin-top: 20px;
 	gap: 6px;
 

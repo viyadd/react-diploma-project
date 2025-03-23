@@ -7,4 +7,5 @@ const PageTitleContainer = ({ children, className }: AppComponentsProps) => (
 
 export const PageTitle = styled(PageTitleContainer)`
 	margin: 35px 0;
+	text-align: center;
 `;

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { AppUserData, DataBaseUserData } from "../types";
+import { DataBaseUserData } from "../types";
 import { AppUserRole } from "../constants"
-import { convertDBRoleIdToAppRole, pushServerApiSnackbarMessage, request } from "../utils";
+import { convertDBRoleIdToAppRole, pushServerApiSnackbarMessage, pushSnackbarMessage, request } from "../utils";
 import { useAppDispatch, useAppSelector } from "./use-app-store";
-import { setAppUserIdentified, setUser, userLogout } from "../actions";
+import { setAccessRightLoading, setAppUserIdentified, setUser, userLogout } from "../actions";
 import { setAppUserRole } from "../actions/set-app-user-role";
 import { selectAppUserRole } from "../selectors";
 
@@ -19,7 +19,7 @@ export const useUserRights = () => {
 			const loadedUser = await request('/users/user');
 
 			if (loadedUser.error) {
-				pushServerApiSnackbarMessage({ error: loadedUser.error });
+				pushSnackbarMessage.errorServerApi(loadedUser.error);
 			}
 
 			const identified = !!loadedUser?.data
@@ -42,22 +42,18 @@ export const useUserRights = () => {
 	};
 
 	const updateAccessRight = (user: DataBaseUserData, accessList: AppUserRole[]) => {
-		console.log('updateAccessRight >>')
-
 		const convertedAppUserRole = convertDBRoleIdToAppRole(user.roleId);
 		const currentIsAccessDenied = !accessList.includes(convertedAppUserRole);
 
 		setIsAccessDenied(currentIsAccessDenied);
-		// TODO AppUserData ???
-		dispatch(setUser(user as AppUserData));
+		dispatch(setUser(user as DataBaseUserData));
 		dispatch(setAppUserRole(convertedAppUserRole));
-		console.log('updateAccessRight', { accessList, user, convertedAppUserRole, isAccessDenied: currentIsAccessDenied })
 
 		return { isAccessDenied: currentIsAccessDenied }
 	}
 
 	const asyncUpdateAccessRight = async (accessList: AppUserRole[]) => {
-		console.log('asyncUpdateAccessRight >>')
+		dispatch(setAccessRightLoading(true))
 		const user = await getUser();
 		if (user === undefined) {
 			setIsAccessDenied(true);
@@ -65,11 +61,15 @@ export const useUserRights = () => {
 			setAppUserRole();
 			return { isAccessDenied: true };
 		}
-		return updateAccessRight(user, accessList)
+		const currentAccess = updateAccessRight(user, accessList)
+		dispatch(setAccessRightLoading())
+		console.log('user >>', user.login, user.roleId)
+		return currentAccess
 	}
 
-	const isAccessGranted = (accessList: AppUserRole[]) =>
-		currentAppUserRole !== undefined && accessList.includes(currentAppUserRole)
+	const isAccessGranted = (accessList: AppUserRole[]) => {
+		return currentAppUserRole !== undefined && accessList.includes(currentAppUserRole)
+	}
 
 	const isUserGuest = () => currentAppUserRole === AppUserRole.Guest
 
