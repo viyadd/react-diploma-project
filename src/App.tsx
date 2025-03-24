@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Header } from './components';
 import { Route, Routes } from 'react-router';
-import { Authorization, Project, Projects, Registration, Task, Users } from './pages';
+import { Analytics, Authorization, Project, Projects, Registration, Task, Users } from './pages';
 import { Main } from './pages/main/main';
 // import { useLayoutEffect } from 'react';
 // import { setAccessRole, setUser } from './actions';
@@ -33,7 +33,8 @@ function App() {
 					<Route path="/info" element={<div>info</div>} />
 					<Route path="/login" element={<Authorization />} />
 					<Route path="/register" element={<Registration />} />
-					<Route path="/analytics" element={<div>Аналитика</div>} />
+					<Route path="/analytics" element={<Analytics />} />
+					<Route path="/analytics/project/:id" element={<Analytics />} />
 					<Route path="/users" element={<Users />} />
 					<Route path="/projects" element={<Projects />} />
 					<Route path="/project" element={<Project />} />

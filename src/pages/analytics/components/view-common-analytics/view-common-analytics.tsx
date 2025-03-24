@@ -12,7 +12,7 @@ import {
 import {
 	AppComponentsPropsBase,
 	DataBaseProjectData,
-	DataBaseStatusAlyticsData,
+	DBStatusAlyticsData,
 	DataTableHeader,
 	isValueServerResponseErrorData,
 	isValueStatusAnalyticsData,
@@ -87,7 +87,7 @@ const projectHeaderList: DataTableHeader[] = [
 const PER_PAGE = 3
 
 const ViewCommonAnalyticsContainer = ({ className }: ViewCommonAnalyticsProps) => {
-	const [statusList, setStatusList] = useState<DataBaseStatusAlyticsData[] | null>(null);
+	const [statusList, setStatusList] = useState<DBStatusAlyticsData[] | null>(null);
 	const [data, setData] = useState<ChartData[]>([]);
 	const isAccessRightLoading = useAppSelector(selectIsAccessRightLoading);
 	const isStatusListLoadingg = useAppSelector(selectIsStatusListLoading);

@@ -7,6 +7,7 @@ import {
 	DataBaseTaskData,
 	DialogType,
 	isApiDataPageDescriptor,
+	isValueServerResponseErrorData,
 } from '@/types';
 import { AppUserRole } from '@/constants';
 import {
@@ -54,7 +55,7 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 		dispatch(setProjectListLoading(true));
 		request('/projects?projection=ShortList').then((loadedProjects) => {
 			const { error, data } = loadedProjects;
-			if (error !== undefined) {
+			if (isValueServerResponseErrorData( error)) {
 				pushSnackbarMessage.errorServerApi(error);
 			}
 
@@ -82,7 +83,7 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 		const url = `/tasks?id=${tasks.join('&id=')}&limit=999`;
 		request(url).then((loadedTasks) => {
 			const { error, data } = loadedTasks;
-			if (error !== undefined) {
+			if (isValueServerResponseErrorData( error)) {
 				pushSnackbarMessage.errorServerApi(error);
 			}
 			if (data !== undefined && data !== null && isApiDataPageDescriptor(data)) {
