@@ -10,6 +10,8 @@ interface OptionListData {
 }
 
 interface SelectProps extends AppComponentsOptionsProps {
+	placeholder?: string;
+	label?: string;
 	width?: string;
 	value?: string | number | readonly string[];
 	loading?: boolean;
@@ -21,23 +23,37 @@ interface SelectProps extends AppComponentsOptionsProps {
 
 const SelectContainer = forwardRef(
 	(
-		{ className, value, optionsList, loading, defaultValue, ...props }: SelectProps,
+		{
+			className,
+			value,
+			optionsList,
+			loading,
+			placeholder,
+			label,
+			defaultValue,
+			...props
+		}: SelectProps,
 		ref: React.Ref<HTMLSelectElement>,
 	) => {
 		return (
 			<div className={className}>
 				<SkeletonLoader type="field" loading={loading} />
 				{!loading && (
-					<select value={value} defaultValue={defaultValue || ''} {...props} ref={ref}>
-						<option value="" disabled hidden>
-							Выбрать здесь
-						</option>
-						{optionsList.map(({ key, value: optionValue, text }) => (
-							<option key={key} value={key}>
-								{text || optionValue}
+					<>
+						<select value={value} defaultValue={defaultValue || ''} {...props} ref={ref}>
+							<option value="" disabled hidden>
+								Выбрать здесь
 							</option>
-						))}
-					</select>
+							{optionsList.map(({ key, value: optionValue, text }) => (
+								<option key={key} value={key}>
+									{text || optionValue}
+								</option>
+							))}
+						</select>
+						{(label || placeholder) && (
+							<div className="label">{label || placeholder}</div>
+						)}
+					</>
 				)}
 			</div>
 		);
@@ -45,15 +61,17 @@ const SelectContainer = forwardRef(
 );
 
 export const Select = styled(SelectContainer)`
+	position: relative;
 	display: inline-flexbox;
 	box-sizing: border-box;
 	width: ${({ width = '100%' }) => width};
 	height: 100%;
 	margin: 0 0 10px;
-	padding: 10px;
 	border: 1px solid #eebf7c;
 
 	& select {
+		box-sizing: border-box;
+		padding: 10px;
 		width: 100%;
 		border: none;
 		font-size: 18px;
@@ -61,6 +79,24 @@ export const Select = styled(SelectContainer)`
 	}
 
 	& option {
+		box-sizing: border-box;
 		font-size: 13px;
+	}
+
+	& .label {
+		font-size: 13px;
+		position: absolute;
+		padding: 0 3px;
+		background-color: #fff;
+		color: #eebf7c;
+		top: -11px;
+		left: 9px;
+		z-index: 2;
+	}
+	& select:focus {
+		outline: 1px solid #196cd8;
+	}
+	& select:focus ~ .label {
+		color: #196cd8;
 	}
 `;
