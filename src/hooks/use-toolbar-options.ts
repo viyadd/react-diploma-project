@@ -9,7 +9,6 @@ export const useToolbarOptions = () => {
 	const dispatch = useAppDispatch()
 
 	const setToolbarOptions = (tools: ToolbarOptions[]) => {
-		console.log('ToolbarOptions >>', tools)
 		setToolbar(tools)
 	}
 

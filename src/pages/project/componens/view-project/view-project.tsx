@@ -8,7 +8,7 @@ import {
 } from '@/types';
 import { ProjectTitle, TaskList } from './components';
 import styled from 'styled-components';
-import { request } from '@/utils';
+import { pushSnackbarMessage, request } from '@/utils';
 import { useAppDispatch } from '@/hooks/use-app-store';
 import { setProjectLoading, setTaskListLoading } from '@/actions';
 // import { Pagination } from '../../../../components';
@@ -34,7 +34,7 @@ const ViewProjectContainer = ({ className }: AppComponentsPropsBase) => {
 
 		request(`/projects/${id}`).then(async (loadedProject) => {
 			if (loadedProject.error) {
-				console.log('не удалось загрузить проект', loadedProject.error);
+				pushSnackbarMessage.errorServerApi(loadedProject.error)
 				dispatch(setProjectLoading(false));
 				dispatch(setTaskListLoading(true));
 				return;
@@ -50,13 +50,12 @@ const ViewProjectContainer = ({ className }: AppComponentsPropsBase) => {
 					`/tasks?${taskList.map((id) => 'id=' + id).join('&')}`,
 				);
 				if (loadedTasks.error) {
-					console.log('не удалось загрузить задачи', loadedTasks.error);
+					pushSnackbarMessage.errorServerApi(loadedTasks.error);
 					dispatch(setTaskListLoading(false));
 					return;
 				}
 				const currentTaskList = loadedTasks.data as DataBaseTasksWhithPaginationData;
 				setTasks(currentTaskList.content);
-				console.log(currentTaskList.content);
 			}
 			dispatch(setTaskListLoading(false));
 		});

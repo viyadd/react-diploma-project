@@ -55,7 +55,7 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 		dispatch(setProjectListLoading(true));
 		request('/projects?projection=ShortList').then((loadedProjects) => {
 			const { error, data } = loadedProjects;
-			if (isValueServerResponseErrorData( error)) {
+			if (isValueServerResponseErrorData(error)) {
 				pushSnackbarMessage.errorServerApi(error);
 			}
 
@@ -83,7 +83,7 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 		const url = `/tasks?id=${tasks.join('&id=')}&limit=999`;
 		request(url).then((loadedTasks) => {
 			const { error, data } = loadedTasks;
-			if (isValueServerResponseErrorData( error)) {
+			if (isValueServerResponseErrorData(error)) {
 				pushSnackbarMessage.errorServerApi(error);
 			}
 			if (data !== undefined && data !== null && isApiDataPageDescriptor(data)) {
@@ -169,6 +169,7 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 						onControlClick={handleOnControlClick}
 					/>
 					<Select
+						placeholder="Проект"
 						optionsList={transformProjectsToOptionList(projectList || [])}
 						loading={isProjectListLoading}
 						disabled={saving}
@@ -178,6 +179,7 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 						}}
 					/>
 					<Select
+						placeholder="Задача"
 						optionsList={transformTasksToOptionList(taskList || [])}
 						loading={isTaskListLoading}
 						disabled={!(Array.isArray(taskList) && taskList.length > 0) || saving}

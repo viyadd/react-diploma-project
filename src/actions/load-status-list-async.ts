@@ -6,7 +6,6 @@ import { pushServerApiSnackbarMessage } from '@/utils';
 
 export const loadStatusListAsync = () => (dispatch: AppDispatch) => {
 	dispatch(setStatusListLoading(true))
-	console.log('loadStatusListAsync')
 
 	request(`/states`,).then((loadedStatuses) => {
 		if (loadedStatuses.error) {

@@ -108,7 +108,6 @@ const TaskListContainer = ({ className, taskList, onUpdateTask }: TaskListProps)
 			}
 			onUpdateTask(savedTask.data as DataBaseTaskData);
 			dispatch(setTaskListLoading(false));
-			console.log('click', savedTask);
 		});
 	};
 

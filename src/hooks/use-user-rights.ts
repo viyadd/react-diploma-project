@@ -63,7 +63,6 @@ export const useUserRights = () => {
 		}
 		const currentAccess = updateAccessRight(user, accessList)
 		dispatch(setAccessRightLoading())
-		console.log('user >>', user.login, user.roleId)
 		return currentAccess
 	}
 

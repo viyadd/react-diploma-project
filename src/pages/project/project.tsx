@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { PrivateContent } from '../../components';
 import { useMatch, useParams } from 'react-router-dom';
 import { AppComponentsPropsBase } from '../../types';
@@ -9,16 +8,16 @@ import { AppUserRole } from '../../constants';
 const accessRoles = [AppUserRole.Admin, AppUserRole.User];
 
 const ProjectContainer = ({ className }: AppComponentsPropsBase) => {
-	const [errorMessage /* , setErrorMessage */] = useState<string | null>(null);
 	const params = useParams();
 	const isCreating = !!useMatch('/project');
 	const isEditing = !!useMatch('/project/:id/edit');
+	// todo /project/:id/edit маршрут устарел исключить
 
 	const getMode = (isCreating: boolean, isEditing: boolean): number =>
 		isCreating ? 0 : isEditing ? 1 : 2;
 
 	return (
-		<PrivateContent access={accessRoles} serverError={errorMessage}>
+		<PrivateContent access={accessRoles}>
 			<div className={className}>
 				{getMode(isCreating, isEditing) === 2 ? (
 					<ViewProject />

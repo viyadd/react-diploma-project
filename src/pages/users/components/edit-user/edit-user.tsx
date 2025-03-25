@@ -9,13 +9,16 @@ import {
 	selectIsRoleListLoading,
 	selectIsUserListLoading,
 	selectRoleList,
-	// selectStatusList,
 } from '@/selectors';
-// import { loadStatusListAsync } from '@/actions/load-status-list-async';
 import { FormElementsCommon, InfoBox, Input, Select } from '@/components';
-import { formatDate/* , getUserFullName */, pushSnackbarMessage, request, RequestMethods, transformRolesToOptionList, transformStatesToOptionList } from '@/utils';
+import {
+	formatDate,
+	pushSnackbarMessage,
+	request,
+	RequestMethods,
+	transformRolesToOptionList,
+} from '@/utils';
 import { loadRoleListAsync, setUserListLoading } from '@/actions';
-// import { AppUserRole } from '@/constants';
 
 const projectFormSchema = yup.object().shape({
 	name: yup.string().required('Заполните имя'),
@@ -39,12 +42,7 @@ interface EditUserProp extends AppComponentsPropsBase {
 	onClose: () => void;
 }
 
-const EditUserContainer = ({
-	className,
-	item,
-	onUpdate,
-	onClose,
-}: EditUserProp) => {
+const EditUserContainer = ({ className, item, onUpdate, onClose }: EditUserProp) => {
 	const [serverError, setServerError] = useState<string | null>(null);
 
 	const roleList = useAppSelector(selectRoleList);
@@ -59,7 +57,7 @@ const EditUserContainer = ({
 		// watch,
 		getValues,
 		handleSubmit,
-		formState: { isDirty, errors }, // isDirty, dirtyFields,
+		formState: { isDirty, errors },
 	} = useForm({
 		values: getFormValue(item),
 		resolver: yupResolver(projectFormSchema),
@@ -104,7 +102,10 @@ const EditUserContainer = ({
 	return (
 		<div className={className}>
 			{[
-				['Дата регистрации', item !== null ? formatDate(item.registredAt, 'datetime') : '-'],
+				[
+					'Дата регистрации',
+					item !== null ? formatDate(item.registredAt, 'datetime') : '-',
+				],
 				// ['Владелец', getUserFullName({ user: item?.owner, isFill: true })],
 				// ['Исполнитель', getUserFullName({ user: item?.executor, isFill: true })],
 			].map(([label, value], i) => (
@@ -114,15 +115,15 @@ const EditUserContainer = ({
 			))}
 			<Input
 				type="text"
-				placeholder="Имя"
-				{...register('name', {
+				placeholder="Фамилия"
+				{...register('surname', {
 					onChange: () => setServerError(null),
 				})}
 			/>
 			<Input
 				type="text"
-				placeholder="Фамилия"
-				{...register('surname', {
+				placeholder="Имя"
+				{...register('name', {
 					onChange: () => setServerError(null),
 				})}
 			/>
@@ -134,6 +135,7 @@ const EditUserContainer = ({
 				})}
 			/>
 			<Select
+				placeholder="Роль"
 				optionsList={transformRolesToOptionList(roleList || [])}
 				loading={isRoleListLoading}
 				{...register('roleId', {

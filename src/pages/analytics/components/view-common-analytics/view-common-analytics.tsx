@@ -103,7 +103,6 @@ const ViewCommonAnalyticsContainer = ({ className }: ViewCommonAnalyticsProps) =
 		}
 		projectLoader.load();
 		dispatch(setStatusListLoading(true));
-		// dispatch(setProjectListLoading(true));
 		request('/analytics/projects').then((statusesData) => {
 			if (isValueServerResponseErrorData(statusesData.error)) {
 				pushSnackbarMessage.errorServerApi(statusesData.error);
@@ -111,7 +110,6 @@ const ViewCommonAnalyticsContainer = ({ className }: ViewCommonAnalyticsProps) =
 				return;
 			}
 
-			// console.log('t', statusesData)
 			const {data} = statusesData
 			if (Array.isArray(data)) {
 				const statuses = data.filter(isValueStatusAnalyticsData);

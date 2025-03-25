@@ -41,7 +41,8 @@ const getFormValue = (item: DataBaseTaskData | null) => {
 	return {
 		codeName: typeof item?.codeName === 'string' ? item?.codeName : '',
 		title: typeof item?.title === 'string' ? item?.title : '',
-		expectedSpentTime: typeof item?.expectedSpentTime === 'number' ? item?.expectedSpentTime : 20,
+		expectedSpentTime:
+			typeof item?.expectedSpentTime === 'number' ? item?.expectedSpentTime : 20,
 		description: typeof item?.description === 'string' ? item?.description : '',
 		state: typeof item?.state?.id === 'string' ? item.state.id : '',
 	};
@@ -64,7 +65,7 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 		// watch,
 		getValues,
 		handleSubmit,
-		formState: { isDirty, errors }, // isDirty, dirtyFields,
+		formState: { isDirty, errors },
 	} = useForm({
 		values: getFormValue(item),
 		resolver: yupResolver(taskFormSchema),
@@ -96,10 +97,9 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 		const { url, method, data } = requestParams;
 		request(url, method, data).then((savedTask) => {
 			if (savedTask.error) {
-				setServerError(serverErrorToString(savedTask.error))
-				// pushSnackbarMessage.errorServerApi(savedTask.error);
+				setServerError(serverErrorToString(savedTask.error));
 				dispatch(setTaskListLoading(false));
-				return
+				return;
 			} else {
 				onUpdateTask(savedTask.data as DataBaseTaskData);
 			}
@@ -153,14 +153,8 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 					onChange: () => setServerError(null),
 				})}
 			/>
-			{/* <Input
-				type="text"
-				placeholder="state"
-				{...register('stateId', {
-					onChange: () => setServerError(null),
-				})}
-			/> */}
 			<Select
+				placeholder="Статус"
 				optionsList={transformStatesToOptionList(statusList || [])}
 				loading={isStatusListLoading}
 				{...register('state', {

@@ -80,7 +80,6 @@ const SpentTimeListContainer = ({
 				onClick: ({ value }) => {
 					setDialogMode('info');
 					const item = value as DataBaseSpentTimeData;
-					console.log('view', value);
 					setCurrentSpentTime(item);
 					setIsOpenDialog(true);
 				},
@@ -95,24 +94,12 @@ const SpentTimeListContainer = ({
 					setIsOpenDialog(true);
 				},
 			},
-			// {
-			// 	key: 'delete',
-			// 	iconId: 'fa-trash-o',
-			// 	onClick: (key: string, v: unknown) => {
-			// 		console.log('click', (v as DataBaseTaskData).id, key);
-			// 	},
-			// },
 		]);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// const onConfirm = () => {
-	// 	setIsOpenDialog(false);
-	// };
-
 	const closeSpentTimeEditDialog = () => {
 		setIsOpenDialog(false);
-		// setCurrentSpentTime(null);
 	};
 
 	const handleSpentTimeEditDialogClose = () => {
@@ -152,7 +139,7 @@ const SpentTimeListContainer = ({
 				open={isOpenDialog}
 				title={getDialogTitle(dialogMode)}
 				type={dialogMode === 'info' ? DialogType.Info : undefined}
-				width='500px'
+				width="500px"
 				onClose={handleSpentTimeEditDialogClose}
 			>
 				{dialogMode === 'info' && <ViewSpentTime item={currentSpentTime} />}

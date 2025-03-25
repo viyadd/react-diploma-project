@@ -12,7 +12,14 @@ import {
 } from '@/selectors';
 import { loadStatusListAsync } from '@/actions/load-status-list-async';
 import { FormElementsCommon, InfoBox, Input, Select } from '@/components';
-import { formatDate, getUserFullName, pushSnackbarMessage, request, RequestMethods, transformStatesToOptionList } from '@/utils';
+import {
+	formatDate,
+	getUserFullName,
+	pushSnackbarMessage,
+	request,
+	RequestMethods,
+	transformStatesToOptionList,
+} from '@/utils';
 import { setProjectListLoading } from '@/actions';
 
 const projectFormSchema = yup.object().shape({
@@ -55,7 +62,7 @@ const EditProjectContainer = ({
 		// watch,
 		getValues,
 		handleSubmit,
-		formState: { isDirty, errors }, // isDirty, dirtyFields,
+		formState: { isDirty, errors },
 	} = useForm({
 		values: getFormValue(item),
 		resolver: yupResolver(projectFormSchema),
@@ -123,6 +130,7 @@ const EditProjectContainer = ({
 				})}
 			/>
 			<Select
+				placeholder="Статус"
 				optionsList={transformStatesToOptionList(statusList || [])}
 				loading={isStatusListLoading}
 				{...register('state', {

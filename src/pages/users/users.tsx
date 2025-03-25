@@ -108,7 +108,6 @@ const UsersContainer = ({ className }: { className?: string }) => {
 				},
 			},
 		]);
-		console.log('>>');
 	}, []);
 
 	useEffect(() => {
@@ -125,7 +124,6 @@ const UsersContainer = ({ className }: { className?: string }) => {
 
 			if (usersData.data !== null) {
 				setUserList(usersData.data as DataBaseUserData[]);
-				console.log('>>>', usersData.data as DataBaseUserData[]);
 			}
 			dispatch(setUserListLoading(false));
 		});

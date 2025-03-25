@@ -1,6 +1,6 @@
 import { DataTable, Dialog, PageTitle, PrivateContent } from '@/components';
 import { useEffect, useState } from 'react';
-import { pushServerApiSnackbarMessage, request } from '@/utils';
+import { pushServerApiSnackbarMessage, pushSnackbarMessage, request } from '@/utils';
 import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import {
 	AppComponentsPropsBase,
@@ -72,17 +72,6 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 	useEffect(() => {
 
 		setDataTableTools([
-			// {
-			// 	key: 'view',
-			// 	iconId: 'fa-eye',
-			// 	onClick: (v: unknown) => {
-			// 		// navigate(`/task/${(v as DataBaseTaskData).id}/edit`);
-			// 		const item = v as DataBaseProjectData;
-			// 		setCurrentSpentTime(item)
-			// 		// console.log('>>', { item });
-			// 		setIsOpen(true);
-			// 	},
-			// },
 			{
 				key: 'edit',
 				iconId: 'fa-pencil',
@@ -92,15 +81,7 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 					setIsOpenPrjDialog(true);
 				},
 			},
-			// {
-			// 	key: 'delete',
-			// 	iconId: 'fa-trash-o',
-			// 	onClick: (key: string, v: unknown) => {
-			// 		console.log('click', (v as DataBaseTaskData).id, key);
-			// 	},
-			// },
 		]);
-		console.log('>>')
 	}, []);
 
 	useEffect(() => {
@@ -108,26 +89,20 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 			return;
 		}
 		dispatch(setProjectListLoading(true));
-		// const hash = serverAuth();
 		request('/projects').then((projectsData) => {
 			if (projectsData.error) {
-				pushServerApiSnackbarMessage({ error: projectsData.error });
-				// setErrorMessage(serverErrorToString(projectsData.error));
+				pushSnackbarMessage.errorServerApi(projectsData.error);
 				dispatch(setProjectListLoading(false));
 				return;
 			}
 
 			if (projectsData.data !== null) {
 				setProjectList(projectsData.data as DataBaseProjectData[]);
-				console.log('>>>', projectsData.data as DataBaseProjectData[]);
 			}
 			dispatch(setProjectListLoading(false));
 		});
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch, updateData]);
-
-	// todo delete file
-	// 	navigate(`/project/${id}/edit`);
 
 	const getDialogTitle = (mode: DialogPrjMode | null) => {
 		switch (mode) {
@@ -151,7 +126,6 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 			setCurrentProject(null)
 			return;
 		}
-		console.log('>>>',projectList)
 		if (projectList.filter((project) => project?.id === newProject?.id).length === 0) {
 			setUpdateData(!updateData);
 			setCurrentProject(null)

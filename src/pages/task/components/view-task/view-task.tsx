@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { request } from '@/utils';
+import { pushSnackbarMessage, request } from '@/utils';
 import {
 	AppComponentsPropsBase,
 	DataBaseSpentTimeData,
@@ -33,10 +33,8 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 			return;
 		}
 		request(`/tasks/${id}`).then((loadedTask) => {
-			console.log('loadedTask -->', { loadedProject: loadedTask });
 			if (loadedTask.error) {
-				console.log('не удалось загрузить задачу', loadedTask.error);
-				// TODO вывести сообщение об ошибке
+				pushSnackbarMessage.errorServerApi(loadedTask.error);
 				dispatch(setTaskLoading(false));
 				dispatch(setSpentTimeListLoading(false));
 				return;
@@ -50,13 +48,11 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 				dispatch(setSpentTimeListLoading(false));
 			}
 
-			console.log('tasks >>', { t: currentTask, st: spentTimeList });
 			if (spentTimeList.length > 0) {
 				request(`/spent-times?${spentTimeList.map((id) => 'id=' + id).join('&')}`).then(
 					(spentTimes) => {
 						if (spentTimes.error) {
-							console.log('не удалось загрузить задачи', spentTimes.error);
-							// TODO вывести сообщение об ошибке
+							pushSnackbarMessage.errorServerApi(spentTimes.error);
 							dispatch(setSpentTimeListLoading(false));
 							return;
 						}
@@ -66,7 +62,6 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 							setSpentTimeList(currentSpentTimeList.content);
 						}
 						dispatch(setSpentTimeListLoading(false));
-						console.log('currentSpentTimeList', currentSpentTimeList.content);
 					},
 				);
 			}
@@ -74,7 +69,6 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 	}, [dispatch, params, updateData]);
 
 	const onUpdateSpentTime = (newSpentTime: DataBaseSpentTimeData) => {
-		console.log(newSpentTime);
 		if (spentTimeList === null) {
 			setSpentTimeList([newSpentTime]);
 			return;

@@ -59,14 +59,11 @@ const AuthorizationContainer = ({ className }: AppComponentsPropsBase) => {
 
 	const onSubmit = ({ login, password }: { login: string; password: string }) => {
 		request('/login', 'POST', { login, password }).then(({ error, data }) => {
-			// console.log('/login', { error, data });
 			if (error) {
-				// console.log('setError');
 				setServerError(`Ошибка запроса: ${error}`);
 				return;
 			}
 			if (data) {
-				// console.log('setUser');
 				usersRights.updateAccessRight(data as DataBaseUserData, [AppUserRole.Guest]);
 			}
 		});

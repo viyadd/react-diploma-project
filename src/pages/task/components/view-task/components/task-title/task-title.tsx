@@ -10,7 +10,6 @@ interface ProjectTitleProps extends AppComponentsPropsBase {
 
 const TaskTitleContainer = ({ className, task }: ProjectTitleProps) => {
 	const isTaskLoading = useAppSelector(selectIsTaskLoading);
-	console.log({ isTaskLoading });
 
 	return (
 		<div className={className}>
