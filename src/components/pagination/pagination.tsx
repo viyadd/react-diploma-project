@@ -12,6 +12,9 @@ const PaginationContainer = ({ className, page, lastPage, setPage }: PaginationP
 	if (lastPage === null || page === null) {
 		return;
 	}
+	if(lastPage<2) {
+		return
+	}
 
 	return (
 		<div className={className}>
