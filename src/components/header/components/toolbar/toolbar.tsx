@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { selectAppUserIdentified, selectToolbarOptions } from '@/selectors';
 import styled from 'styled-components';
 import { Button } from '@/components/button/button';
@@ -13,9 +13,11 @@ const ToolbarContainer = ({ className }: { className?: string }) => {
 	const isIdentifiedUser = useAppSelector(selectAppUserIdentified);
 
 	const usersRights = useUserRights();
+	const navigate = useNavigate()
 
 	const onLogout = () => {
 		usersRights.logout();
+		navigate('/info')
 	};
 
 	return (
