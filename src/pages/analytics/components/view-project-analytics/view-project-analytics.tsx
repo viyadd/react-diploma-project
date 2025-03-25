@@ -7,15 +7,10 @@ import {
 } from '@/components';
 import { ChartData } from '@/components/analytics-pie-chart/analytics-pie-chart';
 import { AppUserRole } from '@/constants';
-import {
-	useAnalyticsProjectTasksLoader,
-	useProjectTasksLoader,
-} from '@/hooks';
+import { useAnalyticsProjectTasksLoader, useProjectTasksLoader } from '@/hooks';
 import { useAppSelector } from '@/hooks/use-app-store';
 import { useUserRights } from '@/hooks/use-user-rights';
-import {
-	selectIsAccessRightLoading,
-} from '@/selectors';
+import { selectIsAccessRightLoading } from '@/selectors';
 import {
 	AppComponentsPropsBase,
 	DataTableHeader,
@@ -23,6 +18,7 @@ import {
 	ValueKeyBarChart,
 	BarChartData,
 	isValueDBAnalyticsTaskData,
+	DataBaseTaskData,
 } from '@/types';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -39,7 +35,11 @@ const headerList: DataTableHeader[] = [
 	{ key: 'count', text: 'Количество' },
 ];
 const projectTaskHeaderList: DataTableHeader[] = [
-	{ key: 'codeName', text: 'Код' },
+	{
+		key: 'codeName',
+		text: 'Код',
+		link: (v: unknown) => `/task/${(v as DataBaseTaskData)?.id}`,
+	},
 	{ key: 'title', text: 'Название' },
 	{ key: 'state.text', text: 'Статус' },
 	{ key: 'description', text: 'Описание' },
@@ -82,8 +82,7 @@ const ViewProjectAnalyticsContainer = ({ className }: ViewProjectAnalyticsProps)
 		if (Array.isArray(statusesData)) {
 			const statuses = statusesData.filter(isValueStatusAnalyticsData);
 			setDataPieChart(
-				statuses
-					.map((status) => ({ name: status.text, value: status.count })),
+				statuses.map((status) => ({ name: status.text, value: status.count })),
 			);
 		}
 		if (Array.isArray(tasksData)) {
