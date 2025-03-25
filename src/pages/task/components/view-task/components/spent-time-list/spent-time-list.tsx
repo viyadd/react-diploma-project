@@ -10,16 +10,19 @@ import {
 } from '@/types';
 import { DataTable, Dialog } from '@/components';
 import { useEffect, useState } from 'react';
-import { useAppSelector } from '@/hooks/use-app-store';
+import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import { AppUserRole } from '@/constants';
 import { selectIsSpentTimeListLoading } from '@/selectors';
 import { useToolbarOptions } from '@/hooks';
 import { ViewSpentTime } from '../view-spent-time/view-spent-time';
 import { EditSpentTime } from '../edit-spent-time/edit-spent-time';
+import { useUserRights } from '@/hooks/use-user-rights';
+import { pushSnackbarMessage, request } from '@/utils';
+import { setTaskListLoading } from '@/actions';
 
 interface SpentTimeListProps extends AppComponentsPropsBase {
 	spentTimeList: DataBaseSpentTimeData[] | null;
-	onUpdateSpentTime: (spentTime: DataBaseSpentTimeData) => void;
+	onUpdateSpentTime: (spentTime?: DataBaseSpentTimeData) => void;
 }
 
 const headerList: DataTableHeader[] = [
@@ -45,15 +48,17 @@ const SpentTimeListContainer = ({
 }: SpentTimeListProps) => {
 	const [dataTableTools, setDataTableTools] = useState<DataTableTool[] | null>(null);
 	const [isOpenDialog, setIsOpenDialog] = useState(false);
+	const [isOpenYesNo, setIsOpenYesNo] = useState(false);
 	const [dialogMode, setDialogMode] = useState<DialogMode>(null);
 	const [currentSpentTime, setCurrentSpentTime] = useState<DataBaseSpentTimeData | null>(
 		null,
 	);
 
 	const isSpentTimeListLoading = useAppSelector(selectIsSpentTimeListLoading);
+	const dispatch = useAppDispatch();
 
+	const usersRights = useUserRights();
 	const toolbar = useToolbarOptions();
-	// const navigate = useNavigate();
 
 	useEffect(() => {
 		const tools: ToolbarOptions[] = [
@@ -66,14 +71,12 @@ const SpentTimeListContainer = ({
 					setDialogMode('new');
 					setCurrentSpentTime(null);
 					setIsOpenDialog(true);
-					// navigate(`/spentTime`);
-					// toolbar.resetToolbarOptions();
 				},
 			},
 		];
 		toolbar.setToolbarOptions(tools);
 
-		setDataTableTools([
+		const dataTabletools: DataTableTool[] = [
 			{
 				key: 'view',
 				iconId: 'fa-eye',
@@ -94,7 +97,19 @@ const SpentTimeListContainer = ({
 					setIsOpenDialog(true);
 				},
 			},
-		]);
+		];
+		if (usersRights.isUserAdmin()) {
+			dataTabletools.push({
+				key: 'delete',
+				iconId: 'fa-trash-o',
+				onClick: ({ value }) => {
+					const item = value as DataBaseSpentTimeData;
+					setCurrentSpentTime(item);
+					setIsOpenYesNo(true);
+				},
+			});
+		}
+		setDataTableTools(dataTabletools);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -124,6 +139,24 @@ const SpentTimeListContainer = ({
 		}
 	};
 
+	const handleYesConfirmed = () => {
+		setIsOpenYesNo(false);
+		if (currentSpentTime?.id === undefined) {
+			return;
+		}
+		dispatch(setTaskListLoading(true));
+
+		request(`/spent-times/${currentSpentTime.id}`, 'DELETE').then((response) => {
+			if (response.error) {
+				pushSnackbarMessage.errorServerApi(response.error);
+				dispatch(setTaskListLoading());
+				return;
+			}
+			dispatch(setTaskListLoading());
+			onUpdateSpentTime();
+		});
+	};
+
 	return (
 		<div className={className}>
 			<div className="content">
@@ -135,6 +168,14 @@ const SpentTimeListContainer = ({
 					loading={isSpentTimeListLoading}
 				/>
 			</div>
+			<Dialog
+				open={isOpenYesNo}
+				type={DialogType.YesNo}
+				onClose={() => setIsOpenYesNo(false)}
+				onConfirm={handleYesConfirmed}
+			>
+				Удалить запись о выполненой работе?
+			</Dialog>
 			<Dialog
 				open={isOpenDialog}
 				title={getDialogTitle(dialogMode)}

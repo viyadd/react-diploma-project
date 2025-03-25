@@ -72,6 +72,7 @@ export const useUserRights = () => {
 	}
 
 	const isUserGuest = () => currentAppUserRole === AppUserRole.Guest
+	const isUserAdmin = () => currentAppUserRole === AppUserRole.Admin
 
 	const logout = () => {
 		request('/logout', 'POST')
@@ -83,6 +84,7 @@ export const useUserRights = () => {
 	return {
 		logout,
 		isUserGuest,
+		isUserAdmin,
 		isAccessDenied,
 		updateAccessRight,
 		asyncUpdateAccessRight,

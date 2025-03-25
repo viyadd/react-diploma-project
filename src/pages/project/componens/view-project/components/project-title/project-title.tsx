@@ -16,7 +16,9 @@ const ProjectTitleContainer = ({ className, project }: ProjectTitleProps) => {
 			<SkeletonLoader type="article" loading={isProjectLoading} />
 			{!isProjectLoading && (
 				<div className="content">
-					<div className="title">{project.title}</div>
+					<div className="title">Просмотр данных проекта</div>
+					<div>Название :</div>
+					<div>{project.title}</div>
 					<div>Статус :</div>
 					<div>{project.state && project.state.text}</div>
 					<div>Описание :</div>

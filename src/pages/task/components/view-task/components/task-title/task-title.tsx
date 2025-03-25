@@ -16,7 +16,9 @@ const TaskTitleContainer = ({ className, task }: ProjectTitleProps) => {
 			<SkeletonLoader type="article" loading={isTaskLoading} />
 			{!isTaskLoading && (
 				<div className="content">
-					<div className="title">{task.title}</div>
+					<div className="title">Просмотр данных задачи</div>
+					<div>Название :</div>
+					<div>{task.title}</div>
 					<div>Статус :</div>
 					<div>{task.state && task.state.text}</div>
 					<div>Описание :</div>

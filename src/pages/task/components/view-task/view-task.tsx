@@ -68,7 +68,11 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 		});
 	}, [dispatch, params, updateData]);
 
-	const onUpdateSpentTime = (newSpentTime: DataBaseSpentTimeData) => {
+	const onUpdateSpentTime = (newSpentTime?: DataBaseSpentTimeData) => {
+		if (newSpentTime === undefined) {
+			setUpdateData(!updateData);
+			return
+		}
 		if (spentTimeList === null) {
 			setSpentTimeList([newSpentTime]);
 			return;

@@ -23,9 +23,7 @@ function App() {
 					<Route path="/project" element={<Project />} />
 					<Route path="/project/:id" element={<Project />} />
 					<Route path="/task/:id" element={<Task />} />
-					<Route path="/task/:id/add" element={<div>Добавить новую работу к задаче</div>} />
-					<Route path="/task/:id/edit" element={<Task />} />
-					<Route path="*" element={<div>Ошибка</div>} />
+					<Route path="*" element={<div>Страница не существует</div>} />
 				</Routes>
 			</Page>
 		</div>
