@@ -9,6 +9,8 @@ import { request } from '../../utils';
 import { AppComponentsPropsBase, DataBaseUserData } from '../../types';
 import { AppUserRole } from '../../constants';
 import { useUserRights } from '../../hooks/use-user-rights';
+import { useAppSelector } from '@/hooks/use-app-store';
+import { selectAppUserIdentified } from '@/selectors';
 
 const authFormSchema = yup.object().shape({
 	login: yup
@@ -49,6 +51,7 @@ const AuthorizationContainer = ({ className }: AppComponentsPropsBase) => {
 
 	const [serverError, setServerError] = useState<string | null>(null);
 
+	const isAppUserIdentified = useAppSelector(selectAppUserIdentified);
 	const usersRights = useUserRights();
 
 	// const dispatch = useAppDispatch();
@@ -75,6 +78,9 @@ const AuthorizationContainer = ({ className }: AppComponentsPropsBase) => {
 	if (!usersRights.isUserGuest()) {
 		return <Navigate to="/" />;
 	}
+	if (isAppUserIdentified && usersRights.isUserGuest()) {
+		return <Navigate to="/info" />;
+	}
 
 	return (
 		<div className={className}>
@@ -82,14 +88,14 @@ const AuthorizationContainer = ({ className }: AppComponentsPropsBase) => {
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Input
 					type="text"
-					placeholder="Логин..."
+					placeholder="Логин"
 					{...register('login', {
 						onChange: () => setServerError(null),
 					})}
 				/>
 				<Input
 					type="password"
-					placeholder="Пароль..."
+					placeholder="Пароль"
 					{...register('password', {
 						onChange: () => setServerError(null),
 					})}

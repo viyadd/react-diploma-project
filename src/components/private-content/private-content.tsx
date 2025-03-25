@@ -8,6 +8,7 @@ import { useAppSelector } from '@/hooks/use-app-store';
 import { selectIsAccessRightLoading } from '@/selectors';
 import { Loader } from './components';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 interface PrivateContentProps extends AppComponentsProps {
 	access: AppUserRole[];
@@ -41,7 +42,14 @@ export const PrivateContentContainer = ({
 					<Loader />
 				</div>
 			)}
-			{userRights.isAccessDenied ? error && <Error error={error} /> : children}
+			{userRights.isAccessDenied
+				? error && (
+						<div className={className}>
+							<Error error={error} />
+							<Link to='/info'>Дополнительная информация</Link>
+						</div>
+				  )
+				: children}
 		</>
 	);
 };
@@ -51,4 +59,8 @@ export const PrivateContent = styled(PrivateContentContainer)`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+
+	& a {
+		text-decoration: none;
+	}
 `;

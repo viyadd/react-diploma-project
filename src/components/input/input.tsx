@@ -36,6 +36,7 @@ export const Input = styled(InputContainer)`
 	width: ${({ width = '100%' }) => width};
 	height: 100%;
 	border: 1px solid #eebf7c;
+	margin-bottom: 16px;
 
 	& input {
 		box-sizing: border-box;

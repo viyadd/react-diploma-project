@@ -59,6 +59,7 @@ export const useUserRights = () => {
 			setIsAccessDenied(true);
 			dispatch(userLogout());
 			setAppUserRole();
+			dispatch(setAccessRightLoading())
 			return { isAccessDenied: true };
 		}
 		const currentAccess = updateAccessRight(user, accessList)
