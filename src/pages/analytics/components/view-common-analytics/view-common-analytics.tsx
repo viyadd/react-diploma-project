@@ -168,6 +168,7 @@ const ViewCommonAnalyticsContainer = ({ className }: ViewCommonAnalyticsProps) =
 				// tools={dataTableTools}
 				loading={isLoading || isProjectListLoading}
 				width="500px"
+				minHeight='106px'
 				rows={PER_PAGE}
 			/>
 			<Pagination

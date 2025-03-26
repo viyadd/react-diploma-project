@@ -67,15 +67,16 @@ export const Select = styled(SelectContainer)`
 	width: ${({ width = '100%' }) => width};
 	height: 100%;
 	margin: 0 0 10px;
-	border: 1px solid #eebf7c;
 
 	& select {
 		box-sizing: border-box;
 		padding: 10px;
+		padding-right: 15px;
 		width: 100%;
 		border: none;
 		font-size: 18px;
 		background-color: #fff;
+		border: 1px solid #eebf7c;
 	}
 
 	& option {
@@ -95,6 +96,7 @@ export const Select = styled(SelectContainer)`
 	}
 	& select:focus {
 		outline: 1px solid #196cd8;
+		border: 1px solid #196cd8;
 	}
 	& select:focus ~ .label {
 		color: #196cd8;

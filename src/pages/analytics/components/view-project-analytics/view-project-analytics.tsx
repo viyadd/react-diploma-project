@@ -19,6 +19,7 @@ import {
 	BarChartData,
 	isValueDBAnalyticsTaskData,
 	DataBaseTaskData,
+	OrderByProps,
 } from '@/types';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -41,12 +42,13 @@ const projectTaskHeaderList: DataTableHeader[] = [
 		link: (v: unknown) => `/task/${(v as DataBaseTaskData)?.id}`,
 	},
 	{ key: 'title', text: 'Название' },
-	{ key: 'state.text', text: 'Статус' },
+	{ key: 'state.text', text: 'Статус', sortable: true, sortKey: 'state'},
 	{ key: 'description', text: 'Описание' },
 	{ key: 'expectedSpentTime', text: 'Время план.(мин)' },
 ];
 
 const PER_PAGE = 3;
+const loaderOptions = { limit: PER_PAGE }
 
 const valueKeys: ValueKeyBarChart[] = [
 	{ key: 'est', fill: '#8884d8', activeBar: { fill: 'pink', stroke: 'blue' } },
@@ -59,7 +61,7 @@ const ViewProjectAnalyticsContainer = ({ className }: ViewProjectAnalyticsProps)
 	const isAccessRightLoading = useAppSelector(selectIsAccessRightLoading);
 
 	const params = useParams();
-	const projectTaskLoader = useProjectTasksLoader({ limit: PER_PAGE });
+	const projectTaskLoader = useProjectTasksLoader(loaderOptions);
 	const analyticsProjectTasks = useAnalyticsProjectTasksLoader();
 	const usersRights = useUserRights();
 
@@ -104,6 +106,10 @@ const ViewProjectAnalyticsContainer = ({ className }: ViewProjectAnalyticsProps)
 
 	const isLoading = isAccessRightLoading || analyticsProjectTasks.isStatusListLoading;
 
+	const handlerOnSort = (key: string, orderBy: OrderByProps | null) => {
+		projectTaskLoader.setSortOptions({sort: key, orderBy })
+	}
+
 	return (
 		<div className={className}>
 			<PageTitle>Задачи по статусам</PageTitle>
@@ -129,7 +135,9 @@ const ViewProjectAnalyticsContainer = ({ className }: ViewProjectAnalyticsProps)
 					items={projectTaskLoader.taskList}
 					loading={isLoading || projectTaskLoader.isTaskListLoading}
 					width="auto"
+					minHeight='106px'
 					rows={PER_PAGE}
+					onSort={handlerOnSort}
 				/>
 				<Pagination
 					lastPage={projectTaskLoader.lastPage}

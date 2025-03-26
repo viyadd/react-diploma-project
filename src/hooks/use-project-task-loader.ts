@@ -1,5 +1,5 @@
 import { DataBaseTaskData, isApiDataPageDescriptor, OrderByProps } from "@/types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch } from "./use-app-store";
 import { setTaskListLoading } from "@/actions";
 import { pushSnackbarMessage, request } from "@/utils";
@@ -11,6 +11,14 @@ interface ProjectTaskLoaderOptionsProps {
 	sort?: string,
 	orderBy?: OrderByProps
 }
+
+interface ProjectTaskLoaderSortOptions {
+	// limit?: number,
+	sort: string | null,
+	orderBy: OrderByProps | null
+}
+
+const initSortOptions: ProjectTaskLoaderSortOptions = { sort: null, orderBy: null }
 
 export type ProjectTaskLoaderOptionsPropsKeys = keyof ProjectTaskLoaderOptionsProps
 
@@ -27,36 +35,30 @@ export const useProjectTasksLoader = (options: ProjectTaskLoaderOptionsProps) =>
 	const [taskList, setTaskList] = useState<DataBaseTaskData[] | null>(null);
 	const [projectId, setProjectId] = useState<string | null>(null);
 	const [page, setPage] = useState<number | null>(null);
+	const [sortOptions, setSortOptions] = useState<ProjectTaskLoaderSortOptions>(initSortOptions);
 	const [lastPage, setLastPage] = useState<number | null>(null);
 
 	const isTaskListLoading = useSelector(selectIsTaskListLoading)
 
 	const dispatch = useAppDispatch();
 
-	useEffect(() => {
+	const load = useCallback(() => {
 		if (projectId === null) {
-			return
-		}
-		setPage(1)
-	}, [projectId])
-
-	useEffect(() => {
-		if (projectId === null || page === null) {
-			return
-		}
-		load()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [page])
-
-	function load() {
-		if (projectId === null || page === null) {
+			setTaskList(null)
 			return
 		}
 		dispatch(setTaskListLoading(true));
+		// console.log('load')
 
 		const urlFilter = Object.fromEntries(filterOptionsList.map(key => {
 			if (key === 'page') {
 				return [key, page]
+			}
+			if (key === 'sort') {
+				return [key, sortOptions.sort]
+			}
+			if (key === 'orderBy') {
+				return [key, sortOptions.orderBy]
 			}
 			return [key, options?.[key]]
 		}).filter(w => !!w[1]))
@@ -77,10 +79,23 @@ export const useProjectTasksLoader = (options: ProjectTaskLoaderOptionsProps) =>
 			}
 			dispatch(setTaskListLoading(false));
 		});
+	}, [dispatch, options, page, projectId, sortOptions.orderBy, sortOptions.sort])
 
+	useEffect(() => {
+		if (projectId === null) {
+			setTaskList(null)
+			return
+		}
+		setPage(1)
+	}, [projectId])
 
+	useEffect(() => {
+		if (page === null) {
+			return
+		}
+		load()
+	}, [load, page])
 
-	}
 	return {
 		isTaskListLoading,
 		taskList,
@@ -89,5 +104,7 @@ export const useProjectTasksLoader = (options: ProjectTaskLoaderOptionsProps) =>
 		projectId,
 		setProjectId,
 		lastPage,
+		sortOptions,
+		setSortOptions
 	}
 }

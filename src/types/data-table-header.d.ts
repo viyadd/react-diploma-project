@@ -15,6 +15,8 @@ export interface DataTableHeader {
 	key: string,
 	text?: string,
 	type?: DateFormat,
+	sortable?: boolean,
+	sortKey?: string,
 	// width?: number,
 	// link?:  LinkFn,
 	link?: (v: unknown) => string,

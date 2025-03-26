@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { AppComponentsPropsBase } from '../../types';
-import { Article, Field, SkeletonLoaderTableBbody } from './components';
+import { Article, Field, SkeletonLoaderTableBbody, SkeletonLoaderTableHeader } from './components';
 
 interface SkeletonLoaderProps extends AppComponentsPropsBase {
 	loading?: boolean;
-	type?: 'table-tbody' | 'article' | 'field';
+	type?: 'table-tbody' |'table-header' |  'article' | 'field';
 	width?: string;
 	rows?: number;
 }
@@ -20,6 +20,9 @@ const SkeletonLoaderContainer = ({
 			{type === undefined && <span className="loader"></span>}
 			{type === 'table-tbody' && (
 				<SkeletonLoaderTableBbody loading={loading} {...props} />
+			)}
+			{type === 'table-header' && (
+				<SkeletonLoaderTableHeader loading={loading} {...props} />
 			)}
 			{type === 'article' && <Article loading={loading} />}
 			{type === 'field' && <Field loading={loading} />}
