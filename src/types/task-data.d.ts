@@ -4,6 +4,8 @@ import { DataBaseUserData } from "./user-data"
 
 export interface DataBaseTaskShortData {
 	id: string,
+	codeName: string,
+	description: string,
 	title: string,
 	spentTimes: string[] | DataBaseSpentTimeData[]
 }

@@ -5,6 +5,7 @@ import { DataBaseTaskData } from "./task-data"
 export interface DataBaseProjectShortData {
 	id: string,
 	title: string,
+	description: string,
 	tasks: string[] | DataBaseTaskData[]
 }
 
