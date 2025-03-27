@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -17,11 +17,10 @@ import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import {
 	selectIsStatusListLoading,
 	selectIsTaskListLoading,
-	selectStatusList,
 } from '@/selectors';
-import { loadStatusListAsync } from '@/actions/load-status-list-async';
 import { setTaskListLoading } from '@/actions';
 import { useParams } from 'react-router-dom';
+import { useStatusList } from '@/hooks';
 
 interface TaskEditProps extends AppComponentsPropsBase {
 	projectCode: string;
@@ -58,13 +57,14 @@ const TaskEditContainer = ({
 }: TaskEditProps) => {
 	const [serverError, setServerError] = useState<string | null>(null);
 
-	const statusList = useAppSelector(selectStatusList);
+	// const statusListOls = useAppSelector(selectStatusList);
 	const isStatusListLoading = useAppSelector(selectIsStatusListLoading);
 	const isTaskListLoading = useAppSelector(selectIsTaskListLoading);
 
 	const params = useParams();
 
 	const dispatch = useAppDispatch();
+	const statusList = useStatusList()
 
 	const {
 		register,
@@ -77,12 +77,6 @@ const TaskEditContainer = ({
 		values: getFormValue(item, projectCode),
 		resolver: yupResolver(taskFormSchema),
 	});
-
-	useEffect(() => {
-		if (statusList === null) {
-			dispatch(loadStatusListAsync());
-		}
-	}, [dispatch, statusList]);
 
 	const formError =
 		errors?.codeName?.message ||
@@ -162,7 +156,7 @@ const TaskEditContainer = ({
 			/>
 			<Select
 				placeholder="Статус"
-				optionsList={transformStatesToOptionList(statusList || [])}
+				optionsList={transformStatesToOptionList(statusList.statusList || [])}
 				loading={isStatusListLoading}
 				{...register('state', {
 					onChange: () => setServerError(null),

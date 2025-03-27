@@ -3,14 +3,12 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import {
 	selectIsProjectListLoading,
 	selectIsStatusListLoading,
-	selectStatusList,
 } from '@/selectors';
-import { loadStatusListAsync } from '@/actions/load-status-list-async';
 import { FormElementsCommon, InfoBox, Input, Select } from '@/components';
 import {
 	formatDate,
@@ -21,6 +19,7 @@ import {
 	transformStatesToOptionList,
 } from '@/utils';
 import { setProjectListLoading } from '@/actions';
+import { useStatusList } from '@/hooks';
 
 const projectFormSchema = yup.object().shape({
 	title: yup.string().required('Заполните заголовок'),
@@ -50,11 +49,11 @@ const EditProjectContainer = ({
 }: EditProjectProp) => {
 	const [serverError, setServerError] = useState<string | null>(null);
 
-	const statusList = useAppSelector(selectStatusList);
 	const isStatusListLoading = useAppSelector(selectIsStatusListLoading);
 	const isProjectListLoading = useAppSelector(selectIsProjectListLoading);
 
 	const dispatch = useAppDispatch();
+	const statusList = useStatusList()
 
 	const {
 		register,
@@ -67,12 +66,6 @@ const EditProjectContainer = ({
 		values: getFormValue(item),
 		resolver: yupResolver(projectFormSchema),
 	});
-
-	useEffect(() => {
-		if (statusList === null) {
-			dispatch(loadStatusListAsync());
-		}
-	}, [dispatch, statusList]);
 
 	const formError =
 		errors?.title?.message || errors?.description?.message || errors?.state?.message;
@@ -131,7 +124,7 @@ const EditProjectContainer = ({
 			/>
 			<Select
 				placeholder="Статус"
-				optionsList={transformStatesToOptionList(statusList || [])}
+				optionsList={transformStatesToOptionList(statusList.statusList || [])}
 				loading={isStatusListLoading}
 				{...register('state', {
 					onChange: () => setServerError(null),
