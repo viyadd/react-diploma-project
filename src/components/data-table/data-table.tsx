@@ -154,7 +154,7 @@ export const DataTable = styled(DataTableContainer)`
 		display: flex;
 		border-bottom: 1px solid #eee;
 		font-weight: bold;
-		padding-left: 3px;
+		padding-left: 6px;
 	}
 	& .tools {
 		grid-column: span 2/-1;

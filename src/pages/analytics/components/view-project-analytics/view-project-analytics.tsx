@@ -43,7 +43,7 @@ const projectTaskHeaderList: DataTableHeader[] = [
 	},
 	{ key: 'title', text: 'Название' },
 	{ key: 'state.text', text: 'Статус', sortable: true, sortKey: 'state'},
-	{ key: 'description', text: 'Описание' },
+	// { key: 'description', text: 'Описание' },
 	{ key: 'expectedSpentTime', text: 'Время план.(мин)' },
 ];
 
@@ -84,7 +84,9 @@ const ViewProjectAnalyticsContainer = ({ className }: ViewProjectAnalyticsProps)
 		if (Array.isArray(statusesData)) {
 			const statuses = statusesData.filter(isValueStatusAnalyticsData);
 			setDataPieChart(
-				statuses.map((status) => ({ name: status.text, value: status.count })),
+				statuses
+				.filter(status=> status.code !== 'done')
+				.map((status) => ({ name: status.text, value: status.count })),
 			);
 		}
 		if (Array.isArray(tasksData)) {

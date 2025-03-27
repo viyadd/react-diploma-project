@@ -89,11 +89,18 @@ const ViewTaskContainer = ({ className }: AppComponentsPropsBase) => {
 		setSpentTimeList([...newSpentTimeList]);
 	};
 
+	const handelOnUpdateTask = (newTask: DataBaseTaskData|null) => {
+			if (newTask===null) {
+				return
+			}
+			setTask(newTask)
+		}
+
 	return (
 		<div className={className}>
 			{task !== null && (
 				<>
-					<TaskTitle task={task} />
+					<TaskTitle task={task} onUpdate={handelOnUpdateTask} />
 					{
 						<SpentTimeList
 							spentTimeList={spentTimeList}

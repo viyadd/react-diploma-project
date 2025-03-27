@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import {
 	AppComponentsPropsBase,
+	DataBaseProjectData,
 	DataBaseTaskData,
 	DataTableHeader,
 	DataTableTool,
@@ -19,6 +20,7 @@ import { AppUserRole } from '@/constants';
 import { useToolbarOptions } from '@/hooks';
 
 interface TaskListProps extends AppComponentsPropsBase {
+	project: DataBaseProjectData;
 	taskList: DataBaseTaskData[] | null;
 	onUpdateTask: (task: DataBaseTaskData) => void;
 }
@@ -39,7 +41,12 @@ const taskHeaderList: DataTableHeader[] = [
 	// { key: 'description', },
 ];
 
-const TaskListContainer = ({ className, taskList, onUpdateTask }: TaskListProps) => {
+const TaskListContainer = ({
+	className,
+	project,
+	taskList,
+	onUpdateTask,
+}: TaskListProps) => {
 	const [isShowDialog, setIsShowDialog] = useState(false);
 	const [isShowConfirm, setIsShowConfirm] = useState(false);
 	const [currentTask, setCurrentTask] = useState<DataBaseTaskData | null>(null);
@@ -148,6 +155,7 @@ const TaskListContainer = ({ className, taskList, onUpdateTask }: TaskListProps)
 				width="600px"
 			>
 				<TaskEdit
+					projectCode={project.title}
 					item={currentTask}
 					onUpdateTask={handleTaskUpdate}
 					onClose={handleTaskEditDialogClose}

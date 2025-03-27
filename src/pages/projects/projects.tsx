@@ -1,6 +1,6 @@
 import { DataTable, Dialog, PageTitle, PrivateContent } from '@/components';
 import { useEffect, useState } from 'react';
-import { pushServerApiSnackbarMessage, pushSnackbarMessage, request } from '@/utils';
+import { pushSnackbarMessage, request } from '@/utils';
 import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import {
 	AppComponentsPropsBase,
@@ -70,7 +70,6 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 	}, [dispatch, toolbarOptions]);
 
 	useEffect(() => {
-
 		setDataTableTools([
 			{
 				key: 'edit',
@@ -101,7 +100,7 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 			}
 			dispatch(setProjectListLoading(false));
 		});
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch, updateData]);
 
 	const getDialogTitle = (mode: DialogPrjMode | null) => {
@@ -116,27 +115,27 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 	};
 
 	const handleProjectDialogClose = () => {
-		setCurrentProject(null)
+		setCurrentProject(null);
 		setIsOpenPrjDialog(false);
 	};
 
 	const handleProjectUpdate = (newProject: DataBaseProjectData) => {
 		if (projectList === null) {
 			setProjectList([newProject]);
-			setCurrentProject(null)
+			setCurrentProject(null);
 			return;
 		}
 		if (projectList.filter((project) => project?.id === newProject?.id).length === 0) {
 			setUpdateData(!updateData);
-			setCurrentProject(null)
-			return
+			setCurrentProject(null);
+			return;
 		}
 		const newProjectList = projectList.map((project) => {
 			return project.id === newProject.id ? newProject : project;
 		});
 
 		setProjectList(newProjectList);
-		setCurrentProject(null)
+		setCurrentProject(null);
 	};
 
 	return (

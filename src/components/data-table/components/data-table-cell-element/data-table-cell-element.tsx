@@ -57,6 +57,7 @@ const DataTableCellElementContainer = ({
 export const DataTableCellElement = styled(DataTableCellElementContainer)`
 	width: auto;
 	border-bottom: 1px solid #eee;
+	padding-left: 6px;
 
 	& .link {
 		text-decoration-line: none;

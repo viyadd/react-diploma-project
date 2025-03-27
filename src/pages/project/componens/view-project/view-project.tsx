@@ -34,7 +34,7 @@ const ViewProjectContainer = ({ className }: AppComponentsPropsBase) => {
 
 		request(`/projects/${id}`).then(async (loadedProject) => {
 			if (loadedProject.error) {
-				pushSnackbarMessage.errorServerApi(loadedProject.error)
+				pushSnackbarMessage.errorServerApi(loadedProject.error);
 				dispatch(setProjectLoading(false));
 				dispatch(setTaskListLoading(true));
 				return;
@@ -76,12 +76,19 @@ const ViewProjectContainer = ({ className }: AppComponentsPropsBase) => {
 		setTasks([...taskList]);
 	};
 
+	const handelOnUpdateProject = (newProject: DataBaseProjectData|null) => {
+		if (newProject===null) {
+			return
+		}
+		setProject(newProject)
+	}
+
 	return (
 		<div className={className}>
 			{project !== null && (
 				<>
-					<ProjectTitle project={project} />
-					<TaskList taskList={tasks} onUpdateTask={handleUpdateTask} />
+					<ProjectTitle project={project} onUpdate={handelOnUpdateProject} />
+					<TaskList project={project} taskList={tasks} onUpdateTask={handleUpdateTask} />
 					{/* <Pagination /> */}
 				</>
 			)}

@@ -24,6 +24,7 @@ import { setTaskListLoading } from '@/actions';
 import { useParams } from 'react-router-dom';
 
 interface TaskEditProps extends AppComponentsPropsBase {
+	projectCode: string;
 	item: DataBaseTaskData | null;
 	onUpdateTask: (task: DataBaseTaskData) => void;
 	onClose: () => void;
@@ -37,9 +38,9 @@ const taskFormSchema = yup.object().shape({
 	state: yup.string().required('Заполните статус'),
 });
 
-const getFormValue = (item: DataBaseTaskData | null) => {
+const getFormValue = (item: DataBaseTaskData | null, projectCode: string) => {
 	return {
-		codeName: typeof item?.codeName === 'string' ? item?.codeName : '',
+		codeName: typeof item?.codeName === 'string' ? item?.codeName : projectCode + '-',
 		title: typeof item?.title === 'string' ? item?.title : '',
 		expectedSpentTime:
 			typeof item?.expectedSpentTime === 'number' ? item?.expectedSpentTime : 20,
@@ -48,7 +49,13 @@ const getFormValue = (item: DataBaseTaskData | null) => {
 	};
 };
 
-const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditProps) => {
+const TaskEditContainer = ({
+	className,
+	projectCode,
+	item,
+	onUpdateTask,
+	onClose,
+}: TaskEditProps) => {
 	const [serverError, setServerError] = useState<string | null>(null);
 
 	const statusList = useAppSelector(selectStatusList);
@@ -67,7 +74,7 @@ const TaskEditContainer = ({ className, item, onUpdateTask, onClose }: TaskEditP
 		handleSubmit,
 		formState: { isDirty, errors },
 	} = useForm({
-		values: getFormValue(item),
+		values: getFormValue(item, projectCode),
 		resolver: yupResolver(taskFormSchema),
 	});
 

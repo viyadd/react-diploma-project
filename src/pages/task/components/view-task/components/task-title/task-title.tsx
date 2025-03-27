@@ -2,14 +2,27 @@ import styled from 'styled-components';
 import { AppComponentsPropsBase, DataBaseTaskData } from '@/types';
 import { useAppSelector } from '@/hooks/use-app-store';
 import { selectIsTaskLoading } from '@/selectors';
-import { SkeletonLoader } from '@/components';
+import { SelectStatus, SkeletonLoader } from '@/components';
+import { useTaskSaver } from '@/hooks';
 
 interface ProjectTitleProps extends AppComponentsPropsBase {
 	task: DataBaseTaskData;
+	onUpdate: (task: DataBaseTaskData | null) => void;
 }
 
-const TaskTitleContainer = ({ className, task }: ProjectTitleProps) => {
+const TaskTitleContainer = ({ className, task, onUpdate }: ProjectTitleProps) => {
 	const isTaskLoading = useAppSelector(selectIsTaskLoading);
+	const taskSaver = useTaskSaver()
+
+	const handleOnSave = async (newStatusId: string) => {
+		if (typeof task.id === 'string' && typeof newStatusId === 'string') {
+			const newTask = await taskSaver.save({
+				taskId: task.id,
+				data: { state: newStatusId },
+			});
+			onUpdate(newTask);
+		}
+	};
 
 	return (
 		<div className={className}>
@@ -20,7 +33,11 @@ const TaskTitleContainer = ({ className, task }: ProjectTitleProps) => {
 					<div>Название :</div>
 					<div>{task.title}</div>
 					<div>Статус :</div>
-					<div>{task.state && task.state.text}</div>
+					<SelectStatus
+						statusId={task.state.id}
+						isLoading={taskSaver.isTaskLoading}
+						onSave={handleOnSave}
+					/>
 					<div>Описание :</div>
 					<div>{task.description}</div>
 				</div>

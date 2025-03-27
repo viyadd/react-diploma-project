@@ -1,15 +1,29 @@
 import styled from 'styled-components';
 import { AppComponentsPropsBase, DataBaseProjectData } from '@/types';
-import { SkeletonLoader } from '@/components';
+import { SelectStatus, SkeletonLoader } from '@/components';
 import { useAppSelector } from '@/hooks/use-app-store';
 import { selectIsProjectLoading } from '@/selectors';
+import { useProjectSaver } from '@/hooks';
 
 interface ProjectTitleProps extends AppComponentsPropsBase {
 	project: DataBaseProjectData;
+	onUpdate: (project: DataBaseProjectData | null) => void;
 }
 
-const ProjectTitleContainer = ({ className, project }: ProjectTitleProps) => {
+const ProjectTitleContainer = ({ className, project, onUpdate }: ProjectTitleProps) => {
 	const isProjectLoading = useAppSelector(selectIsProjectLoading);
+
+	const projectSaver = useProjectSaver();
+
+	const handleOnSave = async (newStatusId: string) => {
+		if (typeof project.id === 'string' && typeof newStatusId === 'string') {
+			const newProject = await projectSaver.save({
+				projectId: project.id,
+				data: { state: newStatusId },
+			});
+			onUpdate(newProject);
+		}
+	};
 
 	return (
 		<div className={className}>
@@ -20,7 +34,11 @@ const ProjectTitleContainer = ({ className, project }: ProjectTitleProps) => {
 					<div>Название :</div>
 					<div>{project.title}</div>
 					<div>Статус :</div>
-					<div>{project.state && project.state.text}</div>
+					<SelectStatus
+						statusId={project.state.id}
+						isLoading={projectSaver.isProjectLoading}
+						onSave={handleOnSave}
+					/>
 					<div>Описание :</div>
 					<div>{project.description}</div>
 				</div>

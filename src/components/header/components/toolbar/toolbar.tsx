@@ -13,25 +13,30 @@ const ToolbarContainer = ({ className }: { className?: string }) => {
 	const isIdentifiedUser = useAppSelector(selectAppUserIdentified);
 
 	const usersRights = useUserRights();
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 
 	const onLogout = () => {
 		usersRights.logout();
-		navigate('/info')
+		navigate('/info');
 	};
 
 	return (
 		<div className={className}>
 			<div className="buttons">
-				{toolbarOptions &&
-					isIdentifiedUser &&
-					toolbarOptions
-						// .filter((w) => w.accessRoleList.includes(userAccessRole))
-						.map(({ key, iconId, tooltip, onClick }) => {
-							return (
-								<IconButton key={key} id={iconId} tooltip={tooltip} onClick={onClick} />
-							);
-						})}
+				<>
+					{toolbarOptions && isIdentifiedUser && (
+						<IconButton key="goBack" id="fa-angle-left" onClick={() => navigate(-1)} />
+					)}
+					{toolbarOptions &&
+						isIdentifiedUser &&
+						toolbarOptions
+							// .filter((w) => w.accessRoleList.includes(userAccessRole))
+							.map(({ key, iconId, tooltip, onClick }) => {
+								return (
+									<IconButton key={key} id={iconId} tooltip={tooltip} onClick={onClick} />
+								);
+							})}
+				</>
 			</div>
 			<div className="options">
 				{!isIdentifiedUser ? (
