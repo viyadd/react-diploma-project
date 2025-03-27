@@ -12,14 +12,14 @@ export const loadStatusListAsync = () => (dispatch: AppDispatch) => {
 			pushServerApiSnackbarMessage({ error: loadedStatuses.error });
 			dispatch(setStatusListLoading())
 
-			return dispatch({
+			dispatch({
 				type: ActionType.ResetStatusList,
 				payload: {},
 			});
 		}
 
 		dispatch(setStatusListLoading())
-		return dispatch({
+		dispatch({
 			type: ActionType.SetStatusList,
 			payload: { statusList: (loadedStatuses.data as DataBaseStateData[]) },
 		});

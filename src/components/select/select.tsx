@@ -1,7 +1,6 @@
-import styled from 'styled-components';
 import { forwardRef } from 'react';
 import { AppComponentsOptionsProps } from '../../types';
-import { SkeletonLoader } from '../skeleton-loader/skeleton-loader';
+import { SelectCompact, SelectStandard } from './components';
 
 interface OptionListData {
 	key: string;
@@ -9,7 +8,9 @@ interface OptionListData {
 	text?: string;
 }
 
-interface SelectProps extends AppComponentsOptionsProps {
+export interface SelectProps extends AppComponentsOptionsProps {
+	mode?: 'compact';
+
 	placeholder?: string;
 	label?: string;
 	width?: string;
@@ -21,84 +22,63 @@ interface SelectProps extends AppComponentsOptionsProps {
 	onChange?: React.ChangeEventHandler<HTMLSelectElement>;
 }
 
-const SelectContainer = forwardRef(
+export const Select = forwardRef(
 	(
 		{
-			className,
-			value,
+			mode,
 			optionsList,
-			loading,
-			placeholder,
-			label,
-			defaultValue,
 			...props
 		}: SelectProps,
 		ref: React.Ref<HTMLSelectElement>,
 	) => {
 		return (
-			<div className={className}>
-				<SkeletonLoader type="field" loading={loading} />
-				{!loading && (
-					<>
-						<select value={value} defaultValue={defaultValue || ''} {...props} ref={ref}>
-							<option value="" disabled hidden>
-								Выбрать здесь
-							</option>
-							{optionsList.map(({ key, value: optionValue, text }) => (
-								<option key={key} value={key}>
-									{text || optionValue}
-								</option>
-							))}
-						</select>
-						{(label || placeholder) && (
-							<div className="label">{label || placeholder}</div>
-						)}
-					</>
-				)}
-			</div>
+			<>
+			{mode === undefined && <SelectStandard optionsList={optionsList} {...props} ref={ref}/>}
+			{mode !== undefined && <SelectCompact optionsList={optionsList} {...props} ref={ref}/>}
+			</>
 		);
 	},
 );
 
-export const Select = styled(SelectContainer)`
-	position: relative;
-	display: inline-flexbox;
-	box-sizing: border-box;
-	width: ${({ width = '100%' }) => width};
-	height: 100%;
-	margin: 0 0 10px;
+// export const Select = styled(SelectContainer)`
+// 	position: relative;
+// 	display: inline-flexbox;
+// 	box-sizing: border-box;
+// 	width: ${({ width = '100%' }) => width};
+// 	height: 100%;
+// 	margin: 0 0 10px;
 
-	& select {
-		box-sizing: border-box;
-		padding: 10px;
-		padding-right: 15px;
-		width: 100%;
-		border: none;
-		font-size: 18px;
-		background-color: #fff;
-		border: 1px solid #eebf7c;
-	}
+// 	& select {
+// 		box-sizing: border-box;
+// 		padding: 10px;
+// 		padding-right: 15px;
+// 		width: 100%;
+// 		border: none;
+// 		font-size: 18px;
+// 		background-color: #fff;
+// 		border: 1px solid #eebf7c;
+// 	}
 
-	& option {
-		box-sizing: border-box;
-		font-size: 13px;
-	}
+// 	& option {
+// 		box-sizing: border-box;
+// 		font-size: 13px;
+// 	}
 
-	& .label {
-		font-size: 13px;
-		position: absolute;
-		padding: 0 3px;
-		background-color: #fff;
-		color: #eebf7c;
-		top: -11px;
-		left: 9px;
-		z-index: 2;
-	}
-	& select:focus {
-		outline: 1px solid #196cd8;
-		border: 1px solid #196cd8;
-	}
-	& select:focus ~ .label {
-		color: #196cd8;
-	}
-`;
+// 	& .label {
+// 		font-size: 13px;
+// 		position: absolute;
+// 		padding: 0 3px;
+// 		background-color: #fff;
+// 		color: #eebf7c;
+// 		top: -11px;
+// 		left: 9px;
+// 		z-index: 2;
+// 	}
+// 	& select:focus {
+// 		outline: 1px solid #196cd8;
+// 		border: 1px solid #196cd8;
+// 	}
+// 	& select:focus ~ .label {
+// 		color: #196cd8;
+// 	}
+// `;
