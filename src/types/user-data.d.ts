@@ -10,6 +10,7 @@ export interface DataBaseUserData extends AppUserData {
 	registredAt: string,
 	roleId: number,
 	name: string,
+	isActive: boolean,
 	surname: string,
 	patronymic: string,
 }

@@ -11,11 +11,11 @@ import {
 	DataTableHeader,
 	DataTableTool,
 	DialogType,
-	ToolbarOptions,
+	// ToolbarOptions,
 } from '@/types';
 import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import { selectIsUserListLoading, selectUserId } from '@/selectors';
-import { setToolbarOptionList, setUserListLoading } from '@/actions';
+import { /* setToolbarOptionList, */ setUserListLoading } from '@/actions';
 import { EditUser, ViewUser } from './components';
 
 type DialogUserMode = 'info' | 'edit' | 'new';
@@ -40,7 +40,7 @@ const UsersContainer = ({ className }: { className?: string }) => {
 	const [userList, setUserList] = useState<DataBaseUserData[] | []>([]);
 	const [currentUser, setCurrentUser] = useState<DataBaseUserData | null>(null);
 	const [dataTableTools, setDataTableTools] = useState<DataTableTool[] | null>(null);
-	const [toolbarOptions, setToolbarOptions] = useState<ToolbarOptions[] | null>(null);
+	// const [toolbarOptions, setToolbarOptions] = useState<ToolbarOptions[] | null>(null);
 	const [dialogUserMode, setDialogUserMode] = useState<DialogUserMode | null>(null);
 	const [isOpenUserDialog, setIsOpenUserDialog] = useState(false);
 	const [isOpenYesNo, setIsOpenYesNo] = useState(false);
@@ -53,26 +53,6 @@ const UsersContainer = ({ className }: { className?: string }) => {
 
 	const usersRights = useUserRights();
 
-	useEffect(() => {
-		const tools: ToolbarOptions[] = [
-			{
-				key: 'add',
-				iconId: 'fa-plus',
-				accessRoleList: accessRoles,
-				onClick: () => {
-					// todo delete file
-					// navigate(`/project`);
-					setDialogUserMode('new');
-					setIsOpenUserDialog(true);
-				},
-			},
-		];
-		if (toolbarOptions === null) {
-			setToolbarOptions(tools);
-			return;
-		}
-		dispatch(setToolbarOptionList(toolbarOptions));
-	}, [dispatch, toolbarOptions]);
 
 	useEffect(() => {
 		setDataTableTools([
@@ -96,7 +76,8 @@ const UsersContainer = ({ className }: { className?: string }) => {
 			},
 			{
 				key: 'delete',
-				iconId: 'fa-trash-o',
+				iconId: 'fa-ban',
+				isDisabled: ({ value }) => !(value as DataBaseUserData).isActive,
 				onClick: ({ value }) => {
 					const user = value as DataBaseUserData;
 					if (userId === user.id) {
@@ -108,7 +89,7 @@ const UsersContainer = ({ className }: { className?: string }) => {
 				},
 			},
 		]);
-	}, []);
+	}, [userId]);
 
 	useEffect(() => {
 		if (!usersRights.isAccessGranted(accessRoles)) {
@@ -169,12 +150,14 @@ const UsersContainer = ({ className }: { className?: string }) => {
 		}
 		dispatch(setUserListLoading(true));
 
-		request(`/users/${currentUser.id}`, 'DELETE').then((response) => {
-			if (response.error) {
-				pushSnackbarMessage.errorServerApi(response.error);
-			}
-			setUpdateData(!updateData);
-		});
+		request(`/users/${currentUser.id}/ban`, 'PATCH', { isActive: false }).then(
+			(response) => {
+				if (response.error) {
+					pushSnackbarMessage.errorServerApi(response.error);
+				}
+				setUpdateData(!updateData);
+			},
+		);
 	};
 
 	return (
@@ -195,7 +178,7 @@ const UsersContainer = ({ className }: { className?: string }) => {
 					onClose={() => setIsOpenYesNo(false)}
 					onConfirm={handleYesConfirmed}
 				>
-					Удалить пользователя?
+					Заблокировать пользователя?
 				</Dialog>
 				<Dialog
 					type={dialogUserMode === 'info' ? DialogType.Info : undefined}

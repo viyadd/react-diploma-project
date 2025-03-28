@@ -28,10 +28,11 @@ const DataTableCellElementContainer = ({
 		if (h.tools !== undefined) {
 			return (
 				<div className="tools">
-					{h.tools.map(({ key, iconId, tooltip, onClick }) => (
+					{h.tools.map(({ key, iconId, tooltip, onClick, isDisabled }) => (
 						<IconButton
 							key={key}
 							id={iconId}
+							disabled={typeof isDisabled === 'function' ? isDisabled({ value: item, key }) : false}
 							tooltip={tooltip}
 							onClick={() => onClick({ value: item, key })}
 						/>

@@ -1,12 +1,16 @@
 import { DateFormat } from "../utils";
 
 export interface DataTableToolOnClickFunc {
-	({key, value}:{key: string, value: unknown}): void
+	({ key, value }: { key: string, value: unknown }): void
+}
+export interface DataTableToolIsDisabledFunc {
+	({ key, value }: { key: string, value: unknown }): boolean
 }
 export interface DataTableTool {
 	key: string,
 	iconId: string,
 	tooltip?: string,
+	isDisabled?: DataTableToolIsDisabledFunc,
 	onClick: DataTableToolOnClickFunc
 	// onClick: ({key, value}:{key: string, value: unknown}) => void
 }

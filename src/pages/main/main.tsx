@@ -29,6 +29,8 @@ import { useUserRights } from '@/hooks/use-user-rights';
 
 const accessRoles = [AppUserRole.Admin, AppUserRole.User];
 
+const availableStatuses = ['backlog', 'doing', 'review', ''];
+
 const MainContainer = ({ className }: AppComponentsPropsBase) => {
 	const [comment, setComment] = useState<string | null>(null);
 	const [projectList, setProjectList] = useState<DataBaseProjectShortData[] | null>(null);
@@ -183,7 +185,11 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 						/>
 						<Select
 							placeholder="Задача"
-							optionsList={transformTasksToOptionList(taskList || [])}
+							optionsList={transformTasksToOptionList(
+								(taskList || []).filter((task) =>
+									availableStatuses.includes(task.state.code),
+								),
+							)}
 							loading={isTaskListLoading}
 							disabled={!(Array.isArray(taskList) && taskList.length > 0) || saving}
 							defaultValue=""

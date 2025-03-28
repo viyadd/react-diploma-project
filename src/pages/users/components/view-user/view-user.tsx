@@ -24,6 +24,7 @@ const ViewUserContainer = ({ className, item }: ViewUserProps) => {
 	return (
 		<div className={className}>
 			{[
+				['Статус пользователя', item.isActive ? 'Запись активна' : 'Доступ заблокирован'],
 				['Логин', item.login],
 				['ФИО', getFullName(item)],
 				['Зарегистрирован', formatDate(item.registredAt, 'datetime')],
