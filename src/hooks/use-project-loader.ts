@@ -1,8 +1,9 @@
 import { DataBaseProjectData, isApiDataPageDescriptor, OrderByProps } from "@/types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch } from "./use-app-store";
 import { setProjectListLoading } from "@/actions";
 import { pushSnackbarMessage, request } from "@/utils";
+// import { useUserRights } from "./use-user-rights";
 
 interface OptionsProps {
 	pagination?: boolean,
@@ -28,20 +29,19 @@ export const useProjectLoader = (options?: OptionsProps) => {
 	const [lastPage, setLastPage] = useState<number | null>(null);
 
 	const dispatch = useAppDispatch();
-
-	useEffect(() => {
-		load(page)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [page])
-
-	function load(page?: number | null) {
+	// console.log('useProjectLoader()', options)
+	const load = useCallback(() => {
+		if (options?.pagination && page === null) {
+			setPage(1)
+			console.log('load() >> setPage(1)')
+			return
+		}
 		dispatch(setProjectListLoading(true));
 
 		const urlFilter = options?.pagination === true
 			? Object.fromEntries(filterOptionsList.map(key => {
 				if (key === 'page') {
-					setPage(page || 1)
-					return [key, page || 1]
+					return [key, page]
 				}
 				return [key, options?.[key]]
 			}).filter(w => !!w[1]))
@@ -67,15 +67,31 @@ export const useProjectLoader = (options?: OptionsProps) => {
 			}
 			dispatch(setProjectListLoading(false));
 		});
+	}, [dispatch, options, page])
 
+	useEffect(() => {
+		if (page === null) {
+			dispatch(setProjectListLoading(false));
+			setProjectList(null)
+			return
+		}
+		load()
+	}, [dispatch, load, page])
 
-
+	const setCurrentPage = (newPage: number | null) => {
+		if (page === newPage) {
+			return
+		}
+		setPage(newPage)
 	}
+
+
 	return {
 		projectList,
 		load,
 		page,
-		setPage,
+		setCurrentPage,
+		// setPage,
 		lastPage,
 	}
 }

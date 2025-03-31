@@ -25,7 +25,6 @@ import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import { setProjectListLoading, setTaskListLoading } from '@/actions';
 import { FSMOfSpentTimeHendeleOnStateChangeFunc, useFSMOfSpentTime } from '@/hooks';
 import { SpentTimeControl } from './components';
-import { useUserRights } from '@/hooks/use-user-rights';
 
 const accessRoles = [AppUserRole.Admin, AppUserRole.User];
 
@@ -47,7 +46,6 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 	const isIdentified = useAppSelector(selectAppUserIdentified);
 
 	const fsmSpentTime = useFSMOfSpentTime();
-	const usersRights = useUserRights();
 
 	const dispatch = useAppDispatch();
 
@@ -163,47 +161,45 @@ const MainContainer = ({ className }: AppComponentsPropsBase) => {
 
 	return (
 		<PrivateContent access={accessRoles}>
-			{usersRights.isAccessGranted(accessRoles) && (
-				<div className={className}>
-					<div className="main-form">
-						<SpentTimeControl
-							fsmState={fsmSpentTime.state}
-							timeWork={fsmSpentTime.workTime}
-							timePause={fsmSpentTime.pauseTime}
-							disabled={!isTaskSelected || saving}
-							onControlClick={handleOnControlClick}
-						/>
-						<Select
-							placeholder="Проект"
-							optionsList={transformProjectsToOptionList(projectList || [])}
-							loading={isProjectListLoading}
-							disabled={saving}
-							onChange={(e) => {
-								setCurrentProject(getProjectById(e.target.value, projectList));
-								setCurrentTaskId(null);
-							}}
-						/>
-						<Select
-							placeholder="Задача"
-							optionsList={transformTasksToOptionList(
-								(taskList || []).filter((task) =>
-									availableStatuses.includes(task.state.code),
-								),
-							)}
-							loading={isTaskListLoading}
-							disabled={!(Array.isArray(taskList) && taskList.length > 0) || saving}
-							defaultValue=""
-							onChange={(e) => setCurrentTaskId(e.target.value)}
-						/>
-						<Input
-							type="text"
-							placeholder="Комментарий"
-							disabled={saving}
-							onChange={handleOnCommentChange}
-						/>
-					</div>
+			<div className={className}>
+				<div className="main-form">
+					<SpentTimeControl
+						fsmState={fsmSpentTime.state}
+						timeWork={fsmSpentTime.workTime}
+						timePause={fsmSpentTime.pauseTime}
+						disabled={!isTaskSelected || saving}
+						onControlClick={handleOnControlClick}
+					/>
+					<Select
+						placeholder="Проект"
+						optionsList={transformProjectsToOptionList(projectList || [])}
+						loading={isProjectListLoading}
+						disabled={saving}
+						onChange={(e) => {
+							setCurrentProject(getProjectById(e.target.value, projectList));
+							setCurrentTaskId(null);
+						}}
+					/>
+					<Select
+						placeholder="Задача"
+						optionsList={transformTasksToOptionList(
+							(taskList || []).filter((task) =>
+								availableStatuses.includes(task.state.code),
+							),
+						)}
+						loading={isTaskListLoading}
+						disabled={!(Array.isArray(taskList) && taskList.length > 0) || saving}
+						defaultValue=""
+						onChange={(e) => setCurrentTaskId(e.target.value)}
+					/>
+					<Input
+						type="text"
+						placeholder="Комментарий"
+						disabled={saving}
+						onChange={handleOnCommentChange}
+					/>
 				</div>
-			)}
+			</div>
 			<Dialog
 				open={isShowSaveDialog}
 				type={DialogType.YesNo}

@@ -3,11 +3,16 @@ import { Header } from './components';
 import { Route, Routes } from 'react-router';
 import { Analytics, Authorization, Info, Project, Projects, Registration, Task, Users } from './pages';
 import { Main } from './pages/main/main';
+import { UserRightsManagerContext } from '@/context';
+import { useUserRights } from './hooks/use-user-rights';
 
 const Page = styled.div``;
 
 function App() {
+		const userRights = useUserRights();
+
 	return (
+		<UserRightsManagerContext.Provider value={userRights}>
 		<div>
 			<Header />
 			<Page>
@@ -27,6 +32,8 @@ function App() {
 				</Routes>
 			</Page>
 		</div>
+		</UserRightsManagerContext.Provider>
+
 	);
 }
 

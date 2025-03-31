@@ -5,19 +5,22 @@ import { Button } from '@/components/button/button';
 import { IconButton } from '@/components/icon-button/icon-button';
 import { useAppSelector } from '@/hooks/use-app-store';
 import { selectUserLogin } from '@/selectors/select-user-login';
-import { useUserRights } from '@/hooks/use-user-rights';
+import { useContext } from 'react';
+import { UserRightsManagerContext } from '@/context';
 
 const ToolbarContainer = ({ className }: { className?: string }) => {
 	const login = useAppSelector(selectUserLogin);
 	const toolbarOptions = useAppSelector(selectToolbarOptions);
 	const isIdentifiedUser = useAppSelector(selectAppUserIdentified);
 
-	const usersRights = useUserRights();
+	const usersRights = useContext(UserRightsManagerContext);
 	const navigate = useNavigate();
 
 	const onLogout = () => {
-		usersRights.logout();
-		navigate('/info');
+		if (usersRights) {
+			usersRights.logout();
+			navigate('/info');
+		}
 	};
 
 	return (

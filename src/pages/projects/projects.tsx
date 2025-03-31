@@ -1,6 +1,5 @@
-import { DataTable, Dialog, PageTitle, PrivateContent } from '@/components';
-import { useEffect, useState } from 'react';
-import { pushSnackbarMessage, request } from '@/utils';
+import { DataTable, Dialog, PageTitle, Pagination, PrivateContent } from '@/components';
+import { useContext, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import {
 	AppComponentsPropsBase,
@@ -9,12 +8,13 @@ import {
 	DataTableTool,
 	ToolbarOptions,
 } from '@/types';
-import { setProjectListLoading, setToolbarOptionList } from '@/actions';
+import { setToolbarOptionList } from '@/actions';
 import styled from 'styled-components';
 import { AppUserRole } from '@/constants';
-import { useUserRights } from '@/hooks/use-user-rights';
 import { selectIsProjectListLoading } from '@/selectors';
 import { EditProject } from './components';
+import { useProjectLoader } from '@/hooks';
+import { UserRightsManagerContext } from '@/context';
 
 type DialogPrjMode = 'edit' | 'new';
 
@@ -32,6 +32,8 @@ const headerList: DataTableHeader[] = [
 ];
 
 const accessRoles = [AppUserRole.Admin, AppUserRole.User];
+const PER_PAGE = 3;
+const projectLoaderOptions = { pagination: true, limit: PER_PAGE };
 
 const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 	const [dataTableTools, setDataTableTools] = useState<DataTableTool[] | null>(null);
@@ -45,8 +47,9 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 	const isProjectListLoading = useAppSelector(selectIsProjectListLoading);
 
 	const dispatch = useAppDispatch();
-	// const navigate = useNavigate();
-	const usersRights = useUserRights();
+	const projectLoader = useProjectLoader(projectLoaderOptions);
+
+	const usersRights = useContext(UserRightsManagerContext);
 
 	useEffect(() => {
 		const tools: ToolbarOptions[] = [
@@ -84,24 +87,13 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 	}, []);
 
 	useEffect(() => {
-		if (!usersRights.isAccessGranted(accessRoles)) {
+		if (usersRights === null || !usersRights.isAccessGranted(accessRoles)) {
 			return;
 		}
-		dispatch(setProjectListLoading(true));
-		request('/projects').then((projectsData) => {
-			if (projectsData.error) {
-				pushSnackbarMessage.errorServerApi(projectsData.error);
-				dispatch(setProjectListLoading(false));
-				return;
-			}
-
-			if (projectsData.data !== null) {
-				setProjectList(projectsData.data as DataBaseProjectData[]);
-			}
-			dispatch(setProjectListLoading(false));
-		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [dispatch, updateData]);
+		if (projectLoader.page === null) {
+			projectLoader.setCurrentPage(1);
+		}
+	}, [projectLoader, usersRights]);
 
 	const getDialogTitle = (mode: DialogPrjMode | null) => {
 		switch (mode) {
@@ -145,9 +137,15 @@ const ProjectsContainer = ({ className }: AppComponentsPropsBase) => {
 				<div className="content">
 					<DataTable
 						headers={headerList}
-						items={projectList}
+						items={projectLoader.projectList}
 						tools={dataTableTools}
 						loading={isProjectListLoading}
+					/>
+					<Pagination
+						lastPage={projectLoader.lastPage}
+						page={projectLoader.page}
+						setPage={projectLoader.setCurrentPage}
+						width="auto"
 					/>
 				</div>
 				<Dialog

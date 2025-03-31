@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { DataTable, Dialog, PageTitle, PrivateContent } from '../../components';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 // import { TableRow } from './components';
 import { pushSnackbarMessage, request } from '../../utils';
 // import { UserRow } from './components/user-row/user-row';
@@ -17,6 +17,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import { selectIsUserListLoading, selectUserId } from '@/selectors';
 import { /* setToolbarOptionList, */ setUserListLoading } from '@/actions';
 import { EditUser, ViewUser } from './components';
+import { UserRightsManagerContext } from '@/context';
 
 type DialogUserMode = 'info' | 'edit' | 'new';
 const editFormsModList: (DialogUserMode | null)[] = ['edit', 'new'];
@@ -51,8 +52,7 @@ const UsersContainer = ({ className }: { className?: string }) => {
 
 	const dispatch = useAppDispatch();
 
-	const usersRights = useUserRights();
-
+	const usersRights = useContext(UserRightsManagerContext);
 
 	useEffect(() => {
 		setDataTableTools([
@@ -92,7 +92,7 @@ const UsersContainer = ({ className }: { className?: string }) => {
 	}, [userId]);
 
 	useEffect(() => {
-		if (!usersRights.isAccessGranted(accessRoles)) {
+		if (usersRights === null || !usersRights.isAccessGranted(accessRoles)) {
 			return;
 		}
 		dispatch(setUserListLoading(true));

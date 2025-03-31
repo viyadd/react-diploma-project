@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -7,9 +7,9 @@ import { FormError, Input, Button, PageTitle } from '../../components';
 import { useResetForm } from '../../hooks';
 import styled from 'styled-components';
 import { pushSnackbarMessage, request } from '../../utils';
-import { useUserRights } from '../../hooks/use-user-rights';
 import { AppUserRole } from '../../constants';
 import { AppComponentsPropsBase, DataBaseUserData } from '../../types';
+import { UserRightsManagerContext } from '@/context';
 
 const regFormSchema = yup.object().shape({
 	login: yup
@@ -55,7 +55,7 @@ const RegistrationContainer = ({ className }: AppComponentsPropsBase) => {
 	const [serverError, setServerError] = useState<string | null>(null);
 
 	const navigate = useNavigate()
-	const usersRights = useUserRights();
+	const usersRights = useContext(UserRightsManagerContext);
 
 	useResetForm(reset);
 
@@ -69,7 +69,7 @@ const RegistrationContainer = ({ className }: AppComponentsPropsBase) => {
 					setServerError(`Ошибка запроса: ${error}`);
 					return;
 				}
-				if (data !== null) {
+				if (data !== null && usersRights) {
 					usersRights.updateAccessRight(data as DataBaseUserData, accessRoles);
 					pushSnackbarMessage.success('Пользователь успешно зарегистрирован.')
 					navigate(`/`);
@@ -86,7 +86,7 @@ const RegistrationContainer = ({ className }: AppComponentsPropsBase) => {
 		errors?.passcheck?.message;
 	const errorMessage = formError || serverError;
 
-	if (!usersRights.isUserGuest()) {
+	if (usersRights && !usersRights.isUserGuest()) {
 		return <Navigate to="/" />;
 	}
 	return (

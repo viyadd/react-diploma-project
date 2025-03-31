@@ -4,13 +4,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FormError, Button, Input, PageTitle } from '../../components';
 import styled from 'styled-components';
 import { Link, Navigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { request } from '../../utils';
 import { AppComponentsPropsBase, DataBaseUserData } from '../../types';
 import { AppUserRole } from '../../constants';
-import { useUserRights } from '../../hooks/use-user-rights';
 import { useAppSelector } from '@/hooks/use-app-store';
 import { selectAppUserIdentified } from '@/selectors';
+import { UserRightsManagerContext } from '@/context';
 
 const authFormSchema = yup.object().shape({
 	login: yup
@@ -52,12 +52,14 @@ const AuthorizationContainer = ({ className }: AppComponentsPropsBase) => {
 	const [serverError, setServerError] = useState<string | null>(null);
 
 	const isAppUserIdentified = useAppSelector(selectAppUserIdentified);
-	const usersRights = useUserRights();
+	const usersRights = useContext(UserRightsManagerContext);
 
 	// const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		usersRights.asyncUpdateAccessRight(accessRoles);
+		if (usersRights) {
+			usersRights.asyncUpdateAccessRight(accessRoles);
+		}
 	}, [usersRights]);
 
 	const onSubmit = ({ login, password }: { login: string; password: string }) => {
@@ -66,7 +68,7 @@ const AuthorizationContainer = ({ className }: AppComponentsPropsBase) => {
 				setServerError(`Ошибка запроса: ${error}`);
 				return;
 			}
-			if (data) {
+			if (data && usersRights) {
 				usersRights.updateAccessRight(data as DataBaseUserData, [AppUserRole.Guest]);
 			}
 		});
@@ -75,10 +77,10 @@ const AuthorizationContainer = ({ className }: AppComponentsPropsBase) => {
 	const formError = errors?.login?.message || errors?.password?.message;
 	const errorMessage = formError || serverError;
 
-	if (!usersRights.isUserGuest()) {
+	if (usersRights && !usersRights.isUserGuest()) {
 		return <Navigate to="/" />;
 	}
-	if (isAppUserIdentified && usersRights.isUserGuest()) {
+	if (isAppUserIdentified && (usersRights === null || usersRights.isUserGuest())) {
 		return <Navigate to="/info" />;
 	}
 

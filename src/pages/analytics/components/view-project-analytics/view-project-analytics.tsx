@@ -9,7 +9,6 @@ import { ChartData } from '@/components/analytics-pie-chart/analytics-pie-chart'
 import { AppUserRole } from '@/constants';
 import { useAnalyticsProjectTasksLoader, useProjectTasksLoader } from '@/hooks';
 import { useAppSelector } from '@/hooks/use-app-store';
-import { useUserRights } from '@/hooks/use-user-rights';
 import { selectIsAccessRightLoading } from '@/selectors';
 import {
 	AppComponentsPropsBase,
@@ -21,10 +20,11 @@ import {
 	DataBaseTaskData,
 	OrderByProps,
 } from '@/types';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { AnalyticsBarChart } from './components';
+import { UserRightsManagerContext } from '@/context';
 
 interface ViewProjectAnalyticsProps extends AppComponentsPropsBase {
 	onSelect?: () => void;
@@ -63,10 +63,10 @@ const ViewProjectAnalyticsContainer = ({ className }: ViewProjectAnalyticsProps)
 	const params = useParams();
 	const projectTaskLoader = useProjectTasksLoader(loaderOptions);
 	const analyticsProjectTasks = useAnalyticsProjectTasksLoader();
-	const usersRights = useUserRights();
+	const usersRights = useContext(UserRightsManagerContext);
 
 	useEffect(() => {
-		if (!usersRights.isAccessGranted(accessRoles)) {
+		if (!usersRights || !usersRights.isAccessGranted(accessRoles)) {
 			return;
 		}
 		if (params.id === undefined) {

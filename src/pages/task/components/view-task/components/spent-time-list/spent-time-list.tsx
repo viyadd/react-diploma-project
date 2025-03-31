@@ -9,16 +9,16 @@ import {
 	ToolbarOptions,
 } from '@/types';
 import { DataTable, Dialog } from '@/components';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
 import { AppUserRole } from '@/constants';
 import { selectIsSpentTimeListLoading } from '@/selectors';
 import { useToolbarOptions } from '@/hooks';
 import { ViewSpentTime } from '../view-spent-time/view-spent-time';
 import { EditSpentTime } from '../edit-spent-time/edit-spent-time';
-import { useUserRights } from '@/hooks/use-user-rights';
 import { pushSnackbarMessage, request } from '@/utils';
 import { setTaskListLoading } from '@/actions';
+import { UserRightsManagerContext } from '@/context';
 
 interface SpentTimeListProps extends AppComponentsPropsBase {
 	spentTimeList: DataBaseSpentTimeData[] | null;
@@ -57,7 +57,8 @@ const SpentTimeListContainer = ({
 	const isSpentTimeListLoading = useAppSelector(selectIsSpentTimeListLoading);
 	const dispatch = useAppDispatch();
 
-	const usersRights = useUserRights();
+	const usersRights = useContext(UserRightsManagerContext);
+
 	const toolbar = useToolbarOptions();
 
 	useEffect(() => {
@@ -98,7 +99,7 @@ const SpentTimeListContainer = ({
 				},
 			},
 		];
-		if (usersRights.isUserAdmin()) {
+		if (usersRights && usersRights.isUserAdmin()) {
 			dataTabletools.push({
 				key: 'delete',
 				iconId: 'fa-trash-o',

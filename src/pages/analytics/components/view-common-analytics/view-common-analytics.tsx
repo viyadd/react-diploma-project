@@ -1,9 +1,10 @@
 import { setStatusListLoading } from '@/actions';
 import { DataTable, HideBox, PageTitle, Pagination } from '@/components';
 import { AppUserRole } from '@/constants';
+import { UserRightsManagerContext } from '@/context';
 import { useProjectLoader } from '@/hooks';
 import { useAppDispatch, useAppSelector } from '@/hooks/use-app-store';
-import { useUserRights } from '@/hooks/use-user-rights';
+// import { useUserRights } from '@/hooks/use-user-rights';
 import {
 	selectIsAccessRightLoading,
 	selectIsProjectListLoading,
@@ -18,7 +19,7 @@ import {
 	isValueStatusAnalyticsData,
 } from '@/types';
 import { pushSnackbarMessage, request } from '@/utils';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Cell, Legend, Pie, PieChart /* ResponsiveContainer */ } from 'recharts';
 import styled from 'styled-components';
 
@@ -85,6 +86,7 @@ const projectHeaderList: DataTableHeader[] = [
 ];
 
 const PER_PAGE = 3
+const projectLoaderOptions = { pagination: true, limit: PER_PAGE };
 
 const ViewCommonAnalyticsContainer = ({ className }: ViewCommonAnalyticsProps) => {
 	const [statusList, setStatusList] = useState<DBStatusAlyticsData[] | null>(null);
@@ -93,15 +95,15 @@ const ViewCommonAnalyticsContainer = ({ className }: ViewCommonAnalyticsProps) =
 	const isStatusListLoadingg = useAppSelector(selectIsStatusListLoading);
 	const isProjectListLoading = useAppSelector(selectIsProjectListLoading);
 
-	const projectLoader = useProjectLoader({ pagination: true, limit: PER_PAGE });
-	const usersRights = useUserRights();
+	const projectLoader = useProjectLoader(projectLoaderOptions);
+	const usersRights = useContext(UserRightsManagerContext);
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		if (!usersRights.isAccessGranted(accessRoles)) {
+		if (usersRights === null || !usersRights.isAccessGranted(accessRoles)) {
 			return;
 		}
-		projectLoader.load();
+		projectLoader.setCurrentPage(1);
 		dispatch(setStatusListLoading(true));
 		request('/analytics/projects').then((statusesData) => {
 			if (isValueServerResponseErrorData(statusesData.error)) {
@@ -174,7 +176,7 @@ const ViewCommonAnalyticsContainer = ({ className }: ViewCommonAnalyticsProps) =
 			<Pagination
 				lastPage={projectLoader.lastPage}
 				page={projectLoader.page}
-				setPage={projectLoader.setPage}
+				setPage={projectLoader.setCurrentPage}
 				width='auto'
 			/>
 		</div>
