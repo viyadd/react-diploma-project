@@ -3,7 +3,7 @@ import { pushSnackbarMessage, request } from "@/utils";
 import { useAppDispatch, useAppSelector } from "./use-app-store";
 import { setProjectLoading as setTaskLoading } from "@/actions";
 import { useState } from "react";
-import { selectIsProjectLoading } from "@/selectors";
+import { selectIsTaskLoading } from "@/selectors";
 
 interface SaveTaskProps {
 	projectId?: string
@@ -19,7 +19,7 @@ interface SaveTaskProps {
 export const useTaskSaver = () => {
 	const [task, setTask] = useState<DataBaseTaskData | null>(null);
 
-	const isTaskLoading = useAppSelector(selectIsProjectLoading)
+	const isTaskLoading = useAppSelector(selectIsTaskLoading)
 
 	const dispatch = useAppDispatch()
 
