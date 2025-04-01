@@ -54,7 +54,7 @@ const buttonList: ButtonList[] = [
 // 	return '00:00';
 // };
 
-const MIN_WORK_TIME = 6000; //0
+const MIN_WORK_TIME = 60000;
 
 const isTimeTooLittle = (key: FSMHandleStateList, time: number | null) => {
 	return key === 'stop' && (time === null || time < MIN_WORK_TIME);
@@ -71,7 +71,7 @@ const SpentTimeControlContainer = ({
 
 	return (
 		<div className={className}>
-			<TimeView time={timeWork} />
+			<TimeView time={timeWork} isActive={fsmState === 'work'} />
 			{buttonList.map(({ key, iconId, isDisabled }) => (
 				<IconButton
 					key={key}
@@ -81,7 +81,7 @@ const SpentTimeControlContainer = ({
 					onClick={() => onControlClick(key)}
 				/>
 			))}
-			<TimeView time={timePause} />
+			<TimeView time={timePause} isActive={fsmState === 'pause'} />
 		</div>
 	);
 };

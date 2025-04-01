@@ -4,7 +4,8 @@ import styled from 'styled-components';
 
 interface TimeViewProps extends AppComponentsPropsBase {
 	time: number | null;
-	color?: string
+	color?: string;
+	isActive?: boolean;
 }
 const formatXX = (value: number) => (value < 10 ? '0' + value : value.toString());
 
@@ -31,21 +32,35 @@ const formatMsToHH = (time: number | null) => {
 	return '00';
 };
 
-const TimeViewContainer = ({ className, time }: TimeViewProps) => {
-	const [progress, setProgress] = useState(0)
+const startFlash = (setFlashLevel: (level: boolean) => void) => {
+	setFlashLevel(true);
+	setTimeout(() => setFlashLevel(false), 500);
+};
 
-	useEffect(()=>{
-		if(typeof time!== 'number') {
-			setProgress(0)
-			return
+const getSeparator = (flashLevel: boolean, isAcvtive?: boolean) => {
+	if (isAcvtive) {
+		return 'separator' + (flashLevel ? '-active' : '');
+	}
+	return '';
+};
+
+const TimeViewContainer = ({ className, time, isActive }: TimeViewProps) => {
+	const [flashLevel, setFlashLevel] = useState(false);
+	const [progress, setProgress] = useState(0);
+
+	useEffect(() => {
+		if (typeof time !== 'number') {
+			setProgress(0);
+			return;
 		}
-		setProgress(Math.ceil(time/1000%60))
-	},[time])
+		startFlash(setFlashLevel);
+		setProgress(Math.ceil((time / 1000) % 60));
+	}, [time]);
 
 	return (
 		<div className={className}>
 			<div>{formatMsToHH(time)}</div>
-			<div>:</div>
+			<div className={getSeparator(flashLevel, isActive)}>:</div>
 			<div>{formatMsToMM(time)}</div>
 			{/* <div>:</div>
 			<div>{formatMsToSS(time)}</div> */}
@@ -60,11 +75,18 @@ export const TimeView = styled(TimeViewContainer)`
 	grid-template-rows: 33px 7px;
 	font-size: 23px;
 	gap: 3px;
+	/* color: #eee; */
 
 	& > progress {
 		height: 6px;
 		width: 100%;
 		grid-column: 1/-1;
 		grid-row: 2/2;
+	}
+	& .separator {
+		color: #333;
+	}
+	& .separator-active {
+		color: #aaa;
 	}
 `;
